@@ -3,10 +3,10 @@ name: Android CI
 on:
   push:
     branches:
-      - '*'
-    pull_request:
-      branches:
-        - '*'
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -35,8 +35,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build project
-        run: ./gradlew build
+      - name: Run ktlintFormat
+        run: ./gradlew ktlintFormat
 
-      - name: Run KtLint
+      - name: Run ktlintCheck
         run: ./gradlew ktlintCheck
+
+      - name: Assemble APK
+        run: ./gradlew assembleDebug
