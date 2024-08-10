@@ -1,14 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {
-    namespace = "com.example.gym_buddy"
+    namespace = "com.example.GymBuddy"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.gym_buddy"
+        applicationId = "com.example.GymBuddy"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -28,6 +29,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    tasks.withType<JavaCompile> {
+        dependsOn("ktlintCheck")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

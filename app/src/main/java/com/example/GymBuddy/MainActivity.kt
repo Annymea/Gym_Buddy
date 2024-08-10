@@ -1,4 +1,4 @@
-package com.example.gym_buddy
+package com.example.GymBuddy
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.gym_buddy.ui.theme.Gym_BuddyTheme
+import com.example.GymBuddy.ui.theme.Gym_BuddyTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

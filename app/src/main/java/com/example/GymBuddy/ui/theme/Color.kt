@@ -1,4 +1,4 @@
-package com.example.gym_buddy.ui.theme
+package com.example.GymBuddy.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
