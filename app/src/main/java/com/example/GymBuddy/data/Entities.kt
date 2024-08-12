@@ -6,58 +6,58 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import java.sql.Date
 
-@Entity
-data class Plans(
+@Entity(tableName = "plans")
+data class Plan(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "plan_name") val planName: String,
+    @ColumnInfo(name = "plan_name") val planName: String
 )
 
-@Entity
-data class Exercises(
+@Entity(tableName = "exercises")
+data class Exercise(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "exercise_name") val exerciseName: String,
+    @ColumnInfo(name = "exercise_name") val exerciseName: String
 )
 
 @Entity(
+    tableName = "executablePlans",
     foreignKeys = [
         ForeignKey(
-            entity = Plans::class,
+            entity = Plan::class,
             parentColumns = ["id"],
             childColumns = ["plan_id"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Exercises::class,
+            entity = Exercise::class,
             parentColumns = ["id"],
             childColumns = ["exercise_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class ExecutablePlans(
+data class ExecutablePlan(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "plan_id") val planId: Int,
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val sets: Int,
-    val order: Int,
+    val order: Int
 )
 
 @Entity(
+    tableName = "executions",
     foreignKeys = [
         ForeignKey(
-            entity = Exercises::class,
+            entity = Exercise::class,
             parentColumns = ["id"],
             childColumns = ["exercise_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class Executions(
+data class Execution(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val weight: Int,
     val reps: Int,
-    val date: Date,
+    val date: Date
 )
-
-
