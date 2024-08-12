@@ -9,13 +9,13 @@ import java.sql.Date
 @Entity
 data class Plans(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "plan_name") val planName: String
+    @ColumnInfo(name = "plan_name") val planName: String,
 )
 
 @Entity
 data class Exercises(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "exercise_name") val exerciseName: String
+    @ColumnInfo(name = "exercise_name") val exerciseName: String,
 )
 
 @Entity(
@@ -39,7 +39,7 @@ data class ExecutablePlans(
     @ColumnInfo(name = "plan_id") val planId: Int,
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val sets: Int,
-    val order: Int
+    val order: Int,
 )
 
 @Entity(
@@ -57,5 +57,7 @@ data class Executions(
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val weight: Int,
     val reps: Int,
-    val date: Date
+    val date: Date,
 )
+
+
