@@ -1,4 +1,4 @@
-package com.example.gymbuddy.data
+package com.example.GymBuddy.data
 
 import androidx.room.Dao
 import androidx.room.Delete
