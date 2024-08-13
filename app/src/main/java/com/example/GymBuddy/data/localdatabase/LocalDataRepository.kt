@@ -37,6 +37,10 @@ class LocalDataRepository(
         return workoutDAO.insertExecutablePlan(executablePlan)
     }
 
+    override suspend fun insertExecution(execution: Execution) {
+        return workoutDAO.insertExecution(execution)
+    }
+
     override suspend fun deletePlan(plan: Plan) {
         return workoutDAO.deletePlan(plan)
     }
@@ -47,5 +51,9 @@ class LocalDataRepository(
 
     override suspend fun deleteExerciseFromPlan(executablePlan: ExecutablePlan) {
         return workoutDAO.deleteExerciseFromPlan(executablePlan)
+    }
+
+    override suspend fun deleteExecution(execution: Execution) {
+        return workoutDAO.deleteExecution(execution)
     }
 }

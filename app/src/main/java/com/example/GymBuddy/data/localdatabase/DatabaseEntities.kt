@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.time.LocalDate
 
 @Entity(tableName = "plans")
 data class Plan(
@@ -64,5 +64,5 @@ data class Execution(
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val weight: Int,
     val reps: Int,
-    val date: Date
+    val date: LocalDate
 )
