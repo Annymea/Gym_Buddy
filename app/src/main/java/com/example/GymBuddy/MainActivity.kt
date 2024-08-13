@@ -14,17 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.room.Room
-import com.example.GymBuddy.data.Plan
-import com.example.GymBuddy.data.WorkoutDatabase
+import com.example.GymBuddy.data.WorkoutRepository
+import com.example.GymBuddy.data.localdatabase.Plan
 import com.example.GymBuddy.ui.theme.Gym_BuddyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
+    private val workoutRepository: WorkoutRepository by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             Gym_BuddyTheme {
@@ -34,17 +38,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        val db = Room.databaseBuilder(
-            applicationContext,
-            WorkoutDatabase::class.java,
-            "workout-database"
-        ).build()
-
-        val workoutDao = db.workoutDao()
-
         CoroutineScope(Dispatchers.IO).launch {
-            val plan = Plan(id = 1, planName = "My First Plan")
-            workoutDao.insertPlan(plan)
+            val plan = Plan(planName = "My First Plan", id = 0)
+            workoutRepository.insertPlan(plan)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.GymBuddy.data
+package com.example.GymBuddy.data.localdatabase
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
