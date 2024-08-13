@@ -47,6 +47,9 @@ interface WorkoutDAO {
     @Insert
     fun insertExecutablePlan(executablePlan: ExecutablePlan)
 
+    @Insert
+    fun insertExecution(execution: Execution)
+
     @Delete
     fun deletePlan(plan: Plan)
 
@@ -55,4 +58,7 @@ interface WorkoutDAO {
 
     @Delete
     fun deleteExerciseFromPlan(executablePlan: ExecutablePlan)
+
+    @Delete
+    fun deleteExecution(execution: Execution)
 }

@@ -18,9 +18,11 @@ interface WorkoutRepository {
     suspend fun insertPlan(plan: Plan)
     suspend fun insertExercise(exercise: Exercise)
     suspend fun insertExecutablePlan(executablePlan: ExecutablePlan)
+    suspend fun insertExecution(execution: Execution)
 
     // delete
     suspend fun deletePlan(plan: Plan)
     suspend fun deleteExercise(exercise: Exercise)
     suspend fun deleteExerciseFromPlan(executablePlan: ExecutablePlan)
+    suspend fun deleteExecution(execution: Execution)
 }

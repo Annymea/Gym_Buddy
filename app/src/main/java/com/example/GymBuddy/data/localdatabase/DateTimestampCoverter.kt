@@ -1,16 +1,20 @@
 package com.example.GymBuddy.data.localdatabase
 
 import androidx.room.TypeConverter
-import java.util.Date
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 class DateTimestampCoverter {
     @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
+    fun dateToTimestamp(date: LocalDate?): Long? {
+        return date?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
     }
 
     @TypeConverter
-    fun timeStampToDate(value: Long?): Date? {
-        return value?.let { Date(it) }
+    fun timeStampToDate(value: Long?): LocalDate? {
+        return value?.let {
+            Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+        }
     }
 }
