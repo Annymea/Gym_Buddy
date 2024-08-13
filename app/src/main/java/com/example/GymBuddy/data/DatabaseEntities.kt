@@ -1,10 +1,11 @@
-package com.example.gymbuddy.data
+package com.example.GymBuddy.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.sql.Date
+import java.util.Date
 
 @Entity(tableName = "plans")
 data class Plan(
@@ -20,6 +21,10 @@ data class Exercise(
 
 @Entity(
     tableName = "executablePlans",
+    indices = [
+        Index(value = ["plan_id"]),
+        Index(value = ["exercise_id"])
+    ],
     foreignKeys = [
         ForeignKey(
             entity = Plan::class,

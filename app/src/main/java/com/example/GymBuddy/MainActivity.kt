@@ -14,7 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.Room
+import com.example.GymBuddy.data.Plan
+import com.example.GymBuddy.data.WorkoutDatabase
 import com.example.GymBuddy.ui.theme.Gym_BuddyTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +32,19 @@ class MainActivity : ComponentActivity() {
                     FirstButtons(modifier = Modifier.padding(innerPadding))
                 }
             }
+        }
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            WorkoutDatabase::class.java,
+            "workout-database"
+        ).build()
+
+        val workoutDao = db.workoutDao()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val plan = Plan(id = 1, planName = "My First Plan")
+            workoutDao.insertPlan(plan)
         }
     }
 }
