@@ -1,4 +1,4 @@
-package com.example.GymBuddy.data
+package com.example.GymBuddy.data.localdatabase
 
 data class ExecutablePlanWithDetails(
     val executablePlanId: Int,
