@@ -26,19 +26,19 @@ class LocalDataRepository(
         return workoutDAO.getExecutablePlanWithDetailsByPlanId(planId)
     }
 
-    override suspend fun insertPlan(plan: Plan) {
+    override suspend fun insertPlan(plan: Plan): Long {
         return workoutDAO.insertPlan(plan)
     }
 
-    override suspend fun insertExercise(exercise: Exercise) {
+    override suspend fun insertExercise(exercise: Exercise): Long {
         return workoutDAO.insertExercise(exercise)
     }
 
-    override suspend fun insertExecutablePlan(executablePlan: ExecutablePlan) {
+    override suspend fun insertExecutablePlan(executablePlan: ExecutablePlan): Long {
         return workoutDAO.insertExecutablePlan(executablePlan)
     }
 
-    override suspend fun insertExecution(execution: Execution) {
+    override suspend fun insertExecution(execution: Execution): Long {
         return workoutDAO.insertExecution(execution)
     }
 

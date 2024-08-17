@@ -14,16 +14,37 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CreatePlan(
     modifier: Modifier = Modifier,
-    createPlanViewModel: CreatePlanViewModel = koinViewModel<CreatePlanViewModel>()
+    createPlanViewModel: CreatePlanViewModel = koinViewModel<CreatePlanViewModel>(),
+    onPlanSaved: () -> Unit
+
 ) {
     Column(modifier = modifier) {
+        Row {
+            TextField(
+                value = createPlanViewModel.planName.value,
+                onValueChange = { newPlanName ->
+                    createPlanViewModel.updatePlanName(newPlanName)
+                },
+                label = { Text("Exercise name") }
+            )
+            Button(onClick = {
+                createPlanViewModel.savePlanToDatabase()
+                onPlanSaved()
+            }) {
+                Text(text = "Save plan")
+            }
+        }
+
         Text(text = "Neue Übung", modifier = modifier)
+
         AddExercise(
             onExerciseChange = { createPlanViewModel.updateExercise(it) },
-            onAddNewExercise = { createPlanViewModel.addExercise(createPlanViewModel.exerciseToAdd) },
-            exerciseToAdd = createPlanViewModel.exerciseToAdd
+            onAddNewExercise = { createPlanViewModel.addExercise(createPlanViewModel.exerciseToAdd.value) },
+            exerciseToAdd = createPlanViewModel.exerciseToAdd.value
         )
+
         Text(text = "Dein Plan", modifier = modifier)
+
         createPlanViewModel.exerciseListToBeSaved.forEach { exercise ->
             ExerciseCard(exercise = exercise)
         }
@@ -33,7 +54,7 @@ fun CreatePlan(
 @Composable
 fun ExerciseCard(
     modifier: Modifier = Modifier,
-    exercise: Exercise
+    exercise: ViewModelExercise
 ) {
     Card(modifier = modifier) {
         Column {
@@ -46,8 +67,8 @@ fun ExerciseCard(
 @Composable
 fun AddExercise(
     modifier: Modifier = Modifier,
-    exerciseToAdd: Exercise,
-    onExerciseChange: (Exercise) -> Unit,
+    exerciseToAdd: ViewModelExercise,
+    onExerciseChange: (ViewModelExercise) -> Unit,
     onAddNewExercise: () -> Unit
 ) {
     Card(modifier = modifier) {
@@ -78,12 +99,21 @@ fun AddExercise(
 
 @Preview(showBackground = true)
 @Composable
+fun AddPlanPreview() {
+    CreatePlan(
+        modifier = Modifier,
+        onPlanSaved = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
 fun AddExercisePreview() {
     AddExercise(
         modifier = Modifier,
         onExerciseChange = {},
         onAddNewExercise = {},
-        exerciseToAdd = Exercise(name = "Push-up", sets = 3)
+        exerciseToAdd = ViewModelExercise(name = "Push-up", sets = 3)
     )
 }
 // hier möchte ich jetzt nach und nach neue Übungen hinzufügen.
