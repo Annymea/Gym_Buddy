@@ -9,13 +9,13 @@ import java.time.LocalDate
 
 @Entity(tableName = "plans")
 data class Plan(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "plan_name") val planName: String
 )
 
 @Entity(tableName = "exercises")
 data class Exercise(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "exercise_name") val exerciseName: String
 )
 
@@ -41,7 +41,7 @@ data class Exercise(
     ]
 )
 data class ExecutablePlan(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "plan_id") val planId: Int,
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val sets: Int,
@@ -60,7 +60,7 @@ data class ExecutablePlan(
     ]
 )
 data class Execution(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "exercise_id") val exerciseId: Int,
     val weight: Int,
     val reps: Int,

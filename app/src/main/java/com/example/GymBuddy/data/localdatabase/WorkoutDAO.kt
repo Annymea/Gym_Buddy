@@ -4,20 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkoutDAO {
     @Query("SELECT * FROM plans")
-    fun getAllPlanNames(): List<Plan>
+    fun getAllPlanNames(): Flow<List<Plan>>
 
     @Query("SELECT * FROM exercises")
-    fun getAllExerciseNames(): List<Exercise>
+    fun getAllExerciseNames(): Flow<List<Exercise>>
 
     @Query("SELECT * FROM executablePlans WHERE plan_id = :planId")
-    fun getExecutablePlanById(planId: Int): List<ExecutablePlan>
+    fun getExecutablePlanById(planId: Int): Flow<List<ExecutablePlan>>
 
     @Query("SELECT * FROM executions WHERE exercise_id = :exerciseId")
-    fun getExecutionsById(exerciseId: Int): List<Execution>
+    fun getExecutionsById(exerciseId: Int): Flow<List<Execution>>
 
     @Query(
         """
@@ -36,29 +37,29 @@ interface WorkoutDAO {
             ORDER BY executablePlans.`order`
         """
     )
-    fun getExecutablePlanWithDetailsByPlanId(planId: Int): List<ExecutablePlanWithDetails>
+    fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>>
 
     @Insert
-    fun insertPlan(plan: Plan)
+    suspend fun insertPlan(plan: Plan)
 
     @Insert
-    fun insertExercise(exercise: Exercise)
+    suspend fun insertExercise(exercise: Exercise)
 
     @Insert
-    fun insertExecutablePlan(executablePlan: ExecutablePlan)
+    suspend fun insertExecutablePlan(executablePlan: ExecutablePlan)
 
     @Insert
-    fun insertExecution(execution: Execution)
+    suspend fun insertExecution(execution: Execution)
 
     @Delete
-    fun deletePlan(plan: Plan)
+    suspend fun deletePlan(plan: Plan)
 
     @Delete
-    fun deleteExercise(exercise: Exercise)
+    suspend fun deleteExercise(exercise: Exercise)
 
     @Delete
-    fun deleteExerciseFromPlan(executablePlan: ExecutablePlan)
+    suspend fun deleteExerciseFromPlan(executablePlan: ExecutablePlan)
 
     @Delete
-    fun deleteExecution(execution: Execution)
+    suspend fun deleteExecution(execution: Execution)
 }
