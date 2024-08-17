@@ -5,14 +5,15 @@ import com.example.GymBuddy.data.localdatabase.ExecutablePlanWithDetails
 import com.example.GymBuddy.data.localdatabase.Execution
 import com.example.GymBuddy.data.localdatabase.Exercise
 import com.example.GymBuddy.data.localdatabase.Plan
+import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
     // get
-    fun getAllExerciseNames(): List<Exercise>
-    fun getAllPlanNames(): List<Plan>
-    fun getExecutablePlanById(planId: Int): List<ExecutablePlan>
-    fun getExecutionsById(exerciseId: Int): List<Execution>
-    fun getExecutablePlanWithDetailsByPlanId(planId: Int): List<ExecutablePlanWithDetails>
+    suspend fun getAllExerciseNames(): Flow<List<Exercise>>
+    suspend fun getAllPlanNames(): Flow<List<Plan>>
+    suspend fun getExecutablePlanById(planId: Int): Flow<List<ExecutablePlan>>
+    suspend fun getExecutionsById(exerciseId: Int): Flow<List<Execution>>
+    suspend fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>>
 
     // insert
     suspend fun insertPlan(plan: Plan)

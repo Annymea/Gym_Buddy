@@ -5,7 +5,7 @@ data class ExecutablePlanWithDetails(
     val planId: Int,
     val planName: String,
     val exerciseId: Int,
-    val exerciseName: String,
-    val sets: Int,
-    val order: Int
+    var exerciseName: String,
+    var sets: Int,
+    var order: Int
 )

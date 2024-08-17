@@ -1,27 +1,28 @@
 package com.example.GymBuddy.data.localdatabase
 
 import com.example.GymBuddy.data.WorkoutRepository
+import kotlinx.coroutines.flow.Flow
 
 class LocalDataRepository(
     private val workoutDAO: WorkoutDAO
 ) : WorkoutRepository {
-    override fun getAllExerciseNames(): List<Exercise> {
+    override suspend fun getAllExerciseNames(): Flow<List<Exercise>> {
         return workoutDAO.getAllExerciseNames()
     }
 
-    override fun getAllPlanNames(): List<Plan> {
+    override suspend fun getAllPlanNames(): Flow<List<Plan>> {
         return workoutDAO.getAllPlanNames()
     }
 
-    override fun getExecutablePlanById(planId: Int): List<ExecutablePlan> {
+    override suspend fun getExecutablePlanById(planId: Int): Flow<List<ExecutablePlan>> {
         return workoutDAO.getExecutablePlanById(planId)
     }
 
-    override fun getExecutionsById(exerciseId: Int): List<Execution> {
+    override suspend fun getExecutionsById(exerciseId: Int): Flow<List<Execution>> {
         return workoutDAO.getExecutionsById(exerciseId)
     }
 
-    override fun getExecutablePlanWithDetailsByPlanId(planId: Int): List<ExecutablePlanWithDetails> {
+    override suspend fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>> {
         return workoutDAO.getExecutablePlanWithDetailsByPlanId(planId)
     }
 
