@@ -40,16 +40,16 @@ interface WorkoutDAO {
     fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>>
 
     @Insert
-    suspend fun insertPlan(plan: Plan)
+    suspend fun insertPlan(plan: Plan): Long
 
     @Insert
-    suspend fun insertExercise(exercise: Exercise)
+    suspend fun insertExercise(exercise: Exercise): Long
 
     @Insert
-    suspend fun insertExecutablePlan(executablePlan: ExecutablePlan)
+    suspend fun insertExecutablePlan(executablePlan: ExecutablePlan): Long
 
     @Insert
-    suspend fun insertExecution(execution: Execution)
+    suspend fun insertExecution(execution: Execution): Long
 
     @Delete
     suspend fun deletePlan(plan: Plan)

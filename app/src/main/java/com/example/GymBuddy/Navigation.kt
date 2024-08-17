@@ -29,7 +29,10 @@ fun AppNavigation(
         }
         composable("create_plan") {
             CreatePlan(
-                modifier = modifier
+                modifier = modifier,
+                onPlanSaved = {
+                    navController.navigate("plan_list")
+                }
             )
         }
         composable("plan_list") {

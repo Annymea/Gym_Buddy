@@ -16,10 +16,10 @@ interface WorkoutRepository {
     suspend fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>>
 
     // insert
-    suspend fun insertPlan(plan: Plan)
-    suspend fun insertExercise(exercise: Exercise)
-    suspend fun insertExecutablePlan(executablePlan: ExecutablePlan)
-    suspend fun insertExecution(execution: Execution)
+    suspend fun insertPlan(plan: Plan): Long
+    suspend fun insertExercise(exercise: Exercise): Long
+    suspend fun insertExecutablePlan(executablePlan: ExecutablePlan): Long
+    suspend fun insertExecution(execution: Execution): Long
 
     // delete
     suspend fun deletePlan(plan: Plan)
