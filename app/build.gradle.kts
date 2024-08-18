@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.testing)
 
     testImplementation(libs.junit)
     testImplementation("org.testng:testng:6.9.6")
@@ -80,7 +81,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     testImplementation("androidx.arch.core:core-testing:2.1.0")
-
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
     // Room
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")

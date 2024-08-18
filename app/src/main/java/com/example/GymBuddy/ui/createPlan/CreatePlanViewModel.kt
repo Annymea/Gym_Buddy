@@ -35,6 +35,10 @@ class CreatePlanViewModel(
     var saveState = mutableStateOf<SavingPlanState>(SavingPlanState.Idle)
         private set
 
+    fun resetErrorState() {
+        saveState.value = SavingPlanState.Idle
+    }
+
     fun addExercise(exercise: ViewModelExercise) {
         exerciseListToBeSaved.add(exercise)
     }

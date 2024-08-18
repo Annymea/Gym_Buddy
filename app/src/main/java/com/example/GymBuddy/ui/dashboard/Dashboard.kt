@@ -27,6 +27,7 @@ fun FirstButtons(
     onCreatePlanButtonClicked: () -> Unit
 ) {
     Column(modifier = modifier) {
+        Text(text = "Dashboard Content")
         Button(
             onClick = {
                 onCreatePlanButtonClicked()
