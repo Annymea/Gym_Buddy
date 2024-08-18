@@ -96,7 +96,7 @@ class WorkoutDaoTest {
 
     @Test
     fun insertOneExecutablePlanAndGetOneExecutablePlanByPlanId() = runBlocking {
-        val planId = 1
+        val planId: Long = 1
 
         val executablePlan = getExecutablePlan()
 
@@ -112,7 +112,7 @@ class WorkoutDaoTest {
 
     @Test
     fun insertMultipleExecutablePlansAndGetMultipleExecutablePlansByPlanId() = runBlocking {
-        val planId = 1
+        val planId: Long = 1
 
         val listOfExecutablePlans = listOf(
             getExecutablePlan(
@@ -147,7 +147,7 @@ class WorkoutDaoTest {
 
     @Test
     fun insertOneExecutionAndGetByExerciseId() = runBlocking {
-        val exerciseId = 1
+        val exerciseId: Long = 1
 
         val execution = getExecution()
 
@@ -162,7 +162,7 @@ class WorkoutDaoTest {
 
     @Test
     fun insertMultipleExecutionsAndGetByExerciseId() = runBlocking {
-        val exerciseId = 1
+        val exerciseId: Long = 1
 
         val listOfExecutions = listOf(
             getExecution(id = 1, exerciseId = exerciseId),
@@ -276,24 +276,24 @@ class WorkoutDaoTest {
         assertTrue(allExercises.isEmpty())
     }
 
-    private fun getPlan(id: Int = 1, planName: String = "Test Plan"): Plan =
+    private fun getPlan(id: Long = 1, planName: String = "Test Plan"): Plan =
         Plan(id, planName)
 
-    private fun getExercise(id: Int = 1, exerciseName: String = "Test Exercise"): Exercise =
+    private fun getExercise(id: Long = 1, exerciseName: String = "Test Exercise"): Exercise =
         Exercise(id, exerciseName)
 
     private fun getExecutablePlan(
-        id: Int = 1,
-        planId: Int = 1,
-        exerciseId: Int = 1,
+        id: Long = 1,
+        planId: Long = 1,
+        exerciseId: Long = 1,
         sets: Int = 3,
         order: Int = 1,
     ): ExecutablePlan = ExecutablePlan(id, planId, exerciseId, sets, order)
 
 
     private fun getExecution(
-        id: Int = 1,
-        exerciseId: Int = 1,
+        id: Long = 1,
+        exerciseId: Long = 1,
         reps: Int = 10,
         weight: Int = 200,
         date: LocalDate = LocalDate.parse("2018-12-31"),
