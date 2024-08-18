@@ -15,10 +15,10 @@ interface WorkoutDAO {
     fun getAllExerciseNames(): Flow<List<Exercise>>
 
     @Query("SELECT * FROM executablePlans WHERE plan_id = :planId")
-    fun getExecutablePlanById(planId: Int): Flow<List<ExecutablePlan>>
+    fun getExecutablePlanById(planId: Long): Flow<List<ExecutablePlan>>
 
     @Query("SELECT * FROM executions WHERE exercise_id = :exerciseId")
-    fun getExecutionsById(exerciseId: Int): Flow<List<Execution>>
+    fun getExecutionsById(exerciseId: Long): Flow<List<Execution>>
 
     @Query(
         """
@@ -37,7 +37,7 @@ interface WorkoutDAO {
             ORDER BY executablePlans.`order`
         """
     )
-    fun getExecutablePlanWithDetailsByPlanId(planId: Int): Flow<List<ExecutablePlanWithDetails>>
+    fun getExecutablePlanWithDetailsByPlanId(planId: Long): Flow<List<ExecutablePlanWithDetails>>
 
     @Insert
     suspend fun insertPlan(plan: Plan): Long
