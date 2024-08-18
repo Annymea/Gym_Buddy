@@ -1,7 +1,9 @@
 package com.example.GymBuddy.ui.createPlan
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.GymBuddy.data.WorkoutRepository
@@ -22,36 +24,49 @@ sealed class SavingPlanState {
     data class Error(val message: String) : SavingPlanState()
 }
 
+interface CreatePlanViewModelContract {
+    val exerciseListToBeSaved: SnapshotStateList<ViewModelExercise>
+    val exerciseToAdd: MutableState<ViewModelExercise>
+    val planName: MutableState<String>
+    val saveState: MutableState<SavingPlanState>
+
+    fun resetErrorState()
+    fun addExercise(exercise: ViewModelExercise)
+    fun updateExercise(updatedExercise: ViewModelExercise)
+    fun updatePlanName(newPlanName: String)
+    fun savePlanToDatabase()
+}
+
 class CreatePlanViewModel(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-    var exerciseListToBeSaved = mutableStateListOf<ViewModelExercise>()
+) : ViewModel(), CreatePlanViewModelContract {
+    override var exerciseListToBeSaved = mutableStateListOf<ViewModelExercise>()
         private set
-    var exerciseToAdd = mutableStateOf(ViewModelExercise(name = "", sets = 0))
+    override var exerciseToAdd = mutableStateOf(ViewModelExercise(name = "", sets = 0))
         private set
-    var planName = mutableStateOf("")
-        private set
-
-    var saveState = mutableStateOf<SavingPlanState>(SavingPlanState.Idle)
+    override var planName = mutableStateOf("")
         private set
 
-    fun resetErrorState() {
+    override var saveState = mutableStateOf<SavingPlanState>(SavingPlanState.Idle)
+        private set
+
+    override fun resetErrorState() {
         saveState.value = SavingPlanState.Idle
     }
 
-    fun addExercise(exercise: ViewModelExercise) {
+    override fun addExercise(exercise: ViewModelExercise) {
         exerciseListToBeSaved.add(exercise)
     }
 
-    fun updateExercise(updatedExercise: ViewModelExercise) {
+    override fun updateExercise(updatedExercise: ViewModelExercise) {
         exerciseToAdd.value = updatedExercise
     }
 
-    fun updatePlanName(newPlanName: String) {
+    override fun updatePlanName(newPlanName: String) {
         planName.value = newPlanName
     }
 
-    fun savePlanToDatabase() {
+    override fun savePlanToDatabase() {
         saveState.value = SavingPlanState.Saving
         viewModelScope.launch {
             try {
