@@ -1,6 +1,5 @@
 package com.example.GymBuddy.ui.createPlan
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -69,7 +68,6 @@ class CreatePlanViewModel(
                     } catch (e: Exception) {
                         val error = "Failed to add exercise: ${e.message}"
                         saveState.value = SavingPlanState.Error(error)
-                        Log.e("DatabaseError", error)
 
                         return@launch
                     }
@@ -79,7 +77,6 @@ class CreatePlanViewModel(
             } catch (e: Exception) {
                 val error = "Failed to add plan to database: ${e.message}"
                 saveState.value = SavingPlanState.Error(error)
-                Log.e("DatabaseError", error)
             }
         }
     }

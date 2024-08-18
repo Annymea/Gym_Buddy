@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.material3)
 
     testImplementation(libs.junit)
+    testImplementation("org.testng:testng:6.9.6")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -77,7 +78,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 
     // Room
     val roomVersion = "2.6.1"
@@ -97,6 +99,6 @@ dependencies {
     // Testing
     // JUnit für Unit-Tests
     testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("io.mockk:mockk:1.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
 }
