@@ -8,11 +8,15 @@ import com.example.GymBuddy.data.WorkoutRepository
 import com.example.GymBuddy.data.localdatabase.Plan
 import kotlinx.coroutines.launch
 
+interface PlanListViewModelContract {
+    val planList: List<Plan>
+}
+
 class PlanListViewModel(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
+) : ViewModel(), PlanListViewModelContract {
     private var _planList: SnapshotStateList<Plan> = mutableStateListOf()
-    val planList: List<Plan>
+    override val planList: List<Plan>
         get() = _planList
 
     init {
