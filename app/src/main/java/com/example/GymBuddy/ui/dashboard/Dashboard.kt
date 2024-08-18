@@ -8,9 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.GymBuddy.R
-import com.example.GymBuddy.ui.createPlan.CreatePlanViewModel
 import com.example.GymBuddy.ui.theme.Gym_BuddyTheme
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun Dashboard(
@@ -26,7 +24,6 @@ fun Dashboard(
 @Composable
 fun FirstButtons(
     modifier: Modifier,
-    createPlanViewModel: CreatePlanViewModel = koinViewModel<CreatePlanViewModel>(),
     onCreatePlanButtonClicked: () -> Unit
 ) {
     Column(modifier = modifier) {
