@@ -10,7 +10,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PlanList(
     modifier: Modifier = Modifier,
-    planListViewModel: PlanListViewModel = koinViewModel<PlanListViewModel>(),
+    planListViewModel: PlanListViewModelContract = koinViewModel<PlanListViewModel>(),
     onCreateNewPlan: () -> Unit
 ) {
     Column(modifier = modifier) {
