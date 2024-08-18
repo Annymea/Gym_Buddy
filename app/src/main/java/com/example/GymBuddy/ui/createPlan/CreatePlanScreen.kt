@@ -24,7 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CreatePlan(
     modifier: Modifier = Modifier,
-    createPlanViewModel: CreatePlanViewModel = koinViewModel<CreatePlanViewModel>(),
+    createPlanViewModel: CreatePlanViewModelContract = koinViewModel<CreatePlanViewModel>(),
     onPlanSaved: () -> Unit
 ) {
     var showErrorToast by remember { mutableStateOf(false) }
@@ -36,7 +36,7 @@ fun CreatePlan(
                 onValueChange = { newPlanName ->
                     createPlanViewModel.updatePlanName(newPlanName)
                 },
-                label = { Text("Exercise name") }
+                label = { Text("Plan name") }
             )
             when (createPlanViewModel.saveState.value) {
                 is SavingPlanState.Error, SavingPlanState.Idle -> {
@@ -67,7 +67,10 @@ fun CreatePlan(
 
         AddExercise(
             onExerciseChange = { createPlanViewModel.updateExercise(it) },
-            onAddNewExercise = { createPlanViewModel.addExercise(createPlanViewModel.exerciseToAdd.value) },
+            onAddNewExercise = {
+                createPlanViewModel.addExercise(createPlanViewModel.exerciseToAdd.value)
+                createPlanViewModel.updateExercise(ViewModelExercise("", 0))
+            },
             exerciseToAdd = createPlanViewModel.exerciseToAdd.value
         )
 
