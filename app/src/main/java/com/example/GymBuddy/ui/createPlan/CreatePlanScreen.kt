@@ -93,6 +93,7 @@ fun CreatePlan(
                 Toast.LENGTH_SHORT
             ).show()
             showErrorToast = false
+            createPlanViewModel.resetErrorState()
         }
     }
 }
