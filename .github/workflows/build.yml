@@ -41,7 +41,7 @@ jobs:
       - name: Assemble APK
         run: ./gradlew assembleDebug
 
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     needs: build
 
@@ -55,11 +55,42 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Run Unit Tests
         run: ./gradlew test
 
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Start Android Emulator
+        uses: android-actions/emulator-runner@v2
+        with:
+          api-level: 30
+          target: default
+          arch: x86_64
+          profile: Nexus_5X
+          avd-name: test
+          emulator-options: "-no-window -no-audio -no-snapshot"
+
+      - name: Wait for Android Emulator to boot
+        run: adb wait-for-device
+
       - name: Run Instrumentation Tests
         run: ./gradlew connectedDebugAndroidTest
+
+      - name: Stop Emulator
+        if: success() || failure()
+        run: adb -s emulator-5554 emu kill
