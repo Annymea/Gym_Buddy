@@ -1,5 +1,15 @@
 .DS_Store
 .idea/shelf
+.idea/
+/.idea/shelf
+/.idea/workspace.xml
+/.idea/tasks.xml
+/.idea/dictionaries
+/.idea/libraries/
+/.idea/modules.xml
+/.idea/.name
+/.idea/vcs.xml
+/.idea/jsLibraryMappings.xml
 /confluence/target
 /dependencies/repo
 /android.tests.dependencies
