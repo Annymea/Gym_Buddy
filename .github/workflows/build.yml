@@ -55,6 +55,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Run Unit Tests
         run: ./gradlew test
 
@@ -76,10 +79,10 @@ jobs:
         uses: android-actions/setup-android@v2
 
       - name: Start Android Emulator
-        uses: android-actions/emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
-          target: default
+          target: google_apis
           arch: x86_64
           profile: Nexus_5X
           avd-name: test
@@ -92,5 +95,5 @@ jobs:
         run: ./gradlew connectedDebugAndroidTest
 
       - name: Stop Emulator
-        if: success() || failure()
+        if: success() || failure()  # Dieser Befehl stellt sicher, dass der Emulator gestoppt wird, selbst wenn die Tests fehlschlagen
         run: adb -s emulator-5554 emu kill
