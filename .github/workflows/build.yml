@@ -87,13 +87,4 @@ jobs:
           profile: Nexus_5X
           avd-name: test
           emulator-options: "-no-window -no-audio -no-snapshot"
-
-      - name: Wait for Android Emulator to boot
-        run: adb wait-for-device
-
-      - name: Run Instrumentation Tests
-        run: ./gradlew connectedDebugAndroidTest
-
-      - name: Stop Emulator
-        if: success() || failure()  # Dieser Befehl stellt sicher, dass der Emulator gestoppt wird, selbst wenn die Tests fehlschlagen
-        run: adb -s emulator-5554 emu kill
+          script: ./gradlew connectedDebugAndroidTest
