@@ -86,5 +86,18 @@ jobs:
           arch: x86_64
           profile: pixel
           avd-name: test
-          emulator-options: "-no-window -no-audio -no-snapshot"
-          script: ./gradlew connectedDebugAndroidTest
+          emulator-options: "-no-window -no-audio -no-snapshot -gpu swiftshader_indirect"
+          script: |
+            ./gradlew connectedDebugAndroidTest
+
+      - name: Wait for ADB to connect
+        run: |
+          adb wait-for-device
+          until adb shell getprop sys.boot_completed | grep -m 1 '1'; do sleep 1; done
+
+      - name: Run Instrumentation Tests
+        run: ./gradlew connectedDebugAndroidTest
+
+      - name: Stop Emulator
+        if: success() || failure()
+        run: adb -s emulator-5554 emu kill || true
