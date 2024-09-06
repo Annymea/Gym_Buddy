@@ -7,6 +7,8 @@ import com.example.GymBuddy.data.localdatabase.LocalDataRepository
 import com.example.GymBuddy.data.localdatabase.WorkoutDatabase
 import com.example.GymBuddy.ui.createPlan.CreatePlanViewModel
 import com.example.GymBuddy.ui.planList.PlanListViewModel
+import com.example.GymBuddy.ui.runningWorkout.RunningWorkoutViewModel
+import com.example.GymBuddy.ui.startWorkout.StartWorkoutViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
@@ -45,5 +47,13 @@ val appModule = module {
 
     viewModel {
         PlanListViewModel(workoutRepository = get())
+    }
+
+    viewModel {
+        StartWorkoutViewModel(workoutRepository = get())
+    }
+
+    viewModel { (workoutId: String) ->
+        RunningWorkoutViewModel(workoutRepository = get(), workoutId = workoutId)
     }
 }

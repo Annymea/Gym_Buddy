@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.GymBuddy.ui.createPlan.CreatePlan
 import com.example.GymBuddy.ui.dashboard.Dashboard
 import com.example.GymBuddy.ui.planList.PlanList
+import com.example.GymBuddy.ui.runningWorkout.RunningWorkout
+import com.example.GymBuddy.ui.startWorkout.StartWorkout
 
 @Composable
 fun AppNavigation(
@@ -24,6 +26,9 @@ fun AppNavigation(
                 modifier = modifier,
                 onCreatePlanButtonClicked = {
                     navController.navigate("plan_list")
+                },
+                onStartTrainingButtonClicked = {
+                    navController.navigate("start_workout")
                 }
             )
         }
@@ -42,6 +47,27 @@ fun AppNavigation(
                     navController.navigate("create_plan")
                 }
             )
+        }
+        composable("start_workout") {
+            StartWorkout(
+                modifier = modifier,
+                onSelectWorkout = { workoutId: String ->
+                    navController.navigate(
+                        "running_workout/{workoutId}"
+                            .replace(
+                                oldValue = "{workoutId}",
+                                newValue = workoutId
+                            )
+                    )
+                }
+            )
+        }
+
+        composable("running_workout/{workoutId}") { backStackEntry ->
+            val workoutId = backStackEntry.arguments?.getString("workoutId")
+            workoutId?.let { id ->
+                RunningWorkout(workoutId = id, modifier = modifier)
+            }
         }
     }
 }

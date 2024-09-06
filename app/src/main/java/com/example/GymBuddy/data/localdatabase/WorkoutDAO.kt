@@ -14,6 +14,9 @@ interface WorkoutDAO {
     @Query("SELECT * FROM exercises")
     fun getAllExerciseNames(): Flow<List<Exercise>>
 
+    @Query("SELECT * FROM plans WHERE id = :planId")
+    fun getPlanById(planId: Long): Flow<Plan>
+
     @Query("SELECT * FROM executablePlans WHERE plan_id = :planId")
     fun getExecutablePlanById(planId: Long): Flow<List<ExecutablePlan>>
 
