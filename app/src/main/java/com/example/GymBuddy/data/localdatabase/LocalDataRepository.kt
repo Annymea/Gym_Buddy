@@ -14,6 +14,10 @@ class LocalDataRepository(
         return workoutDAO.getAllPlanNames()
     }
 
+    override suspend fun getPlanById(planId: Long): Flow<Plan> {
+        return workoutDAO.getPlanById(planId)
+    }
+
     override suspend fun getExecutablePlanById(planId: Long): Flow<List<ExecutablePlan>> {
         return workoutDAO.getExecutablePlanById(planId)
     }

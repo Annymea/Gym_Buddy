@@ -17,7 +17,7 @@ fun PlanList(
         if (planListViewModel.planList.isEmpty()) {
             Text(text = "Hier könnten ihre Listen stehen", modifier = modifier)
         } else {
-            Text(text = "Pläne", modifier = modifier)
+            Text(text = "Pläne", modifier = Modifier)
             planListViewModel.planList.forEach {
                 Text(text = it.planName)
             }

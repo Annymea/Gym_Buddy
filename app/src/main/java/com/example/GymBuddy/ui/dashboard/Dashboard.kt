@@ -13,18 +13,21 @@ import com.example.GymBuddy.ui.theme.Gym_BuddyTheme
 @Composable
 fun Dashboard(
     modifier: Modifier,
-    onCreatePlanButtonClicked: () -> Unit
+    onCreatePlanButtonClicked: () -> Unit,
+    onStartTrainingButtonClicked: () -> Unit
 ) {
     FirstButtons(
         modifier = modifier,
-        onCreatePlanButtonClicked = onCreatePlanButtonClicked
+        onCreatePlanButtonClicked = onCreatePlanButtonClicked,
+        onStartTrainingButtonClicked = onStartTrainingButtonClicked
     )
 }
 
 @Composable
 fun FirstButtons(
     modifier: Modifier,
-    onCreatePlanButtonClicked: () -> Unit
+    onCreatePlanButtonClicked: () -> Unit,
+    onStartTrainingButtonClicked: () -> Unit
 ) {
     Column(modifier = modifier) {
         Text(text = "Dashboard Content")
@@ -35,7 +38,11 @@ fun FirstButtons(
         ) {
             Text(text = stringResource(R.string.create_plan))
         }
-        Button(onClick = { /*TODO*/ }) {
+        Button(
+            onClick = {
+                onStartTrainingButtonClicked()
+            }
+        ) {
             Text(text = stringResource(R.string.start_training))
         }
     }
@@ -45,6 +52,10 @@ fun FirstButtons(
 @Composable
 fun GreetingPreview() {
     Gym_BuddyTheme {
-        FirstButtons(Modifier, onCreatePlanButtonClicked = {})
+        FirstButtons(
+            Modifier,
+            onCreatePlanButtonClicked = {},
+            onStartTrainingButtonClicked = {}
+        )
     }
 }

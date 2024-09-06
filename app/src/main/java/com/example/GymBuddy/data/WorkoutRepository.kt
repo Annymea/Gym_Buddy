@@ -11,6 +11,7 @@ interface WorkoutRepository {
     // get
     suspend fun getAllExerciseNames(): Flow<List<Exercise>>
     suspend fun getAllPlanNames(): Flow<List<Plan>>
+    suspend fun getPlanById(planId: Long): Flow<Plan>
     suspend fun getExecutablePlanById(planId: Long): Flow<List<ExecutablePlan>>
     suspend fun getExecutionsById(exerciseId: Long): Flow<List<Execution>>
     suspend fun getExecutablePlanWithDetailsByPlanId(planId: Long): Flow<List<ExecutablePlanWithDetails>>
