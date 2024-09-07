@@ -15,7 +15,7 @@ import com.example.GymBuddy.ui.startWorkout.StartWorkout
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
@@ -66,7 +66,13 @@ fun AppNavigation(
         composable("running_workout/{workoutId}") { backStackEntry ->
             val workoutId = backStackEntry.arguments?.getString("workoutId")
             workoutId?.let { id ->
-                RunningWorkout(workoutId = id, modifier = modifier)
+                RunningWorkout(
+                    workoutId = id,
+                    modifier = modifier,
+                    saveWorkout = {
+                        navController.navigate("dashboard")
+                    }
+                )
             }
         }
     }
