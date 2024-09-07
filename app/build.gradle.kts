@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
+
     // Compose libraries with versions managed by composeBom
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -83,6 +84,7 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
     implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.compose.material:material:1.7.0")
     // Room
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
