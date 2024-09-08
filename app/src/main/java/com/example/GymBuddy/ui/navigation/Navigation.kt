@@ -1,6 +1,7 @@
 package com.example.GymBuddy.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Scaffold
@@ -36,6 +37,7 @@ fun AppNavigation(
     )
 
     Scaffold(
+        modifier = modifier.systemBarsPadding(),
         bottomBar = {
             BottomNavigationBar(navController, items)
         }
@@ -52,7 +54,9 @@ private fun BottomNavigationBar(
     navController: NavHostController,
     items: List<ScreenRoutes>
 ) {
-    BottomNavigation {
+    BottomNavigation(
+        // modifier = Modifier.navigationBarsPadding()
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { screen ->
