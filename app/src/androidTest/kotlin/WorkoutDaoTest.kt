@@ -296,7 +296,7 @@ class WorkoutDaoTest {
         exerciseId: Long = 1,
         reps: Int = 10,
         weight: Int = 200,
-        date: LocalDate = LocalDate.parse("2018-12-31"),
+        date: Long = LocalDate.now().toEpochDay(),
     )
             : Execution =
         Execution(id, exerciseId, weight, reps, date)
