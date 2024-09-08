@@ -33,7 +33,7 @@ android {
         }
     }
     tasks.withType<JavaCompile> {
-        dependsOn("ktlintCheck")
+        dependsOn("ktlintFormat")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-
 
     // Compose libraries with versions managed by composeBom
     implementation(libs.androidx.ui)
