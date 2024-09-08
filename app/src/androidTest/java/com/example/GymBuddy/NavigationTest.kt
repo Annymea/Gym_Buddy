@@ -7,6 +7,7 @@ import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.GymBuddy.ui.navigation.AppNavigation
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
