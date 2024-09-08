@@ -2,4 +2,12 @@
     <string name="app_name">Gym_Buddy</string>
     <string name="create_plan">Plan erstellen</string>
     <string name="start_training">Training starten</string>
+    <string name="workoutIdArgument">workoutId</string>
+    <string name="startWorkoutRoute">start_workout</string>
+    <string name="planListRoute">plan_list</string>
+    <string name="createPlanRoute">create_plan</string>
+    <string name="dashboardRoute">dashboard</string>
+    <string name="runningWorkoutRoute">running_workout/{workoutId}</string>
+    <string name="create_workout">Create workout</string>
+    <string name="run_workout">Run workout</string>
 </resources>
