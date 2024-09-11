@@ -1,5 +1,6 @@
 package com.example.GymBuddy.ui.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.BottomNavigation
@@ -161,7 +162,8 @@ private fun NavGraphBuilder.createWorkoutNavigation(
             CreatePlan(
                 modifier = modifier,
                 onPlanSaved = {
-                    navController.navigate(ScreenRoutes.PlanList.route)
+                    Log.i("Navigation", "Plan saved")
+                    navController.popBackStack(ScreenRoutes.PlanList.route, false)
                 }
             )
         }
