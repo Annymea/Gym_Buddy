@@ -1,7 +1,5 @@
 package com.example.GymBuddy
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -68,12 +66,5 @@ class PlanListScreenTest {
 }
 
 class FakePlanListViewModel(plans: List<Plan>) : PlanListViewModelContract {
-    private val _planList: SnapshotStateList<Plan> = mutableStateListOf()
-
-    init {
-        _planList.addAll(plans)
-    }
-
-    override val planList: List<Plan>
-        get() = _planList
+    override val planList: List<Plan> = plans
 }
