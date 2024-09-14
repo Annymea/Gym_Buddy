@@ -15,7 +15,7 @@ import com.example.GymBuddy.ui.createPlan.ViewModelExercise
 import org.junit.Rule
 import org.junit.Test
 
-class CreatePlanScreenTest<CreatePlanViewModel> {
+class CreatePlanScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
