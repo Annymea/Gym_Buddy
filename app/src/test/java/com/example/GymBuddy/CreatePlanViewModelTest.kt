@@ -1,13 +1,11 @@
 package com.example.GymBuddy
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.GymBuddy.data.WorkoutRepository
 import com.example.GymBuddy.data.localdatabase.Exercise
 import com.example.GymBuddy.data.localdatabase.Plan
 import com.example.GymBuddy.ui.createPlan.CreatePlanViewModel
 import com.example.GymBuddy.ui.createPlan.SavingPlanState
 import com.example.GymBuddy.ui.createPlan.ViewModelExercise
-import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
@@ -22,7 +20,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,14 +30,10 @@ class CreatePlanViewModelTest {
 
     private lateinit var createPlanViewModel: CreatePlanViewModel
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
-
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setUp() {
-        MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(testDispatcher)
         workoutRepository = mockk()
         createPlanViewModel = CreatePlanViewModel(workoutRepository)
