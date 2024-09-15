@@ -22,12 +22,6 @@ jobs:
       - name: Run lint
         run: ./gradlew lintDebug
 
-      - name: Upload html test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint.html
-          path: app/build/reports/lint-results-debug.html
-
   unit-test:
     name: Perform unit testing
     runs-on: ubuntu-latest
@@ -47,35 +41,23 @@ jobs:
       - name: Run tests
         run: ./gradlew test
 
-      - name: Upload test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit_test_report
-          path: app/build/reports/test/testDebugUnitTest/
-
-  instrumentation-test:
-    name: Perform instrumentation testing
-    runs-on: macos-latest
+  android_tests:
+    name: Perform android-test
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Java JDK 17
+      - name: Grant permissions
+        run: chmod +x gradlew
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: 17
 
-      - name: Start Android Emulator and Run Espresso Tests
+      - name: Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
-          target: google_apis
-          arch: x86_64
-          script: ./gradlew connectedCheck
-
-      - name: Upload Instrumentation Test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: instrumentation_test_report
-          path: app/build/reports/androidTests/connected
+          api-level: 29
+          script: ./gradlew connectedDebugAndroidTest
