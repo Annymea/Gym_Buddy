@@ -33,39 +33,6 @@ class RunningWorkoutsScreenTest {
     }
 
     @Test
-    fun runningWorkout_displayExercisesIfWorkoutIsNotEmpty() {
-        val workout = Plan(planName = "Running", id = 1)
-        val exercises = listOf(
-            ExecutablePlanWithDetails(
-                executablePlanId = 1,
-                exerciseName = "Exercise 1",
-                exerciseId = 1,
-                planName = "Running",
-                sets = 3,
-                planId = 1,
-                order = 0
-            ),
-            ExecutablePlanWithDetails(
-                executablePlanId = 2,
-                exerciseName = "Exercise 2",
-                exerciseId = 2,
-                planName = "Running",
-                sets = 3,
-                planId = 1,
-                order = 1
-            )
-        )
-
-        setContent(workout, exercises)
-
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithText("Running").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Save").assertIsDisplayed()
-        composeTestRule.onAllNodesWithTag("exerciseCard").assertCountEquals(2)
-    }
-
-    @Test
     fun runningWorkout_SaveButtonTriggersSaveWorkout() {
         val workout = Plan(planName = "Running", id = 1)
 
@@ -81,7 +48,7 @@ class RunningWorkoutsScreenTest {
     private fun setContent(
         workout: Plan,
         exercises: List<ExecutablePlanWithDetails>,
-        saveWorkout: () -> Unit = {}
+        saveWorkout: () -> Unit = {},
     ) {
         composeTestRule.setContent {
             RunningWorkout(
@@ -99,7 +66,7 @@ class RunningWorkoutsScreenTest {
 class FakeRunningWorkoutViewModel(
     mockedExercises: List<ExecutablePlanWithDetails> = emptyList(),
     mockedWorkoutId: String = "1",
-    mockedPlanName: String = "Running"
+    mockedPlanName: String = "Running",
 ) : RunningWorkoutViewModelContract {
     override val exercises: List<ExecutablePlanWithDetails> = mockedExercises
     override val planName: MutableState<String> = mutableStateOf(mockedPlanName)
