@@ -114,13 +114,6 @@ class NavigationTest {
         composeTestRule.onNodeWithText("Dashboard Content").assertIsDisplayed()
     }
 
-    @Test
-    fun appNavigation_navigateToDashboard() {
-        composeTestRule.onNodeWithText("Run workout").performClick()
-        composeTestRule.onNodeWithText("Dashboard").performClick()
-        composeTestRule.onNodeWithText("Dashboard Content").assertIsDisplayed()
-    }
-
     /*Create workout navigation test*/
     @Test
     fun appNavigation_navigateToWorkoutList() {
