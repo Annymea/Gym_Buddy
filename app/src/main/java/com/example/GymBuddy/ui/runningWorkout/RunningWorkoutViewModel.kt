@@ -19,17 +19,26 @@ data class ExerciseExecution(
     val exerciseId: Long
 )
 
+interface RunningWorkoutViewModelContract {
+    val exercises: List<ExecutablePlanWithDetails>
+    val planName: MutableState<String>
+
+    fun getExecutions(exerciseId: Long): List<ExerciseExecution>
+    fun addOrUpdateExecution(execution: ExerciseExecution)
+    fun saveExecutionsToRepository()
+}
+
 class RunningWorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
     private val workoutId: String
-) : ViewModel() {
+) : ViewModel(), RunningWorkoutViewModelContract {
     private var _exercises: SnapshotStateList<ExecutablePlanWithDetails> =
         mutableStateListOf()
-    val exercises: List<ExecutablePlanWithDetails>
+    override val exercises: List<ExecutablePlanWithDetails>
         get() = _exercises
 
     private var _planName: MutableState<String> = mutableStateOf("")
-    val planName: MutableState<String>
+    override val planName: MutableState<String>
         get() = _planName
 
     private var _executions: SnapshotStateList<ExerciseExecution> = mutableStateListOf()
@@ -45,11 +54,11 @@ class RunningWorkoutViewModel(
         }
     }
 
-    fun getExecutions(exerciseId: Long): List<ExerciseExecution> {
+    override fun getExecutions(exerciseId: Long): List<ExerciseExecution> {
         return _executions.filter { it.exerciseId == exerciseId }
     }
 
-    fun addOrUpdateExecution(execution: ExerciseExecution) {
+    override fun addOrUpdateExecution(execution: ExerciseExecution) {
         val index = _executions.indexOfFirst {
             it.exerciseId == execution.exerciseId && it.set == execution.set
         }
@@ -61,7 +70,7 @@ class RunningWorkoutViewModel(
         }
     }
 
-    fun saveExecutionsToRepository() {
+    override fun saveExecutionsToRepository() {
         viewModelScope.launch {
             _executions.forEach {
                 workoutRepository.insertExecution(

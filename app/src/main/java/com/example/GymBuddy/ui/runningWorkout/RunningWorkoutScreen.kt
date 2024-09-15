@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -17,7 +18,7 @@ import org.koin.core.parameter.parametersOf
 fun RunningWorkout(
     workoutId: String,
     modifier: Modifier = Modifier,
-    planListViewModel: RunningWorkoutViewModel =
+    planListViewModel: RunningWorkoutViewModelContract =
         koinViewModel<RunningWorkoutViewModel>(parameters = {
             parametersOf(workoutId)
         }),
@@ -29,6 +30,7 @@ fun RunningWorkout(
         LazyColumn {
             items(planListViewModel.exercises) { exercise ->
                 ExerciseCard(
+                    modifier = Modifier.testTag("exerciseCard"),
                     exerciseName = exercise.exerciseName,
                     exerciseId = exercise.exerciseId,
                     sets = exercise.sets,
