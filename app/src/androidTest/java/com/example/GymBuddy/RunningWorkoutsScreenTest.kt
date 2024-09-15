@@ -58,6 +58,8 @@ class RunningWorkoutsScreenTest {
 
         setContent(workout, exercises)
 
+        composeTestRule.waitForIdle()
+
         composeTestRule.onNodeWithText("Running").assertIsDisplayed()
         composeTestRule.onNodeWithText("Save").assertIsDisplayed()
         composeTestRule.onAllNodesWithTag("exerciseCard").assertCountEquals(2)

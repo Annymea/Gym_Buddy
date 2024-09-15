@@ -148,7 +148,9 @@ class NavigationTest {
     @Test
     fun appNavigation_navigateToRunningWorkout() {
         composeTestRule.onNodeWithText("Run workout").performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("Plan 1").performClick()
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("Plan 1").assertIsDisplayed()
         composeTestRule.onNodeWithText("Save").assertIsDisplayed()
@@ -157,8 +159,13 @@ class NavigationTest {
     @Test
     fun appNavigation_navigateToDashboardAfterSavingWorkout() {
         composeTestRule.onNodeWithText("Run workout").performClick()
+        composeTestRule.waitForIdle()
+
         composeTestRule.onNodeWithText("Plan 1").performClick()
+        composeTestRule.waitForIdle()
+
         composeTestRule.onNodeWithText("Save").performClick()
+        composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithText("Dashboard Content").assertIsDisplayed()
     }
