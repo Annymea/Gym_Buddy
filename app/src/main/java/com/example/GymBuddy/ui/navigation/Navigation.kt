@@ -3,8 +3,11 @@ package com.example.GymBuddy.ui.navigation
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,14 +58,12 @@ private fun BottomNavigationBar(
     navController: NavHostController,
     items: List<ScreenRoutes>
 ) {
-    BottomNavigation(
-        // modifier = Modifier.navigationBarsPadding()
-    ) {
+    NavigationBar() {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { screen ->
-            BottomNavigationItem(
-                icon = { },
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Home, contentDescription = null) },
                 label = { Text(text = stringResource(screen.resourceId)) },
                 selected = currentDestination?.hierarchy?.any
                 { it.route == screen.route } == true,
