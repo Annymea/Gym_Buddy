@@ -55,7 +55,6 @@ class RunningWorkoutsScreenTest {
                 workoutId = "1",
                 planListViewModel = FakeRunningWorkoutViewModel(
                     mockedExercises = exercises,
-                    mockedWorkoutId = workout.planName
                 ),
                 saveWorkout = { saveWorkout() }
             )
@@ -65,7 +64,6 @@ class RunningWorkoutsScreenTest {
 
 class FakeRunningWorkoutViewModel(
     mockedExercises: List<ExecutablePlanWithDetails> = emptyList(),
-    mockedWorkoutId: String = "1",
     mockedPlanName: String = "Running",
 ) : RunningWorkoutViewModelContract {
     override val exercises: List<ExecutablePlanWithDetails> = mockedExercises
