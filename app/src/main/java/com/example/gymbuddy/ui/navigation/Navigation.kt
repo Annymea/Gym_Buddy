@@ -3,8 +3,6 @@ package com.example.gymbuddy.ui.navigation
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -35,9 +33,9 @@ fun AppNavigation(
     navController: NavHostController = rememberNavController()
 ) {
     val items = listOf(
-        ScreenRoutes.Dashboard,
-        ScreenRoutes.CreateWorkoutGraph,
-        ScreenRoutes.RunWorkoutGraph
+        NavigationRoutes.DashboardGraph,
+        NavigationRoutes.CreateWorkoutGraph,
+        NavigationRoutes.RunWorkoutGraph
     )
 
     Scaffold(
@@ -56,22 +54,28 @@ fun AppNavigation(
 @Composable
 private fun BottomNavigationBar(
     navController: NavHostController,
-    items: List<ScreenRoutes>
+    items: List<NavigationRoutes>
 ) {
     NavigationBar() {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        items.forEach { screen ->
+        items.forEach { navigationRoute ->
             NavigationBarItem(
-                icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                label = { Text(text = stringResource(screen.resourceId)) },
+                icon = {
+                    Icon(navigationRoute.icon, contentDescription = null)
+                },
+                label = {
+                    Text(text = stringResource(navigationRoute.resourceId))
+                },
                 selected = currentDestination?.hierarchy?.any
-                { it.route == screen.route } == true,
+                { it.route == navigationRoute.route } == true,
                 onClick = {
-                    if (currentDestination?.hierarchy?.any { it.route == screen.route } == true) {
-                        navController.popBackStack(screen.startDestinationRoute(), false)
+                    if (currentDestination?.hierarchy?.any
+                        { it.route == navigationRoute.route } == true
+                    ) {
+                        navController.popBackStack(navigationRoute.startDestination, false)
                     } else {
-                        navController.navigate(screen.route) {
+                        navController.navigate(navigationRoute.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
                                 inclusive = false
                                 saveState = false
@@ -93,7 +97,21 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ScreenRoutes.Dashboard.route
+        startDestination = NavigationRoutes.DashboardGraph.route
+    ) {
+        createWorkoutNavigation(modifier, navController)
+        dashboardNavigation(modifier, navController)
+        runWorkoutNavigation(modifier, navController)
+    }
+}
+
+private fun NavGraphBuilder.dashboardNavigation(
+    modifier: Modifier,
+    navController: NavHostController
+) {
+    navigation(
+        startDestination = ScreenRoutes.Dashboard.route,
+        route = NavigationRoutes.DashboardGraph.route
     ) {
         composable(ScreenRoutes.Dashboard.route) {
             Dashboard(
@@ -106,10 +124,6 @@ fun Navigation(
                 }
             )
         }
-
-        createWorkoutNavigation(modifier, navController)
-
-        runWorkoutNavigation(modifier, navController)
     }
 }
 
@@ -119,7 +133,7 @@ private fun NavGraphBuilder.runWorkoutNavigation(
 ) {
     navigation(
         startDestination = ScreenRoutes.StartWorkout.route,
-        route = ScreenRoutes.RunWorkoutGraph.route
+        route = NavigationRoutes.RunWorkoutGraph.route
     ) {
         composable(ScreenRoutes.StartWorkout.route) {
             StartWorkout(
@@ -157,7 +171,7 @@ private fun NavGraphBuilder.createWorkoutNavigation(
 ) {
     navigation(
         startDestination = ScreenRoutes.PlanList.route,
-        route = ScreenRoutes.CreateWorkoutGraph.route
+        route = NavigationRoutes.CreateWorkoutGraph.route
     ) {
         composable(ScreenRoutes.CreatePlan.route) {
             CreatePlan(

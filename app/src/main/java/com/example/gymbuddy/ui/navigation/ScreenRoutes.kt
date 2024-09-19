@@ -1,50 +1,61 @@
 package com.example.gymbuddy.ui.navigation
 
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.gymbuddy.R
 
-sealed class ScreenRoutes(
+sealed class NavigationRoutes(
     val route: String,
-    @StringRes val resourceId: Int
+    val startDestination: String,
+    @StringRes val resourceId: Int,
+    val icon: ImageVector
 ) {
-    open fun startDestinationRoute(): String = route
+    data object CreateWorkoutGraph : NavigationRoutes(
+        "createWorkoutGraph",
+        ScreenRoutes.CreatePlan.route,
+        R.string.create_workout,
+        Icons.Default.Add
+    )
 
+    data object RunWorkoutGraph : NavigationRoutes(
+        "runWorkoutGraph",
+        ScreenRoutes.StartWorkout.route,
+        R.string.run_workout,
+        Icons.Default.PlayArrow
+    )
+
+    data object DashboardGraph : NavigationRoutes(
+        "dashboardGraph",
+        ScreenRoutes.Dashboard.route,
+        R.string.dashboardRoute,
+        Icons.Default.Menu
+    )
+}
+
+sealed class ScreenRoutes(
+    val route: String
+) {
     data object Dashboard : ScreenRoutes(
-        "dashboard",
-        R.string.dashboardRoute
+        "dashboard"
     )
 
     data object CreatePlan : ScreenRoutes(
-        "createPlan",
-        R.string.createPlanRoute
+        "createPlan"
     )
 
     data object PlanList : ScreenRoutes(
-        "planList",
-        R.string.planListRoute
+        "planList"
     )
 
     data object StartWorkout : ScreenRoutes(
-        "startWorkout",
-        R.string.startWorkoutRoute
+        "startWorkout"
     )
 
     data object RunningWorkout : ScreenRoutes(
-        "runningWorkout/{workoutId}",
-        R.string.runningWorkoutRoute
+        "runningWorkout/{workoutId}"
     )
-
-    data object CreateWorkoutGraph : ScreenRoutes(
-        "createWorkoutGraph",
-        R.string.create_workout
-    ) {
-        override fun startDestinationRoute() = PlanList.route
-    }
-
-    data object RunWorkoutGraph : ScreenRoutes(
-        "startWorkoutGraph",
-        R.string.run_workout
-    ) {
-        override fun startDestinationRoute() = StartWorkout.route
-    }
 }
