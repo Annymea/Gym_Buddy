@@ -3,6 +3,7 @@ package com.example.gymbuddy.ui.navigation
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,6 +33,13 @@ sealed class NavigationRoutes(
         "dashboardGraph",
         ScreenRoutes.Dashboard.route,
         R.string.dashboardRoute,
+        Icons.Default.Home
+    )
+
+    data object WorkoutGraph : NavigationRoutes(
+        "workoutGraph",
+        ScreenRoutes.WorkoutOverview.route,
+        R.string.workouts,
         Icons.Default.Menu
     )
 }
@@ -39,6 +47,10 @@ sealed class NavigationRoutes(
 sealed class ScreenRoutes(
     val route: String
 ) {
+    data object WorkoutOverview : ScreenRoutes(
+        "workoutOverview"
+    )
+
     data object Dashboard : ScreenRoutes(
         "dashboard"
     )

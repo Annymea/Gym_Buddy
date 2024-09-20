@@ -26,6 +26,7 @@ import com.example.gymbuddy.ui.old.dashboard.Dashboard
 import com.example.gymbuddy.ui.old.planList.PlanList
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
+import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 
 @Composable
 fun AppNavigation(
@@ -35,7 +36,8 @@ fun AppNavigation(
     val items = listOf(
         NavigationRoutes.DashboardGraph,
         NavigationRoutes.CreateWorkoutGraph,
-        NavigationRoutes.RunWorkoutGraph
+        NavigationRoutes.RunWorkoutGraph,
+        NavigationRoutes.WorkoutGraph
     )
 
     Scaffold(
@@ -102,6 +104,21 @@ fun Navigation(
         createWorkoutNavigation(modifier, navController)
         dashboardNavigation(modifier, navController)
         runWorkoutNavigation(modifier, navController)
+        workoutNavigation(modifier, navController)
+    }
+}
+
+private fun NavGraphBuilder.workoutNavigation(
+    modifier: Modifier,
+    navController: NavHostController
+) {
+    navigation(
+        startDestination = ScreenRoutes.WorkoutOverview.route,
+        route = NavigationRoutes.WorkoutGraph.route
+    ) {
+        composable(ScreenRoutes.WorkoutOverview.route) {
+            WorkoutOverviewScreen(modifier = modifier)
+        }
     }
 }
 
