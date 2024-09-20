@@ -14,7 +14,7 @@ import com.example.gymbuddy.ui.theme.Gym_BuddyTheme
 fun Dashboard(
     modifier: Modifier,
     onCreatePlanButtonClicked: () -> Unit,
-    onStartTrainingButtonClicked: () -> Unit,
+    onStartTrainingButtonClicked: () -> Unit
 ) {
     FirstButtons(
         modifier = modifier,
@@ -27,7 +27,7 @@ fun Dashboard(
 fun FirstButtons(
     modifier: Modifier,
     onCreatePlanButtonClicked: () -> Unit,
-    onStartTrainingButtonClicked: () -> Unit,
+    onStartTrainingButtonClicked: () -> Unit
 ) {
     Column(modifier = modifier) {
         Text(text = "Dashboard Content")
