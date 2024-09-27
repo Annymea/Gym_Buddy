@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymbuddy.R
+import com.example.gymbuddy.data.localdatabase.Plan
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -38,55 +39,93 @@ fun WorkoutOverviewScreen(
     modifier: Modifier = Modifier,
     workoutOverviewViewModel: WorkoutOverviewViewModelContract =
         koinViewModel<WorkoutOverviewViewModel>(),
-    onCreateWorkout: () -> Unit = {}
+    onCreateWorkout: () -> Unit = {},
 ) {
     val uiState by workoutOverviewViewModel.uiState.collectAsState()
 
+    when (uiState) {
+        is WorkoutOverviewUiState.NoWorkouts -> {
+            CreateFirstWorkout(
+                modifier = modifier,
+                onCreateWorkout = { onCreateWorkout() }
+            )
+        }
+
+        is WorkoutOverviewUiState.Workouts -> {
+            WorkoutOverview(
+                modifier = modifier,
+                workouts = workoutOverviewViewModel.workouts
+            )
+        }
+    }
+}
+
+@Composable
+fun ScreenTitle(
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
+        fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
+        modifier = modifier.padding(24.dp),
+        fontSize = 24.sp,
+        color = MaterialTheme.colorScheme.onBackground,
+        text = stringResource(R.string.workoutOverviewTitle)
+    )
+}
+
+@Composable
+fun CreateFirstWorkout(
+    modifier: Modifier = Modifier,
+    onCreateWorkout: () -> Unit = {},
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
 
     ) {
-        Text(
-            fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
-            fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-            modifier = Modifier.padding(24.dp),
-            fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            text = stringResource(R.string.workoutOverviewTitle)
-        )
+        ScreenTitle()
 
-        when (uiState) {
-            is WorkoutOverviewUiState.NoWorkouts -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    NoWorkouts(
-                        onNewWorkout = { onCreateWorkout() }
-                    )
-                }
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CreateFirstWorkoutButton(
+                onNewWorkout = { onCreateWorkout() }
+            )
+        }
+    }
 
-            is WorkoutOverviewUiState.Workouts -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(workoutOverviewViewModel.workouts) { workout ->
-                        WorkoutCard(workoutTitle = workout.planName)
-                    }
-                }
+}
+
+@Composable
+fun WorkoutOverview(
+    modifier: Modifier = Modifier,
+    workouts: List<Plan> = emptyList(),
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+
+    ) {
+        ScreenTitle()
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(workouts) { workout ->
+                WorkoutCard(workoutTitle = workout.planName)
             }
         }
     }
 }
 
 @Composable
-fun NoWorkouts(
+fun CreateFirstWorkoutButton(
     onNewWorkout: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -107,7 +146,9 @@ fun NoWorkouts(
         }
         Text(
             fontSize = 20.sp,
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .align(Alignment.CenterHorizontally),
             fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
             fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
             color = MaterialTheme.colorScheme.onSurface,
@@ -120,7 +161,7 @@ fun NoWorkouts(
 fun WorkoutCard(
     workoutTitle: String,
     modifier: Modifier = Modifier,
-    onStartWorkout: () -> Unit = {}
+    onStartWorkout: () -> Unit = {},
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -164,5 +205,5 @@ fun WorkoutCardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun NoWorkoutsPreview() {
-    NoWorkouts(onNewWorkout = {})
+    CreateFirstWorkoutButton(onNewWorkout = {})
 }
