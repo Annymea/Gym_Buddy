@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -54,24 +55,11 @@ fun WorkoutOverviewScreen(
         is WorkoutOverviewUiState.Workouts -> {
             WorkoutOverview(
                 modifier = modifier,
-                workouts = workoutOverviewViewModel.workouts
+                workouts = workoutOverviewViewModel.workouts,
+                onCreateWorkout = { onCreateWorkout() }
             )
         }
     }
-}
-
-@Composable
-fun ScreenTitle(
-    modifier: Modifier = Modifier
-) {
-    Text(
-        fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
-        fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-        modifier = modifier.padding(24.dp),
-        fontSize = 24.sp,
-        color = MaterialTheme.colorScheme.onBackground,
-        text = stringResource(R.string.workoutOverviewTitle)
-    )
 }
 
 @Composable
@@ -84,7 +72,7 @@ fun CreateFirstWorkout(
             .fillMaxSize()
 
     ) {
-        ScreenTitle()
+        ScreenTitle(text = stringResource(R.string.workoutOverviewTitle))
 
         Box(
             modifier = Modifier
@@ -101,18 +89,40 @@ fun CreateFirstWorkout(
 @Composable
 fun WorkoutOverview(
     modifier: Modifier = Modifier,
-    workouts: List<Plan> = emptyList()
+    workouts: List<Plan> = emptyList(),
+    onCreateWorkout: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
 
     ) {
-        ScreenTitle()
+        Row {
+            ScreenTitle(
+                modifier = Modifier
+                    .weight(1f),
+                text = stringResource(R.string.workoutOverviewTitle)
+            )
+
+            IconButton(
+                onClick = { onCreateWorkout() },
+                colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary),
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 24.dp)
+            ) {
+                Icon(
+                    modifier = Modifier,
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.add_workout_button_description),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp)
+            contentPadding = PaddingValues(16.dp)
         ) {
             items(workouts) { workout ->
                 WorkoutCard(workoutTitle = workout.planName)

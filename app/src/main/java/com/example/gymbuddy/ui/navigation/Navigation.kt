@@ -26,6 +26,7 @@ import com.example.gymbuddy.ui.old.dashboard.Dashboard
 import com.example.gymbuddy.ui.old.planList.PlanList
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
+import com.example.gymbuddy.ui.workouts.createNew.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 
 @Composable
@@ -119,7 +120,13 @@ private fun NavGraphBuilder.workoutNavigation(
         composable(ScreenRoutes.WorkoutOverview.route) {
             WorkoutOverviewScreen(
                 modifier = modifier,
-                onCreateWorkout = { navController.navigate(ScreenRoutes.CreatePlan.route) }
+                onCreateWorkout = { navController.navigate(ScreenRoutes.WorkoutEditor.route) }
+            )
+        }
+
+        composable(ScreenRoutes.WorkoutEditor.route) {
+            WorkoutEditorScreen(
+                modifier = modifier
             )
         }
     }

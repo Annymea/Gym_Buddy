@@ -70,4 +70,8 @@ sealed class ScreenRoutes(
     data object RunningWorkout : ScreenRoutes(
         "runningWorkout/{workoutId}"
     )
+
+    data object WorkoutEditor : ScreenRoutes(
+        "workoutEditor"
+    )
 }
