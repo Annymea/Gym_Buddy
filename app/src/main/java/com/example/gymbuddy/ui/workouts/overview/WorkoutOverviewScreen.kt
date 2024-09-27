@@ -39,7 +39,7 @@ fun WorkoutOverviewScreen(
     modifier: Modifier = Modifier,
     workoutOverviewViewModel: WorkoutOverviewViewModelContract =
         koinViewModel<WorkoutOverviewViewModel>(),
-    onCreateWorkout: () -> Unit = {},
+    onCreateWorkout: () -> Unit = {}
 ) {
     val uiState by workoutOverviewViewModel.uiState.collectAsState()
 
@@ -62,7 +62,7 @@ fun WorkoutOverviewScreen(
 
 @Composable
 fun ScreenTitle(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Text(
         fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
@@ -77,7 +77,7 @@ fun ScreenTitle(
 @Composable
 fun CreateFirstWorkout(
     modifier: Modifier = Modifier,
-    onCreateWorkout: () -> Unit = {},
+    onCreateWorkout: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -96,13 +96,12 @@ fun CreateFirstWorkout(
             )
         }
     }
-
 }
 
 @Composable
 fun WorkoutOverview(
     modifier: Modifier = Modifier,
-    workouts: List<Plan> = emptyList(),
+    workouts: List<Plan> = emptyList()
 ) {
     Column(
         modifier = modifier
@@ -125,7 +124,7 @@ fun WorkoutOverview(
 @Composable
 fun CreateFirstWorkoutButton(
     onNewWorkout: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -161,7 +160,7 @@ fun CreateFirstWorkoutButton(
 fun WorkoutCard(
     workoutTitle: String,
     modifier: Modifier = Modifier,
-    onStartWorkout: () -> Unit = {},
+    onStartWorkout: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
