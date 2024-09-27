@@ -117,7 +117,10 @@ private fun NavGraphBuilder.workoutNavigation(
         route = NavigationRoutes.WorkoutGraph.route
     ) {
         composable(ScreenRoutes.WorkoutOverview.route) {
-            WorkoutOverviewScreen(modifier = modifier)
+            WorkoutOverviewScreen(
+                modifier = modifier,
+                onCreateWorkout = { navController.navigate(ScreenRoutes.CreatePlan.route) }
+            )
         }
     }
 }

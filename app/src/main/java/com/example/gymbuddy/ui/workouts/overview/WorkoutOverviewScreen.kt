@@ -35,7 +35,8 @@ import org.koin.androidx.compose.koinViewModel
 fun WorkoutOverviewScreen(
     modifier: Modifier = Modifier,
     workoutOverviewViewModel: WorkoutOverviewViewModelContract =
-        koinViewModel<WorkoutOverviewViewModel>()
+        koinViewModel<WorkoutOverviewViewModel>(),
+    onCreateWorkout: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -58,7 +59,7 @@ fun WorkoutOverviewScreen(
                 contentAlignment = Alignment.Center
             ) {
                 NoWorkouts(
-                    onAddWorkout = {}
+                    onNewWorkout = { onCreateWorkout() }
                 )
             }
         } else {
@@ -76,7 +77,7 @@ fun WorkoutOverviewScreen(
 
 @Composable
 fun NoWorkouts(
-    onAddWorkout: () -> Unit,
+    onNewWorkout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -87,7 +88,7 @@ fun NoWorkouts(
                 .size(72.dp)
                 .align(Alignment.CenterHorizontally),
             colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary),
-            onClick = { onAddWorkout() }
+            onClick = { onNewWorkout() }
         ) {
             Icon(
                 modifier = Modifier.fillMaxSize(),
@@ -155,5 +156,5 @@ fun WorkoutCardPreview() {
 @Preview(showBackground = true)
 @Composable
 fun NoWorkoutsPreview() {
-    NoWorkouts(onAddWorkout = {})
+    NoWorkouts(onNewWorkout = {})
 }
