@@ -26,13 +26,13 @@ import com.example.gymbuddy.ui.old.dashboard.Dashboard
 import com.example.gymbuddy.ui.old.planList.PlanList
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
-import com.example.gymbuddy.ui.workouts.createNew.WorkoutEditorScreen
+import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val items = listOf(
         NavigationRoutes.DashboardGraph,
@@ -57,7 +57,7 @@ fun AppNavigation(
 @Composable
 private fun BottomNavigationBar(
     navController: NavHostController,
-    items: List<NavigationRoutes>
+    items: List<NavigationRoutes>,
 ) {
     NavigationBar() {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -96,7 +96,7 @@ private fun BottomNavigationBar(
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     NavHost(
         navController = navController,
@@ -111,7 +111,7 @@ fun Navigation(
 
 private fun NavGraphBuilder.workoutNavigation(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     navigation(
         startDestination = ScreenRoutes.WorkoutOverview.route,
@@ -134,7 +134,7 @@ private fun NavGraphBuilder.workoutNavigation(
 
 private fun NavGraphBuilder.dashboardNavigation(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     navigation(
         startDestination = ScreenRoutes.Dashboard.route,
@@ -156,7 +156,7 @@ private fun NavGraphBuilder.dashboardNavigation(
 
 private fun NavGraphBuilder.runWorkoutNavigation(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     navigation(
         startDestination = ScreenRoutes.StartWorkout.route,
@@ -194,7 +194,7 @@ private fun NavGraphBuilder.runWorkoutNavigation(
 
 private fun NavGraphBuilder.createWorkoutNavigation(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     navigation(
         startDestination = ScreenRoutes.PlanList.route,
