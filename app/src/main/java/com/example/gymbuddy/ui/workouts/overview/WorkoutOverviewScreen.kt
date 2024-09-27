@@ -22,6 +22,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +40,8 @@ fun WorkoutOverviewScreen(
         koinViewModel<WorkoutOverviewViewModel>(),
     onCreateWorkout: () -> Unit = {}
 ) {
+    val uiState by workoutOverviewViewModel.uiState.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -52,23 +56,27 @@ fun WorkoutOverviewScreen(
             text = stringResource(R.string.workoutOverviewTitle)
         )
 
-        if (workoutOverviewViewModel.workouts.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                NoWorkouts(
-                    onNewWorkout = { onCreateWorkout() }
-                )
+        when (uiState) {
+            is WorkoutOverviewUiState.NoWorkouts -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    NoWorkouts(
+                        onNewWorkout = { onCreateWorkout() }
+                    )
+                }
             }
-        } else {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(workoutOverviewViewModel.workouts) { workout ->
-                    WorkoutCard(workoutTitle = workout.planName)
+
+            is WorkoutOverviewUiState.Workouts -> {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(workoutOverviewViewModel.workouts) { workout ->
+                        WorkoutCard(workoutTitle = workout.planName)
+                    }
                 }
             }
         }
