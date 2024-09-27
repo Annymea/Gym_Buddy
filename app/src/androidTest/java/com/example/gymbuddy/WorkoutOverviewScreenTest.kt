@@ -5,7 +5,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.example.gymbuddy.data.localdatabase.Plan
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
+import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewUiState
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModelContract
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,4 +46,18 @@ class WorkoutOverviewScreenTest {
 }
 
 class FakeWorkoutOverviewViewModel(override val workouts: List<Plan>) :
-    WorkoutOverviewViewModelContract
+    WorkoutOverviewViewModelContract {
+    override val uiState: StateFlow<WorkoutOverviewUiState>
+        get() = _uiState
+
+    private val _uiState =
+        MutableStateFlow<WorkoutOverviewUiState>(WorkoutOverviewUiState.NoWorkouts)
+
+    init {
+        if (workouts.isNotEmpty()) {
+            _uiState.value = WorkoutOverviewUiState.Workouts
+        } else {
+            _uiState.value = WorkoutOverviewUiState.NoWorkouts
+        }
+    }
+}
