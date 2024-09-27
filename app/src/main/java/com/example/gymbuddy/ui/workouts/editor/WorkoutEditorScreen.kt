@@ -1,4 +1,4 @@
-package com.example.gymbuddy.ui.workouts.createNew
+package com.example.gymbuddy.ui.workouts.editor
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +8,7 @@ import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 
 @Composable
 fun WorkoutEditorScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(text = "Workout Editor")
