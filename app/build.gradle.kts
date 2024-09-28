@@ -99,6 +99,8 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    kapt(libs.androidx.room.compiler)
 }
 
 ktlint {
