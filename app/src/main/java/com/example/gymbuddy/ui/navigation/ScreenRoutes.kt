@@ -39,7 +39,7 @@ sealed class NavigationRoutes(
     data object WorkoutGraph : NavigationRoutes(
         "workoutGraph",
         ScreenRoutes.WorkoutOverview.route,
-        R.string.workouts,
+        R.string.bottom_navigation_workouts_button_text,
         Icons.Default.Menu
     )
 }

@@ -68,14 +68,15 @@ fun CreateFirstWorkout(
     onCreateWorkout: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
-
     ) {
-        ScreenTitle(text = stringResource(R.string.workoutOverviewTitle))
+        ScreenTitle(text = stringResource(R.string.workout_overview_title))
 
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
@@ -93,28 +94,32 @@ fun WorkoutOverview(
     onCreateWorkout: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxSize()
-
     ) {
         Row {
             ScreenTitle(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .weight(1f),
-                text = stringResource(R.string.workoutOverviewTitle)
+                text = stringResource(R.string.workout_overview_title)
             )
 
             IconButton(
                 onClick = { onCreateWorkout() },
                 colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary),
-                modifier = Modifier
+                modifier =
+                Modifier
                     .align(Alignment.CenterVertically)
                     .padding(end = 24.dp)
             ) {
                 Icon(
                     modifier = Modifier,
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.add_workout_button_description),
+                    contentDescription = stringResource(
+                        R.string.workout_overview_add_workout_button_description
+                    ),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -140,7 +145,8 @@ fun CreateFirstWorkoutButton(
         modifier = modifier
     ) {
         IconButton(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .size(72.dp)
                 .align(Alignment.CenterHorizontally),
             colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary),
@@ -149,19 +155,22 @@ fun CreateFirstWorkoutButton(
             Icon(
                 modifier = Modifier.fillMaxSize(),
                 imageVector = Icons.Filled.Add,
-                contentDescription = stringResource(R.string.add_workout_button_description),
+                contentDescription = stringResource(
+                    R.string.workout_overview_add_workout_button_description
+                ),
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
         Text(
             fontSize = 20.sp,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(top = 8.dp)
                 .align(Alignment.CenterHorizontally),
             fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
             fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
             color = MaterialTheme.colorScheme.onSurface,
-            text = stringResource(R.string.add_first_workout_button_text)
+            text = stringResource(R.string.workout_overview_add_first_workout_button_text)
         )
     }
 }
@@ -175,17 +184,20 @@ fun WorkoutCard(
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(
                 fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
                 fontWeight = MaterialTheme.typography.titleMedium.fontWeight,
-                modifier = Modifier
+                modifier =
+                Modifier
                     .weight(1f)
                     .align(alignment = Alignment.CenterVertically),
                 text = workoutTitle,
@@ -198,7 +210,9 @@ fun WorkoutCard(
                 Icon(
                     tint = MaterialTheme.colorScheme.onPrimary,
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = stringResource(R.string.start_workout_button_description)
+                    contentDescription = stringResource(
+                        R.string.workout_overview_start_workout_button_description
+                    )
                 )
             }
         }
