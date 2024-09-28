@@ -17,4 +17,11 @@
     <string name="workout_overview_start_workout_button_description">Start workout</string>
     <string name="workout_editor_workout_title">Workout Title</string>
     <string name="workout_editor_initial_workout_title">Workout</string>
+    <string name="workout_editor_cancel_button_text">Cancel</string>
+    <string name="workout_editor_save_button_text">Save</string>
+    <string name="workout_editor_add_exercise_button_text">Add Exercise</string>
+    <string name="workout_editor_add_exercise_button_description">Add Exercise</string>
+    <string name="workout_editor_exercise_name_input_title">Exercise Name</string>
+    <string name="workout_editor_sets_input_title">Sets</string>
+    <string name="workout_editor_new_workout_screen_title">New Workout</string>
 </resources>
