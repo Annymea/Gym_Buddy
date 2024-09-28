@@ -42,110 +42,133 @@ class RunningWorkoutViewModelTest {
     }
 
     @Test
-    fun `gets exercises and planName by workoutId`() = runTest {
-        val exercises = getExerciseList()
-        val workout = Plan(planName = "Plan 1", id = 1)
+    fun `gets exercises and planName by workoutId`() =
+        runTest {
+            val exercises = getExerciseList()
+            val workout = Plan(planName = "Plan 1", id = 1)
 
-        val workoutId = 1L
+            val workoutId = 1L
 
-        coEvery { workoutRepository.getExecutablePlanWithDetailsByPlanId(workoutId) } returns
-            flow { emit(exercises) }
-        coEvery { workoutRepository.getPlanById(workoutId) } returns flow { emit(workout) }
+            coEvery { workoutRepository.getPlanWithDetailsBy(workoutId) } returns
+                flow { emit(exercises) }
+            coEvery { workoutRepository.getPlanById(workoutId) } returns flow { emit(workout) }
 
-        viewModel = RunningWorkoutViewModel(
-            workoutRepository = workoutRepository,
-            workoutId = workoutId.toString()
-        )
+            viewModel =
+                RunningWorkoutViewModel(
+                    workoutRepository = workoutRepository,
+                    workoutId = workoutId.toString()
+                )
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        assertEquals(exercises, viewModel.exercises)
-        assertEquals(workout.planName, viewModel.planName.value)
-    }
-
-    @Test
-    fun `gets correct executions`() = runTest {
-        val executions = listOf(
-            ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
-            ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55),
-            ExerciseExecution(exerciseId = 2, set = 1, reps = 12, weight = 60)
-        )
-
-        viewModel = createViewModel()
-
-        executions.forEach {
-            viewModel.addOrUpdateExecution(it)
+            assertEquals(exercises, viewModel.exercises)
+            assertEquals(workout.planName, viewModel.planName.value)
         }
 
-        val result = viewModel.getExecutions(1L)
-
-        assert(result.size == 2)
-        assert(result[0].reps == 10)
-        assert(result[1].weight == 55)
-    }
-
     @Test
-    fun `update existing execution`() = runTest {
-        viewModel = createViewModel()
+    fun `gets correct executions`() =
+        runTest {
+            val executions =
+                listOf(
+                    ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
+                    ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55),
+                    ExerciseExecution(exerciseId = 2, set = 1, reps = 12, weight = 60)
+                )
 
-        val initialExecution = ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50)
-        viewModel.addOrUpdateExecution(initialExecution)
+            viewModel = createViewModel()
 
-        val updatedExecution = ExerciseExecution(exerciseId = 1, set = 1, reps = 12, weight = 55)
-        viewModel.addOrUpdateExecution(updatedExecution)
+            executions.forEach {
+                viewModel.addOrUpdateExecution(it)
+            }
 
-        val result = viewModel.getExecutions(1L)
+            val result = viewModel.getExecutions(1L)
 
-        assert(result.size == 1)
-        assert(result[0].reps == 12)
-        assert(result[0].weight == 55)
-    }
-
-    @Test
-    fun `add new execution`() = runTest {
-        viewModel = createViewModel()
-
-        val initialExecution = ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50)
-        viewModel.addOrUpdateExecution(initialExecution)
-
-        val newExecution = ExerciseExecution(exerciseId = 1, set = 2, reps = 12, weight = 55)
-        viewModel.addOrUpdateExecution(newExecution)
-
-        val result = viewModel.getExecutions(1L)
-
-        assert(result.size == 2)
-        assert(result[1].reps == 12)
-        assert(result[1].weight == 55)
-    }
-
-    @Test
-    fun `save all executions`() = runTest {
-        val executions = listOf(
-            ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
-            ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55)
-        )
-
-        viewModel = createViewModel()
-
-        executions.forEach {
-            viewModel.addOrUpdateExecution(it)
+            assert(result.size == 2)
+            assert(result[0].reps == 10)
+            assert(result[1].weight == 55)
         }
 
-        coEvery { workoutRepository.insertExecution(any()) } returns 1L
+    @Test
+    fun `update existing execution`() =
+        runTest {
+            viewModel = createViewModel()
 
-        viewModel.saveExecutionsToRepository()
+            val initialExecution = ExerciseExecution(
+                exerciseId = 1,
+                set = 1,
+                reps = 10,
+                weight = 50
+            )
+            viewModel.addOrUpdateExecution(initialExecution)
 
-        advanceUntilIdle()
+            val updatedExecution = ExerciseExecution(
+                exerciseId = 1,
+                set = 1,
+                reps = 12,
+                weight = 55
+            )
+            viewModel.addOrUpdateExecution(updatedExecution)
 
-        coVerify(exactly = 2) { workoutRepository.insertExecution(any()) }
-    }
+            val result = viewModel.getExecutions(1L)
+
+            assert(result.size == 1)
+            assert(result[0].reps == 12)
+            assert(result[0].weight == 55)
+        }
+
+    @Test
+    fun `add new execution`() =
+        runTest {
+            viewModel = createViewModel()
+
+            val initialExecution = ExerciseExecution(
+                exerciseId = 1,
+                set = 1,
+                reps = 10,
+                weight = 50
+            )
+            viewModel.addOrUpdateExecution(initialExecution)
+
+            val newExecution = ExerciseExecution(exerciseId = 1, set = 2, reps = 12, weight = 55)
+            viewModel.addOrUpdateExecution(newExecution)
+
+            val result = viewModel.getExecutions(1L)
+
+            assert(result.size == 2)
+            assert(result[1].reps == 12)
+            assert(result[1].weight == 55)
+        }
+
+    @Test
+    fun `save all executions`() =
+        runTest {
+            val executions =
+                listOf(
+                    ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
+                    ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55)
+                )
+
+            viewModel = createViewModel()
+
+            executions.forEach {
+                viewModel.addOrUpdateExecution(it)
+            }
+
+            coEvery { workoutRepository.insertExecution(any()) } returns 1L
+
+            viewModel.saveExecutionsToRepository()
+
+            advanceUntilIdle()
+
+            coVerify(exactly = 2) { workoutRepository.insertExecution(any()) }
+        }
 
     private fun createViewModel(): RunningWorkoutViewModel {
         val exercises = getExerciseList()
         val workout = Plan(planName = "Plan 1", id = 1)
         val workoutId = 1L
 
-        coEvery { workoutRepository.getExecutablePlanWithDetailsByPlanId(workoutId) } returns
+        coEvery { workoutRepository.getPlanWithDetailsBy(workoutId) } returns
             flow { emit(exercises) }
         coEvery { workoutRepository.getPlanById(workoutId) } returns flow { emit(workout) }
 
@@ -154,8 +177,8 @@ class RunningWorkoutViewModelTest {
         return viewModel
     }
 
-    private fun getExerciseList(): List<ExecutablePlanWithDetails> {
-        return listOf(
+    private fun getExerciseList(): List<ExecutablePlanWithDetails> =
+        listOf(
             ExecutablePlanWithDetails(
                 planId = 1,
                 exerciseName = "Exercise 1",
@@ -175,5 +198,4 @@ class RunningWorkoutViewModelTest {
                 executablePlanId = 0
             )
         )
-    }
 }

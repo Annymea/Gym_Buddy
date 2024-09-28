@@ -24,7 +24,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreatePlanViewModelTest {
-
     @MockK
     private lateinit var workoutRepository: WorkoutRepository
 
@@ -80,49 +79,54 @@ class CreatePlanViewModelTest {
     }
 
     @Test
-    fun `savePlanToDatabase should set Error state when planName is empty`() = runTest {
-        createPlanViewModel.updatePlanName("")
+    fun `savePlanToDatabase should set Error state when planName is empty`() =
+        runTest {
+            createPlanViewModel.updatePlanName("")
 
-        createPlanViewModel.savePlanToDatabase()
-        advanceUntilIdle()
-        assertEquals(
-            SavingPlanState.Error("Plan name cannot be empty"),
-            createPlanViewModel.saveState.value
-        )
-    }
+            createPlanViewModel.savePlanToDatabase()
+            advanceUntilIdle()
+            assertEquals(
+                SavingPlanState.Error("Plan name cannot be empty"),
+                createPlanViewModel.saveState.value
+            )
+        }
 
     @Test
-    fun `savePlanToDatabase should save plan and exercises successfully`() = runTest {
-        createPlanViewModel.updatePlanName("My Plan")
-        createPlanViewModel.addExercise(ViewModelExercise(name = "Squat", sets = 3))
-        createPlanViewModel.addExercise(ViewModelExercise(name = "Push-Up", sets = 4))
+    fun `savePlanToDatabase should save plan and exercises successfully`() =
+        runTest {
+            createPlanViewModel.updatePlanName("My Plan")
+            createPlanViewModel.addExercise(ViewModelExercise(name = "Squat", sets = 3))
+            createPlanViewModel.addExercise(ViewModelExercise(name = "Push-Up", sets = 4))
 
-        val planId: Long = 1
-        val exerciseId: Long = 1
-        val executablePlanId: Long = 1
+            val planId: Long = 1
+            val exerciseId: Long = 1
+            val executablePlanId: Long = 1
 
-        coEvery { workoutRepository.insertPlan(any()) } returns planId
-        coEvery { workoutRepository.insertExercise(any()) } returns exerciseId
-        coEvery { workoutRepository.insertExecutablePlan(any()) } returns executablePlanId
+            coEvery { workoutRepository.insertPlan(any()) } returns planId
+            coEvery { workoutRepository.insertExercise(any()) } returns exerciseId
+            coEvery { workoutRepository.insertExecutablePlan(any()) } returns executablePlanId
 
-        createPlanViewModel.savePlanToDatabase()
+            createPlanViewModel.savePlanToDatabase()
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        coVerify { workoutRepository.insertPlan(Plan(planName = "My Plan")) }
-        coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Squat")) }
-        coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Push-Up")) }
-        coVerify(exactly = 2) { workoutRepository.insertExecutablePlan(any()) }
+            coVerify { workoutRepository.insertPlan(Plan(planName = "My Plan")) }
+            coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Squat")) }
+            coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Push-Up")) }
+            coVerify(exactly = 2) { workoutRepository.insertExecutablePlan(any()) }
 
-        assertEquals(SavingPlanState.Saved, createPlanViewModel.saveState.value)
-    }
+            assertEquals(SavingPlanState.Saved, createPlanViewModel.saveState.value)
+        }
 
     @Test
     fun `savePlanToDatabase should set Error state when an exception occurs during plan saving`() =
         runTest {
             createPlanViewModel.updatePlanName("My Plan")
 
-            coEvery { workoutRepository.insertPlan(any()) } throws RuntimeException("Database error")
+            coEvery { workoutRepository.insertPlan(any()) } throws
+                RuntimeException(
+                    "Database error"
+                )
 
             createPlanViewModel.savePlanToDatabase()
 
@@ -135,7 +139,7 @@ class CreatePlanViewModelTest {
         }
 
     @Test
-    fun `savePlanToDatabase should set Error state when an exception occurs during exercise saving`() =
+    fun `savePlanToDatabase sets Error state when an exception occurs during exercise saving`() =
         runTest {
             createPlanViewModel.updatePlanName("My Plan")
             createPlanViewModel.addExercise(ViewModelExercise(name = "Squat", sets = 3))
@@ -143,7 +147,10 @@ class CreatePlanViewModelTest {
             val planId = 1L
 
             coEvery { workoutRepository.insertPlan(any()) } returns planId
-            coEvery { workoutRepository.insertExercise(any()) } throws RuntimeException("Database error")
+            coEvery { workoutRepository.insertExercise(any()) } throws
+                RuntimeException(
+                    "Database error"
+                )
 
             createPlanViewModel.savePlanToDatabase()
 
