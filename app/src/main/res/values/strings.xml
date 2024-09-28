@@ -10,9 +10,11 @@
     <string name="runningWorkoutRoute">running_workout/{workoutId}</string>
     <string name="create_workout">Create workout</string>
     <string name="run_workout">Run workout</string>
-    <string name="workouts">Workouts</string>
-    <string name="workoutOverviewTitle">Workouts</string>
-    <string name="add_first_workout_button_text">Add a workout</string>
-    <string name="add_workout_button_description">Add workout</string>
-    <string name="start_workout_button_description">Start workout</string>
+    <string name="bottom_navigation_workouts_button_text">Workouts</string>
+    <string name="workout_overview_title">Workouts</string>
+    <string name="workout_overview_add_first_workout_button_text">Add a workout</string>
+    <string name="workout_overview_add_workout_button_description">Add workout</string>
+    <string name="workout_overview_start_workout_button_description">Start workout</string>
+    <string name="workout_editor_workout_title">Workout Title</string>
+    <string name="workout_editor_initial_workout_title">Workout</string>
 </resources>
