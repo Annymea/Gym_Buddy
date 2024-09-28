@@ -35,9 +35,10 @@ class NavigationTest {
 
     @Before
     fun setupAppNavHost() {
-        testModule = module {
-            single<WorkoutRepository> { mockRepository }
-        }
+        testModule =
+            module {
+                single<WorkoutRepository> { mockRepository }
+            }
         createMockRepository()
         loadKoinModules(testModule)
 
@@ -54,50 +55,56 @@ class NavigationTest {
     private fun createMockRepository() {
         mockRepository = mockk()
 
-        val plans = listOf(
-            Plan(planName = "Plan 1", id = 1),
-            Plan(planName = "Plan 2", id = 2)
-        )
+        val plans =
+            listOf(
+                Plan(planName = "Plan 1", id = 1),
+                Plan(planName = "Plan 2", id = 2)
+            )
         val plan = Plan(planName = "Plan 1", id = 1)
 
-        val executablePlansWithDetails = listOf(
-            ExecutablePlanWithDetails(
-                sets = 3,
-                order = 0,
-                planId = 1,
-                planName = "Plan 1",
-                exerciseName = "Exercise 1",
-                executablePlanId = 0,
-                exerciseId = 1
-            ),
-            ExecutablePlanWithDetails(
-                sets = 3,
-                order = 1,
-                planId = 1,
-                planName = "Plan 1",
-                exerciseName = "Exercise 2",
-                executablePlanId = 0,
-                exerciseId = 2
+        val executablePlansWithDetails =
+            listOf(
+                ExecutablePlanWithDetails(
+                    sets = 3,
+                    order = 0,
+                    planId = 1,
+                    planName = "Plan 1",
+                    exerciseName = "Exercise 1",
+                    executablePlanId = 0,
+                    exerciseId = 1
+                ),
+                ExecutablePlanWithDetails(
+                    sets = 3,
+                    order = 1,
+                    planId = 1,
+                    planName = "Plan 1",
+                    exerciseName = "Exercise 2",
+                    executablePlanId = 0,
+                    exerciseId = 2
+                )
             )
-        )
 
-        coEvery { mockRepository.getAllPlanNames() } returns flow {
-            Log.i("NavigationTest", "Mocking getAllPlanNames flow with: $plans")
-            emit(plans)
-        }
+        coEvery { mockRepository.getAllPlanNames() } returns
+            flow {
+                Log.i("NavigationTest", "Mocking getAllPlanNames flow with: $plans")
+                emit(plans)
+            }
 
-        coEvery { mockRepository.getPlanById(any()) } returns flow {
-            Log.i("NavigationTest", "Mocking getPlanById flow with: $plan")
-            emit(plan)
-        }
+        coEvery { mockRepository.getPlanById(any()) } returns
+            flow {
+                Log.i("NavigationTest", "Mocking getPlanById flow with: $plan")
+                emit(plan)
+            }
 
-        coEvery { mockRepository.getExecutablePlanWithDetailsByPlanId(any()) } returns flow {
-            Log.i(
-                "NavigationTest",
-                "Mocking getExecutablePlanWithDetailsByPlanId flow with: $executablePlansWithDetails"
-            )
-            emit(executablePlansWithDetails)
-        }
+        coEvery { mockRepository.getPlanWithDetailsBy(any()) } returns
+            flow {
+                Log.i(
+                    "NavigationTest",
+                    "Mocking getExecutablePlanWithDetailsByPlanId flow with:" +
+                        " $executablePlansWithDetails"
+                )
+                emit(executablePlansWithDetails)
+            }
 
         coEvery { mockRepository.insertPlan(any()) } returns 1L
         coEvery { mockRepository.insertExecutablePlan(any()) } returns 1L
@@ -114,7 +121,7 @@ class NavigationTest {
         composeTestRule.onNodeWithText("Dashboard Content").assertIsDisplayed()
     }
 
-    /*Create workout navigation test*/
+    // Create workout navigation test
     @Test
     fun appNavigation_navigateToWorkoutList() {
         composeTestRule.onNodeWithText("Create workout").performClick()
@@ -138,7 +145,7 @@ class NavigationTest {
         composeTestRule.onNodeWithText("Neuen Plan erstellen").assertIsDisplayed()
     }
 
-    /*Run workout navigation test*/
+    // Run workout navigation test
     @Test
     fun appNavigation_navigateToStartWorkout() {
         composeTestRule.onNodeWithText("Run workout").performClick()
