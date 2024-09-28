@@ -26,26 +26,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gymbuddy.R
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun WorkoutEditorScreen(modifier: Modifier = Modifier) {
+fun WorkoutEditorScreen(
+    modifier: Modifier = Modifier,
+    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>(),
+) {
     Column(modifier = modifier.fillMaxSize()) {
-        ScreenTitle(text = "New Workout")
+        ScreenTitle(text = stringResource(R.string.workout_editor_new_workout_screen_title))
 
         Column(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             OutlinedTextField(
                 label = {
                     Text(text = stringResource(id = R.string.workout_editor_workout_title))
                 },
                 value =
-                stringResource(R.string.workout_editor_initial_workout_title),
+                    stringResource(R.string.workout_editor_initial_workout_title),
                 onValueChange = {},
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
 
             LazyColumn {
@@ -62,21 +66,25 @@ fun WorkoutEditorScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SaveAndCancelButton(modifier: Modifier = Modifier) {
+private fun SaveAndCancelButton(
+    modifier: Modifier = Modifier,
+    onCancelButtonClicked: () -> Unit = {},
+    onSaveButtonClicked: () -> Unit = {},
+) {
     Row(
         modifier =
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         OutlinedButton(
             modifier =
             Modifier
                 .weight(1f)
                 .padding(end = 16.dp),
-            onClick = { /*TODO*/ }
+            onClick = { onCancelButtonClicked() },
         ) {
-            Text(text = "Cancel")
+            Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
 
         Button(
@@ -84,21 +92,24 @@ private fun SaveAndCancelButton(modifier: Modifier = Modifier) {
             Modifier
                 .weight(1f)
                 .padding(start = 16.dp),
-            onClick = { /*TODO*/ }
+            onClick = { onSaveButtonClicked() },
         ) {
-            Text(text = "Save")
+            Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
     }
 }
 
 @Composable
-private fun AddExerciseButton(modifier: Modifier = Modifier) {
+private fun AddExerciseButton(
+    modifier: Modifier = Modifier,
+    onAddExerciseButtonClicked: () -> Unit = {},
+) {
     TextButton(
         modifier =
         modifier
             .padding(top = 16.dp)
             .height(48.dp),
-        onClick = { /*TODO*/ }
+        onClick = { onAddExerciseButtonClicked() },
     ) {
         Icon(
             modifier =
@@ -106,11 +117,13 @@ private fun AddExerciseButton(modifier: Modifier = Modifier) {
                 .height(48.dp)
                 .width(48.dp),
             imageVector = Icons.Default.AddCircle,
-            contentDescription = "Add Exercise"
-        )
+            contentDescription =
+                stringResource(
+                    R.string.workout_editor_add_exercise_button_description),
+                )
         Text(
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            text = "Add Exercise"
+            text = stringResource(R.string.workout_editor_add_exercise_button_text),
         )
     }
 }
@@ -121,30 +134,33 @@ fun AddExerciseCard(modifier: Modifier = Modifier) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
         modifier =
-        modifier
-            .fillMaxWidth()
+            modifier
+                .fillMaxWidth(),
     ) {
         Row(
             modifier =
             Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             OutlinedTextField(
-                label = { Text(text = "Exercise Name") },
+                label = { Text(text =
+                    stringResource(
+                        R.string.workout_editor_exercise_name_input_title)
+                ) },
                 value = "Default Exercise",
                 onValueChange = {},
                 modifier =
                 Modifier
                     .weight(1f)
-                    .padding(end = 16.dp)
+                    .padding(end = 16.dp),
             )
             OutlinedTextField(
-                label = { Text(text = "Sets") },
+                label = { Text(text = stringResource(R.string.workout_editor_sets_input_title)) },
                 value = "3",
                 onValueChange = {},
                 modifier = Modifier.width(64.dp),
-                singleLine = true
+                singleLine = true,
             )
         }
     }
