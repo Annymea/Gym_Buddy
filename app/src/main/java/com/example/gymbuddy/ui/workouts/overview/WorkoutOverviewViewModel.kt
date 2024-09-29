@@ -23,7 +23,7 @@ interface WorkoutOverviewViewModelContract {
 }
 
 class WorkoutOverviewViewModel(
-    workoutRepository: WorkoutRepository,
+    private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutOverviewViewModelContract {
     private var _workouts: SnapshotStateList<Plan> = mutableStateListOf()

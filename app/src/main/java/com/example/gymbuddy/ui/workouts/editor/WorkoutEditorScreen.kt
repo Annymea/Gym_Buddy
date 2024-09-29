@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
@@ -20,18 +22,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gymbuddy.R
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
-    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>(),
+    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>()
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(text = stringResource(R.string.workout_editor_new_workout_screen_title))
@@ -40,28 +44,61 @@ fun WorkoutEditorScreen(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(16.dp),
+                .padding(16.dp)
         ) {
             OutlinedTextField(
                 label = {
                     Text(text = stringResource(id = R.string.workout_editor_workout_title))
                 },
-                value =
-                    stringResource(R.string.workout_editor_initial_workout_title),
-                onValueChange = {},
-                modifier = Modifier.fillMaxWidth(),
+                value = workoutEditorViewModel.workoutName.value,
+                onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            LazyColumn {
+            val listState = rememberLazyListState()
+            val coroutineScope = rememberCoroutineScope()
+            LazyColumn(
+                state = listState,
+                modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp)
+            ) {
+                itemsIndexed(workoutEditorViewModel.exerciseListToBeSaved) { index, exercise ->
+                    AddExerciseCard(
+                        modifier = Modifier.padding(top = 16.dp),
+                        exercise = exercise,
+                        onUpdateExercise = { updatedExercise ->
+                            workoutEditorViewModel.updateExercise(index, updatedExercise)
+                        }
+                    )
+                }
+
                 item {
-                    AddExerciseCard(modifier = Modifier.padding(top = 16.dp))
+                    AddExerciseButton(
+                        onAddExerciseButtonClicked = {
+                            workoutEditorViewModel.addExercise(
+                                ViewModelExercise(name = "Default Exercise", sets = 3)
+                            )
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(
+                                    workoutEditorViewModel.exerciseListToBeSaved.size
+                                )
+                            }
+                        }
+                    )
                 }
             }
-
-            AddExerciseButton()
         }
 
-        SaveAndCancelButton(modifier = Modifier.padding(16.dp))
+        SaveAndCancelButton(
+            modifier = Modifier.padding(16.dp),
+            saveButtonEnabled = (
+                workoutEditorViewModel.saveState.value == SavingWorkoutState.Idle ||
+                    workoutEditorViewModel.saveState.value == SavingWorkoutState.Saved
+                ),
+            onSaveButtonClicked = { workoutEditorViewModel.saveWorkout() }
+        )
     }
 }
 
@@ -70,29 +107,31 @@ private fun SaveAndCancelButton(
     modifier: Modifier = Modifier,
     onCancelButtonClicked: () -> Unit = {},
     onSaveButtonClicked: () -> Unit = {},
+    saveButtonEnabled: Boolean
 ) {
     Row(
         modifier =
         modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
     ) {
         OutlinedButton(
             modifier =
             Modifier
                 .weight(1f)
                 .padding(end = 16.dp),
-            onClick = { onCancelButtonClicked() },
+            onClick = { onCancelButtonClicked() }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
 
         Button(
+            enabled = saveButtonEnabled,
             modifier =
             Modifier
                 .weight(1f)
                 .padding(start = 16.dp),
-            onClick = { onSaveButtonClicked() },
+            onClick = { onSaveButtonClicked() }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -102,14 +141,14 @@ private fun SaveAndCancelButton(
 @Composable
 private fun AddExerciseButton(
     modifier: Modifier = Modifier,
-    onAddExerciseButtonClicked: () -> Unit = {},
+    onAddExerciseButtonClicked: () -> Unit = {}
 ) {
     TextButton(
         modifier =
         modifier
             .padding(top = 16.dp)
             .height(48.dp),
-        onClick = { onAddExerciseButtonClicked() },
+        onClick = { onAddExerciseButtonClicked() }
     ) {
         Icon(
             modifier =
@@ -118,49 +157,66 @@ private fun AddExerciseButton(
                 .width(48.dp),
             imageVector = Icons.Default.AddCircle,
             contentDescription =
-                stringResource(
-                    R.string.workout_editor_add_exercise_button_description),
-                )
+            stringResource(
+                R.string.workout_editor_add_exercise_button_description
+            )
+        )
         Text(
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            text = stringResource(R.string.workout_editor_add_exercise_button_text),
+            text = stringResource(R.string.workout_editor_add_exercise_button_text)
         )
     }
 }
 
 @Composable
-fun AddExerciseCard(modifier: Modifier = Modifier) {
+fun AddExerciseCard(
+    modifier: Modifier = Modifier,
+    exercise: ViewModelExercise,
+    onUpdateExercise: (ViewModelExercise) -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
         modifier =
-            modifier
-                .fillMaxWidth(),
+        modifier
+            .fillMaxWidth()
     ) {
         Row(
             modifier =
             Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
             OutlinedTextField(
-                label = { Text(text =
-                    stringResource(
-                        R.string.workout_editor_exercise_name_input_title)
-                ) },
-                value = "Default Exercise",
-                onValueChange = {},
+                label = {
+                    Text(
+                        text =
+                        stringResource(
+                            R.string.workout_editor_exercise_name_input_title
+                        )
+                    )
+                },
+                value = exercise.name,
+                onValueChange = { newName ->
+                    onUpdateExercise(
+                        exercise.copy(name = newName)
+                    )
+                },
                 modifier =
                 Modifier
                     .weight(1f)
-                    .padding(end = 16.dp),
+                    .padding(end = 16.dp)
             )
             OutlinedTextField(
                 label = { Text(text = stringResource(R.string.workout_editor_sets_input_title)) },
-                value = "3",
-                onValueChange = {},
+                value = exercise.sets.toString(),
+                onValueChange = { newSets ->
+                    onUpdateExercise(
+                        exercise.copy(sets = newSets.toIntOrNull() ?: 0)
+                    )
+                },
                 modifier = Modifier.width(64.dp),
-                singleLine = true,
+                singleLine = true
             )
         }
     }
@@ -175,5 +231,9 @@ fun WorkoutEditorScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun AddExerciseCardPreview() {
-    AddExerciseCard()
+    val exampleExercise = ViewModelExercise(name = "Squats", sets = 3)
+    AddExerciseCard(
+        exercise = exampleExercise,
+        onUpdateExercise = { _ -> }
+    )
 }
