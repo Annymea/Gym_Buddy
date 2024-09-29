@@ -9,10 +9,13 @@ import com.example.gymbuddy.ui.old.createPlan.CreatePlanViewModel
 import com.example.gymbuddy.ui.old.planList.PlanListViewModel
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkoutViewModel
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkoutViewModel
+import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorViewModel
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.compose.get
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.scope.get
 import org.koin.dsl.module
 
 class GymBuddyApp : Application() {
@@ -27,38 +30,44 @@ class GymBuddyApp : Application() {
     }
 }
 
-val appModule = module {
-    single {
-        Room.databaseBuilder(
-            get<Application>(),
-            WorkoutDatabase::class.java,
-            "workout-database"
-        ).build()
-    }
+val appModule =
+    module {
+        single {
+            Room
+                .databaseBuilder(
+                    get<Application>(),
+                    WorkoutDatabase::class.java,
+                    "workout-database"
+                ).build()
+        }
 
-    single { get<WorkoutDatabase>().workoutDao() }
+        single { get<WorkoutDatabase>().workoutDao() }
 
-    single<WorkoutRepository> {
-        LocalDataRepository(workoutDAO = get())
-    }
+        single<WorkoutRepository> {
+            LocalDataRepository(workoutDAO = get())
+        }
 
-    viewModel {
-        CreatePlanViewModel(workoutRepository = get())
-    }
+        viewModel {
+            CreatePlanViewModel(workoutRepository = get())
+        }
 
-    viewModel {
-        PlanListViewModel(workoutRepository = get())
-    }
+        viewModel {
+            PlanListViewModel(workoutRepository = get())
+        }
 
-    viewModel {
-        StartWorkoutViewModel(workoutRepository = get())
-    }
+        viewModel {
+            StartWorkoutViewModel(workoutRepository = get())
+        }
 
-    viewModel { (workoutId: String) ->
-        RunningWorkoutViewModel(workoutRepository = get(), workoutId = workoutId)
-    }
+        viewModel { (workoutId: String) ->
+            RunningWorkoutViewModel(workoutRepository = get(), workoutId = workoutId)
+        }
 
-    viewModel {
-        WorkoutOverviewViewModel(workoutRepository = get())
+        viewModel {
+            WorkoutOverviewViewModel(workoutRepository = get())
+        }
+
+        viewModel {
+            WorkoutEditorViewModel(workoutRepository = get())
+        }
     }
-}
