@@ -1,5 +1,6 @@
 package com.example.gymbuddy.ui.workouts.editor
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,12 +11,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gymbuddy.R
@@ -40,7 +47,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
-    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>()
+    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>(),
+    navigateBack: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(text = stringResource(R.string.workout_editor_new_workout_screen_title))
@@ -75,6 +83,9 @@ fun WorkoutEditorScreen(
                         exercise = exercise,
                         onUpdateExercise = { updatedExercise ->
                             workoutEditorViewModel.updateExercise(index, updatedExercise)
+                        },
+                        onDeleteExercise = {
+                            workoutEditorViewModel.removeExercise(index)
                         }
                     )
                 }
@@ -102,7 +113,13 @@ fun WorkoutEditorScreen(
                 workoutEditorViewModel.saveState.value == SavingWorkoutState.Idle ||
                     workoutEditorViewModel.saveState.value == SavingWorkoutState.Saved
                 ),
-            onSaveButtonClicked = { workoutEditorViewModel.saveWorkout() }
+            onSaveButtonClicked = {
+                workoutEditorViewModel.saveWorkout()
+                navigateBack()
+            },
+            onCancelButtonClicked = {
+                navigateBack()
+            }
         )
     }
 }
@@ -114,22 +131,41 @@ private fun SaveAndCancelButton(
     onSaveButtonClicked: () -> Unit = {},
     saveButtonEnabled: Boolean
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showSaveDialog by remember { mutableStateOf(false) }
+    var showCancelDialog by remember { mutableStateOf(false) }
 
-    if (showDialog) {
+    if (showSaveDialog) {
         ConfirmationDialog(
-            title = "Änderungen speichern?",
-            message = "Möchtest du die Änderungen wirklich speichern?",
-            confirmButtonText = "Speichern",
-            cancelButtonText = "Abbrechen",
+            title = stringResource(R.string.workoutEditor_saveDialog_title),
+            message = stringResource(R.string.workoutEditor_saveDialog_text),
+            confirmButtonText = stringResource(R.string.dialogButton_save),
+            cancelButtonText = stringResource(R.string.dialogButton_cancel),
             onConfirm = {
                 onSaveButtonClicked()
             },
             onCancel = {
-                showDialog = false
+                showSaveDialog = false
             },
             onDismissRequest = {
-                showDialog = false
+                showSaveDialog = false
+            }
+        )
+    }
+
+    if (showCancelDialog) {
+        ConfirmationDialog(
+            title = stringResource(R.string.workoutEditor_cancelDialog_title),
+            message = stringResource(R.string.workoutEditor_cancelDialog_text),
+            confirmButtonText = stringResource(R.string.dialogButton_Confirm),
+            cancelButtonText = stringResource(R.string.dialogButton_keepEditing),
+            onConfirm = {
+                onCancelButtonClicked()
+            },
+            onCancel = {
+                showCancelDialog = false
+            },
+            onDismissRequest = {
+                showCancelDialog = false
             }
         )
     }
@@ -145,7 +181,7 @@ private fun SaveAndCancelButton(
             Modifier
                 .weight(1f)
                 .padding(end = 16.dp),
-            onClick = { onCancelButtonClicked() }
+            onClick = { showCancelDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
@@ -156,7 +192,7 @@ private fun SaveAndCancelButton(
             Modifier
                 .weight(1f)
                 .padding(start = 16.dp),
-            onClick = { showDialog = true }
+            onClick = { showSaveDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -197,8 +233,11 @@ private fun AddExerciseButton(
 private fun AddExerciseCard(
     modifier: Modifier = Modifier,
     exercise: ViewModelExercise,
-    onUpdateExercise: (ViewModelExercise) -> Unit
+    onUpdateExercise: (ViewModelExercise) -> Unit = {},
+    onDeleteExercise: () -> Unit = {}
 ) {
+    val isDropDownExpanded = remember { mutableStateOf(false) }
+
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
@@ -209,7 +248,7 @@ private fun AddExerciseCard(
         Row(
             modifier =
             Modifier
-                .padding(16.dp)
+                .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
@@ -241,8 +280,34 @@ private fun AddExerciseCard(
                     )
                 },
                 modifier = Modifier.width(64.dp),
-                singleLine = true
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+
+            Box {
+                IconButton(
+                    modifier = Modifier.padding(top = 8.dp),
+                    onClick = { isDropDownExpanded.value = true }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null
+                    )
+                }
+
+                DropdownMenu(
+                    expanded = isDropDownExpanded.value,
+                    onDismissRequest = { isDropDownExpanded.value = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = {
+                            isDropDownExpanded.value = false
+                            onDeleteExercise()
+                        }
+                    )
+                }
+            }
         }
     }
 }

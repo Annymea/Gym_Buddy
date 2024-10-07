@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 data class ViewModelExercise(
     val name: String,
-    val sets: Int
+    val sets: Int,
 )
 
 sealed class SavingWorkoutState {
@@ -24,12 +24,12 @@ sealed class SavingWorkoutState {
     object Saved : SavingWorkoutState()
 
     data class Error(
-        val message: String
+        val message: String,
     ) : SavingWorkoutState()
 }
 
 class WorkoutEditorViewModel(
-    private val workoutRepository: WorkoutRepository
+    private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
     var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
         private set
@@ -47,9 +47,13 @@ class WorkoutEditorViewModel(
 
     fun updateExercise(
         index: Int,
-        exercise: ViewModelExercise
+        exercise: ViewModelExercise,
     ) {
         exerciseListToBeSaved[index] = exercise
+    }
+
+    fun removeExercise(index: Int) {
+        exerciseListToBeSaved.removeAt(index)
     }
 
     fun updateWorkoutName(name: String) {
@@ -60,28 +64,16 @@ class WorkoutEditorViewModel(
         saveState.value = SavingWorkoutState.Saving
         viewModelScope.launch {
             try {
-                val startTime = System.currentTimeMillis()
                 val workoutId =
                     workoutRepository.insertPlan(
-                        Plan(planName = workoutName.value.takeIf { it.isNotBlank() } ?: "Workout")
+                        Plan(planName = workoutName.value.takeIf { it.isNotBlank() } ?: "Workout"),
                     )
-                Log.i(
-                    "WorkoutSave",
-                    "Workout inserted in " +
-                        "${System.currentTimeMillis() - startTime} ms"
-                )
 
                 exerciseListToBeSaved.forEachIndexed { index, exercise ->
-                    val exerciseStartTime = System.currentTimeMillis()
                     val exerciseId =
                         workoutRepository.insertExercise(
-                            Exercise(id = 0, exerciseName = exercise.name)
+                            Exercise(id = 0, exerciseName = exercise.name),
                         )
-                    Log.i(
-                        "WorkoutSave",
-                        "Exercise inserted in " +
-                            "${System.currentTimeMillis() - exerciseStartTime} ms"
-                    )
 
                     workoutRepository.insertExecutablePlan(
                         ExecutablePlan(
@@ -89,20 +81,15 @@ class WorkoutEditorViewModel(
                             planId = workoutId,
                             exerciseId = exerciseId,
                             sets = exercise.sets,
-                            order = index
-                        )
-                    )
-
-                    Log.i(
-                        "WorkoutSave",
-                        "ExecutablePlan inserted in " +
-                            "${System.currentTimeMillis() - exerciseStartTime} ms"
+                            order = index,
+                        ),
                     )
                 }
                 saveState.value = SavingWorkoutState.Saved
             } catch (e: Exception) {
                 val error = "Failed to add plan to database: ${e.message}"
                 saveState.value = SavingWorkoutState.Error(error)
+                Log.e("WorkoutEditorViewModel", error)
             }
         }
     }
