@@ -126,7 +126,10 @@ private fun NavGraphBuilder.workoutNavigation(
 
         composable(ScreenRoutes.WorkoutEditor.route) {
             WorkoutEditorScreen(
-                modifier = modifier
+                modifier = modifier,
+                navigateBack = {
+                    navController.popBackStack(ScreenRoutes.WorkoutOverview.route, false)
+                }
             )
         }
     }
