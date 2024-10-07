@@ -22,12 +22,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gymbuddy.R
+import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -109,6 +114,26 @@ private fun SaveAndCancelButton(
     onSaveButtonClicked: () -> Unit = {},
     saveButtonEnabled: Boolean
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        ConfirmationDialog(
+            title = "Änderungen speichern?",
+            message = "Möchtest du die Änderungen wirklich speichern?",
+            confirmButtonText = "Speichern",
+            cancelButtonText = "Abbrechen",
+            onConfirm = {
+                onSaveButtonClicked()
+            },
+            onCancel = {
+                showDialog = false
+            },
+            onDismissRequest = {
+                showDialog = false
+            }
+        )
+    }
+
     Row(
         modifier =
         modifier
@@ -131,7 +156,7 @@ private fun SaveAndCancelButton(
             Modifier
                 .weight(1f)
                 .padding(start = 16.dp),
-            onClick = { onSaveButtonClicked() }
+            onClick = { showDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -169,7 +194,7 @@ private fun AddExerciseButton(
 }
 
 @Composable
-fun AddExerciseCard(
+private fun AddExerciseCard(
     modifier: Modifier = Modifier,
     exercise: ViewModelExercise,
     onUpdateExercise: (ViewModelExercise) -> Unit
@@ -224,13 +249,13 @@ fun AddExerciseCard(
 
 @Preview(showBackground = true)
 @Composable
-fun WorkoutEditorScreenPreview() {
+private fun WorkoutEditorScreenPreview() {
     WorkoutEditorScreen()
 }
 
 @Preview(showBackground = true)
 @Composable
-fun AddExerciseCardPreview() {
+private fun AddExerciseCardPreview() {
     val exampleExercise = ViewModelExercise(name = "Squats", sets = 3)
     AddExerciseCard(
         exercise = exampleExercise,
