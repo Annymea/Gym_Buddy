@@ -83,6 +83,7 @@ dependencies {
 
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.androidx.monitor)
 
     testImplementation(libs.junit)
     testImplementation(libs.testng)

@@ -22,7 +22,8 @@ class WorkoutOverviewScreenTest {
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
-                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts)
+                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
+                onExecuteWorkout = { },
             )
         }
 
@@ -35,7 +36,8 @@ class WorkoutOverviewScreenTest {
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
-                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts)
+                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
+                onExecuteWorkout = { },
             )
         }
 
@@ -45,8 +47,9 @@ class WorkoutOverviewScreenTest {
     }
 }
 
-class FakeWorkoutOverviewViewModel(override val workouts: List<Plan>) :
-    WorkoutOverviewViewModelContract {
+class FakeWorkoutOverviewViewModel(
+    override val workouts: List<Plan>,
+) : WorkoutOverviewViewModelContract {
     override val uiState: StateFlow<WorkoutOverviewUiState>
         get() = _uiState
 

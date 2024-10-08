@@ -34,7 +34,6 @@ fun ConfirmationDialog(
     confirmButtonText: String,
     cancelButtonText: String,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     AlertDialog(
@@ -58,7 +57,6 @@ fun ConfirmationDialog(
         dismissButton = {
             OutlinedButton(
                 onClick = {
-                    onCancel()
                     onDismissRequest()
                 }
             ) {
@@ -77,7 +75,6 @@ private fun ConfirmationDialogPreview() {
         confirmButtonText = "Confirm",
         cancelButtonText = "Cancel",
         onConfirm = {},
-        onCancel = {},
         onDismissRequest = {}
     )
 }

@@ -27,6 +27,7 @@ import com.example.gymbuddy.ui.old.planList.PlanList
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
+import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 
 @Composable
@@ -34,12 +35,13 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
-    val items = listOf(
-        NavigationRoutes.DashboardGraph,
-        NavigationRoutes.CreateWorkoutGraph,
-        NavigationRoutes.RunWorkoutGraph,
-        NavigationRoutes.WorkoutGraph
-    )
+    val items =
+        listOf(
+            NavigationRoutes.DashboardGraph,
+            NavigationRoutes.CreateWorkoutGraph,
+            NavigationRoutes.RunWorkoutGraph,
+            NavigationRoutes.WorkoutGraph
+        )
 
     Scaffold(
         modifier = modifier.systemBarsPadding(),
@@ -59,7 +61,7 @@ private fun BottomNavigationBar(
     navController: NavHostController,
     items: List<NavigationRoutes>
 ) {
-    NavigationBar() {
+    NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { navigationRoute ->
@@ -70,7 +72,8 @@ private fun BottomNavigationBar(
                 label = {
                     Text(text = stringResource(navigationRoute.resourceId))
                 },
-                selected = currentDestination?.hierarchy?.any
+                selected =
+                currentDestination?.hierarchy?.any
                 { it.route == navigationRoute.route } == true,
                 onClick = {
                     if (currentDestination?.hierarchy?.any
@@ -120,7 +123,8 @@ private fun NavGraphBuilder.workoutNavigation(
         composable(ScreenRoutes.WorkoutOverview.route) {
             WorkoutOverviewScreen(
                 modifier = modifier,
-                onCreateWorkout = { navController.navigate(ScreenRoutes.WorkoutEditor.route) }
+                onCreateWorkout = { navController.navigate(ScreenRoutes.WorkoutEditor.route) },
+                onExecuteWorkout = { navController.navigate(ScreenRoutes.WorkoutExecutor.route) }
             )
         }
 
@@ -130,6 +134,12 @@ private fun NavGraphBuilder.workoutNavigation(
                 navigateBack = {
                     navController.popBackStack(ScreenRoutes.WorkoutOverview.route, false)
                 }
+            )
+        }
+
+        composable(ScreenRoutes.WorkoutExecutor.route) {
+            WorkoutExecutorScreen(
+                modifier = modifier
             )
         }
     }
