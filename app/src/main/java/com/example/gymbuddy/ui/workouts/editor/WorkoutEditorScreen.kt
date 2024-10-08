@@ -143,9 +143,6 @@ private fun SaveAndCancelButton(
             onConfirm = {
                 onSaveButtonClicked()
             },
-            onCancel = {
-                showSaveDialog = false
-            },
             onDismissRequest = {
                 showSaveDialog = false
             }
@@ -160,9 +157,6 @@ private fun SaveAndCancelButton(
             cancelButtonText = stringResource(R.string.dialogButton_keepEditing),
             onConfirm = {
                 onCancelButtonClicked()
-            },
-            onCancel = {
-                showCancelDialog = false
             },
             onDismissRequest = {
                 showCancelDialog = false

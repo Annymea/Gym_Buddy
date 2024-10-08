@@ -20,6 +20,7 @@ roomVersion = "2.6.1"
 testng = "6.9.6"
 uiTestJunit4 = "1.7.0"
 ktlint = "11.3.2"
+monitor = "1.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 testng = { module = "org.testng:testng", version.ref = "testng" }
 ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

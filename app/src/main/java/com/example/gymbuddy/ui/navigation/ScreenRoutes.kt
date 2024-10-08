@@ -74,4 +74,8 @@ sealed class ScreenRoutes(
     data object WorkoutEditor : ScreenRoutes(
         "workoutEditor"
     )
+
+    data object WorkoutExecutor : ScreenRoutes(
+        "workoutExecutor"
+    )
 }

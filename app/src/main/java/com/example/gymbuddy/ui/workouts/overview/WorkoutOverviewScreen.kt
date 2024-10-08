@@ -40,7 +40,8 @@ fun WorkoutOverviewScreen(
     modifier: Modifier = Modifier,
     workoutOverviewViewModel: WorkoutOverviewViewModelContract =
         koinViewModel<WorkoutOverviewViewModel>(),
-    onCreateWorkout: () -> Unit = {}
+    onCreateWorkout: () -> Unit = {},
+    onExecuteWorkout: () -> Unit
 ) {
     val uiState by workoutOverviewViewModel.uiState.collectAsState()
 
@@ -56,7 +57,8 @@ fun WorkoutOverviewScreen(
             WorkoutOverview(
                 modifier = modifier,
                 workouts = workoutOverviewViewModel.workouts,
-                onCreateWorkout = { onCreateWorkout() }
+                onCreateWorkout = { onCreateWorkout() },
+                onExecuteWorkout = { onExecuteWorkout() }
             )
         }
     }
@@ -91,7 +93,8 @@ fun CreateFirstWorkout(
 fun WorkoutOverview(
     modifier: Modifier = Modifier,
     workouts: List<Plan> = emptyList(),
-    onCreateWorkout: () -> Unit = {}
+    onCreateWorkout: () -> Unit = {},
+    onExecuteWorkout: () -> Unit
 ) {
     Column(
         modifier =
@@ -117,7 +120,8 @@ fun WorkoutOverview(
                 Icon(
                     modifier = Modifier,
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(
+                    contentDescription =
+                    stringResource(
                         R.string.workout_overview_add_workout_button_description
                     ),
                     tint = MaterialTheme.colorScheme.onPrimary
@@ -130,7 +134,10 @@ fun WorkoutOverview(
             contentPadding = PaddingValues(16.dp)
         ) {
             items(workouts) { workout ->
-                WorkoutCard(workoutTitle = workout.planName)
+                WorkoutCard(
+                    workoutTitle = workout.planName,
+                    onStartWorkout = { onExecuteWorkout() }
+                )
             }
         }
     }
@@ -155,7 +162,8 @@ fun CreateFirstWorkoutButton(
             Icon(
                 modifier = Modifier.fillMaxSize(),
                 imageVector = Icons.Filled.Add,
-                contentDescription = stringResource(
+                contentDescription =
+                stringResource(
                     R.string.workout_overview_add_workout_button_description
                 ),
                 tint = MaterialTheme.colorScheme.onPrimary
@@ -210,7 +218,8 @@ fun WorkoutCard(
                 Icon(
                     tint = MaterialTheme.colorScheme.onPrimary,
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = stringResource(
+                    contentDescription =
+                    stringResource(
                         R.string.workout_overview_start_workout_button_description
                     )
                 )
