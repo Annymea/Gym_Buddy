@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -18,6 +19,8 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,38 +45,50 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.gymbuddy.R
 import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun WorkoutExecutorScreen(modifier: Modifier = Modifier) {
+fun WorkoutExecutorScreen(
+    modifier: Modifier = Modifier,
+    workoutId: String,
+    viewModel: WorkoutExecutorViewModel =
+        koinViewModel<WorkoutExecutorViewModel>(parameters = { parametersOf(workoutId) }),
+    navigateBack: () -> Unit = {},
+) {
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
-        ScreenTitle(text = "Workout Name")
+        ScreenTitle(text = viewModel.workout.value?.workoutName ?: "Default workout")
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
             modifier = Modifier.weight(1f),
         ) {
-            item {
-                ExerciseCard()
-            }
-            item {
-                ExerciseCard()
-            }
-            item {
-                ExerciseCard()
+            itemsIndexed(viewModel.workout.value?.workoutExercises ?: listOf()) { index, exercise ->
+                ExerciseCard(
+                    exercise = exercise,
+                    addSet = { viewModel.addSet(exercise) },
+                    deleteExercise = { viewModel.deleteExercise(index) },
+                    updateSet = { set -> viewModel.updateSet(exerciseIndex = index, set = set) },
+                )
             }
         }
 
         FinishAndCancelButton(
             modifier = Modifier.padding(16.dp),
-            saveButtonEnabled = true,
             onFinishWithChanges = {
+                viewModel.saveExecutions()
+                viewModel.updateWorkout()
+                navigateBack()
             },
             onFinishWithoutChanges = {
+                viewModel.saveExecutions()
+                navigateBack()
             },
             onCancelButtonClicked = {
+                navigateBack()
             },
         )
     }
@@ -85,7 +100,6 @@ private fun FinishAndCancelButton(
     onCancelButtonClicked: () -> Unit = {},
     onFinishWithoutChanges: () -> Unit = {},
     onFinishWithChanges: () -> Unit = {},
-    saveButtonEnabled: Boolean,
 ) {
     var showFinishDialog by remember { mutableStateOf(false) }
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -130,7 +144,6 @@ private fun FinishAndCancelButton(
         }
 
         Button(
-            enabled = saveButtonEnabled,
             modifier =
                 Modifier
                     .weight(1f)
@@ -143,7 +156,15 @@ private fun FinishAndCancelButton(
 }
 
 @Composable
-fun ExerciseCard(modifier: Modifier = Modifier) {
+fun ExerciseCard(
+    modifier: Modifier = Modifier,
+    exercise: WorkoutExercise,
+    addSet: () -> Unit = {},
+    deleteExercise: () -> Unit = {},
+    updateSet: (ExerciseSet) -> Unit = {},
+) {
+    val isDropDownExpanded = remember { mutableStateOf(false) }
+
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
@@ -157,12 +178,27 @@ fun ExerciseCard(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Name of exercise 1",
+                text = exercise.exerciseName,
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.titleLarge,
             )
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+            Box {
+                IconButton(onClick = { isDropDownExpanded.value = true }) {
+                    Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+                }
+
+                DropdownMenu(
+                    expanded = isDropDownExpanded.value,
+                    onDismissRequest = { isDropDownExpanded.value = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Delete exercise") },
+                        onClick = {
+                            isDropDownExpanded.value = false
+                            deleteExercise()
+                        },
+                    )
+                }
             }
         }
         Column(
@@ -190,25 +226,21 @@ fun ExerciseCard(modifier: Modifier = Modifier) {
                 )
             }
 
-            Column(modifier = Modifier) {
-                ExecutionRow(
-                    set = 1,
-                    reps = 4,
-                    weight = 55f,
-                )
-                ExecutionRow(
-                    set = 2,
-                    reps = 4,
-                    weight = 512f,
-                )
-                ExecutionRow(
-                    set = 3,
-                    reps = 4,
-                    weight = 512f,
-                )
+            Column(
+                modifier = Modifier,
+            ) {
+                exercise.exerciseSets.forEach { set ->
+                    ExecutionRow(
+                        set = set.setNumber,
+                        reps = set.reps,
+                        weight = set.weight,
+                        updateSet = { updatedSet ->
+                            updateSet(updatedSet)
+                        },
+                    )
+                }
             }
-
-            TextButton(onClick = { /*TODO*/ }) {
+            TextButton(onClick = { addSet() }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 Text(text = "Add set")
             }
@@ -229,7 +261,10 @@ fun FinishWorkoutDialog(
         content = {
             Card {
                 Column(
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                 ) {
                     Text(
                         text = "Finish workout",
@@ -257,7 +292,10 @@ fun FinishWorkoutDialog(
                             onFinishWithChanges()
                             onDismissRequest()
                         },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                     ) {
                         Text("Finish with changes")
                     }
@@ -266,7 +304,10 @@ fun FinishWorkoutDialog(
                         onClick = {
                             onDismissRequest()
                         },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
                     ) {
                         Text("Cancel")
                     }
@@ -282,7 +323,11 @@ fun ExecutionRow(
     set: Int,
     reps: Int,
     weight: Float,
+    updateSet: (ExerciseSet) -> Unit,
 ) {
+    var repsInput by remember { mutableStateOf(reps.toString()) }
+    var weightInput by remember { mutableStateOf(weight.toString()) }
+
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -299,12 +344,16 @@ fun ExecutionRow(
             OutlinedTextField(
                 singleLine = true,
                 label = {},
-                value = reps.toString(),
-                onValueChange = { },
+                value = repsInput,
+                onValueChange = { newReps ->
+                    repsInput = newReps
+                    val updatedReps = newReps.toIntOrNull() ?: reps
+                    updateSet(ExerciseSet(set, updatedReps, weight))
+                },
                 modifier = Modifier.width(80.dp),
                 keyboardOptions =
                     KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal,
+                        keyboardType = KeyboardType.Number,
                     ),
             )
         }
@@ -315,8 +364,12 @@ fun ExecutionRow(
             OutlinedTextField(
                 singleLine = true,
                 label = {},
-                value = weight.toString(),
-                onValueChange = { },
+                value = weightInput,
+                onValueChange = { newWeight ->
+                    weightInput = newWeight
+                    val updatedWeight = newWeight.toFloatOrNull() ?: weight
+                    updateSet(ExerciseSet(set, reps, updatedWeight))
+                },
                 modifier = Modifier.width(80.dp),
                 keyboardOptions =
                     KeyboardOptions(
@@ -327,16 +380,22 @@ fun ExecutionRow(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ExerciseCardPreview() {
-    ExerciseCard()
-}
+// @Preview(showBackground = true)
+// @Composable
+// fun ExerciseCardPreview() {
+//    val exercise =
+//        WorkoutExercise(
+//            exerciseId = 1,
+//            exerciseSets = mutableStateListOf(),
+//            exerciseName = "1"
+//        )
+//    ExerciseCard(exercise = , addSet = { /*TODO*/ }, deleteExercise = { /*TODO*/ })
+// }
 
 @Preview(showBackground = true)
 @Composable
 fun WorkoutExecutorScreenPreview() {
-    WorkoutExecutorScreen()
+    WorkoutExecutorScreen(workoutId = "1")
 }
 
 @Preview(showBackground = true)

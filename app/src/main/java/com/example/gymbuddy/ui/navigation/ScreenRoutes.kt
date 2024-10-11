@@ -76,6 +76,6 @@ sealed class ScreenRoutes(
     )
 
     data object WorkoutExecutor : ScreenRoutes(
-        "workoutExecutor"
+        "workoutExecutor/{workoutId}"
     )
 }
