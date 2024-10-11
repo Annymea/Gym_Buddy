@@ -41,7 +41,7 @@ fun WorkoutOverviewScreen(
     workoutOverviewViewModel: WorkoutOverviewViewModelContract =
         koinViewModel<WorkoutOverviewViewModel>(),
     onCreateWorkout: () -> Unit = {},
-    onExecuteWorkout: () -> Unit
+    onExecuteWorkout: (id: Long) -> Unit
 ) {
     val uiState by workoutOverviewViewModel.uiState.collectAsState()
 
@@ -58,7 +58,7 @@ fun WorkoutOverviewScreen(
                 modifier = modifier,
                 workouts = workoutOverviewViewModel.workouts,
                 onCreateWorkout = { onCreateWorkout() },
-                onExecuteWorkout = { onExecuteWorkout() }
+                onExecuteWorkout = { id -> onExecuteWorkout(id) }
             )
         }
     }
@@ -94,7 +94,7 @@ fun WorkoutOverview(
     modifier: Modifier = Modifier,
     workouts: List<Plan> = emptyList(),
     onCreateWorkout: () -> Unit = {},
-    onExecuteWorkout: () -> Unit
+    onExecuteWorkout: (id: Long) -> Unit
 ) {
     Column(
         modifier =
@@ -136,7 +136,7 @@ fun WorkoutOverview(
             items(workouts) { workout ->
                 WorkoutCard(
                     workoutTitle = workout.planName,
-                    onStartWorkout = { onExecuteWorkout() }
+                    onStartWorkout = { onExecuteWorkout(workout.id) }
                 )
             }
         }

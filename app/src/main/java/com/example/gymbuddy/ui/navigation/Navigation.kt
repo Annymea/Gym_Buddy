@@ -124,7 +124,15 @@ private fun NavGraphBuilder.workoutNavigation(
             WorkoutOverviewScreen(
                 modifier = modifier,
                 onCreateWorkout = { navController.navigate(ScreenRoutes.WorkoutEditor.route) },
-                onExecuteWorkout = { navController.navigate(ScreenRoutes.WorkoutExecutor.route) }
+                onExecuteWorkout = { workoutId ->
+                    navController.navigate(
+                        ScreenRoutes.WorkoutExecutor.route
+                            .replace(
+                                oldValue = "{workoutId}",
+                                newValue = workoutId.toString()
+                            )
+                    )
+                }
             )
         }
 
@@ -137,10 +145,17 @@ private fun NavGraphBuilder.workoutNavigation(
             )
         }
 
-        composable(ScreenRoutes.WorkoutExecutor.route) {
-            WorkoutExecutorScreen(
-                modifier = modifier
-            )
+        composable(ScreenRoutes.WorkoutExecutor.route) { backStackEntry ->
+            val workoutId = backStackEntry.arguments?.getString("workoutId")
+            workoutId?.let { id ->
+                WorkoutExecutorScreen(
+                    workoutId = id,
+                    modifier = modifier,
+                    navigateBack = {
+                        navController.popBackStack(ScreenRoutes.WorkoutOverview.route, false)
+                    }
+                )
+            }
         }
     }
 }
