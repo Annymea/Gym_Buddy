@@ -6,62 +6,66 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "plans")
-data class Plan(
+@Entity(tableName = "workout_details")
+data class WorkoutDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(name = "plan_name") val planName: String
+    @ColumnInfo(name = "workout_name") val workoutName: String,
+    val note: String,
+    val category: String,
 )
 
-@Entity(tableName = "exercises")
-data class Exercise(
+@Entity(tableName = "exercise_details")
+data class ExerciseDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(name = "exercise_name") val exerciseName: String
+    @ColumnInfo(name = "exercise_name") val exerciseName: String,
+    val note: String,
+    val category: String,
 )
 
 @Entity(
-    tableName = "executablePlans",
+    tableName = "workout",
     indices = [
-        Index(value = ["plan_id"]),
-        Index(value = ["exercise_id"])
+        Index(value = ["workout_details_id"]),
+        Index(value = ["exercise_details_id"]),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = Plan::class,
+            entity = WorkoutDetailsEntity::class,
             parentColumns = ["id"],
-            childColumns = ["plan_id"],
-            onDelete = ForeignKey.CASCADE
+            childColumns = ["workout_details_id"],
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = Exercise::class,
+            entity = ExerciseDetailsEntity::class,
             parentColumns = ["id"],
-            childColumns = ["exercise_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            childColumns = ["exercise_details_id"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
-data class ExecutablePlan(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(name = "plan_id") val planId: Long,
-    @ColumnInfo(name = "exercise_id") val exerciseId: Long,
+data class WorkoutEntity(
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
+    @ColumnInfo(name = "workout_details_id") val workoutDetailsId: Long,
+    @ColumnInfo(name = "exercise_details_id") val exerciseDetailsId: Long,
     val sets: Int,
-    val order: Int
+    val order: Int,
 )
 
 @Entity(
     tableName = "executions",
     foreignKeys = [
         ForeignKey(
-            entity = Exercise::class,
+            entity = ExerciseDetailsEntity::class,
             parentColumns = ["id"],
-            childColumns = ["exercise_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+            childColumns = ["exercise_details_id"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
-data class Execution(
+data class ExecutionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(name = "exercise_id") val exerciseId: Long,
+    @ColumnInfo(name = "exercise_details_id") val exerciseDetailsId: Long,
     val weight: Int,
     val reps: Int,
-    val date: Long
+    val date: Long,
 )

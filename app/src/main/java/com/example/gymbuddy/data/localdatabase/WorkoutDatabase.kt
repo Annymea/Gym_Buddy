@@ -2,20 +2,16 @@ package com.example.gymbuddy.data.localdatabase
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
 @Database(
     entities = [
-        Plan::class,
-        Exercise::class,
-        ExecutablePlan::class,
-        Execution::class
+        WorkoutDetailsEntity::class,
+        ExerciseDetailsEntity::class,
+        WorkoutEntity::class,
+        ExecutionEntity::class,
     ],
     version = 1,
-    exportSchema = false
-)
-@TypeConverters(
-    DateTimestampCoverter::class
+    exportSchema = false,
 )
 abstract class WorkoutDatabase : RoomDatabase() {
     abstract fun workoutDao(): WorkoutDAO

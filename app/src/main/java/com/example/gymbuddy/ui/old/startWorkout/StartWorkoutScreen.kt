@@ -28,7 +28,7 @@ fun StartWorkout(
                     modifier = Modifier.testTag("workoutButton"),
                     onClick = { onSelectWorkout(workout.id.toString()) }
                 ) {
-                    Text(text = workout.planName)
+                    Text(text = workout.workoutName)
                 }
             }
         }

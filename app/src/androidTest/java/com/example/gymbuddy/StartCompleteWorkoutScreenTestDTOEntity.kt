@@ -8,19 +8,19 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
 import com.example.gymbuddy.ui.old.startWorkout.StartWorkoutViewModelContract
 import org.junit.Rule
 import org.junit.Test
 
-class StartWorkoutScreenTest {
+class StartCompleteWorkoutScreenTestDTOEntity {
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
     fun startWorkout_displaysNoButtonWhenNoWorkouts() {
-        val emptyWorkouts = listOf<Plan>()
+        val emptyWorkouts = listOf<WorkoutDetailsEntity>()
 
         setContent(emptyWorkouts)
 
@@ -30,10 +30,11 @@ class StartWorkoutScreenTest {
 
     @Test
     fun startWorkout_displaysButtonWhenWorkoutsAreAvailable() {
-        val workouts = listOf(
-            Plan(planName = "Test 1", id = 1),
-            Plan(planName = "Test 2", id = 2)
-        )
+        val workouts =
+            listOf(
+                WorkoutDetailsEntity(workoutName = "Test 1", id = 1),
+                WorkoutDetailsEntity(workoutName = "Test 2", id = 2),
+            )
 
         setContent(workouts)
 
@@ -45,10 +46,11 @@ class StartWorkoutScreenTest {
 
     @Test
     fun startWorkout_ClickOnWorkoutIsRegistered() {
-        val workouts = listOf(
-            Plan(planName = "Test 1", id = 1),
-            Plan(planName = "Test 2", id = 2)
-        )
+        val workouts =
+            listOf(
+                WorkoutDetailsEntity(workoutName = "Test 1", id = 1),
+                WorkoutDetailsEntity(workoutName = "Test 2", id = 2),
+            )
 
         var isButtonClicked = false
 
@@ -59,16 +61,21 @@ class StartWorkoutScreenTest {
         assert(isButtonClicked)
     }
 
-    private fun setContent(workouts: List<Plan>, onSelect: () -> Unit = {}) {
+    private fun setContent(
+        workouts: List<WorkoutDetailsEntity>,
+        onSelect: () -> Unit = {},
+    ) {
         composeTestRule.setContent {
             StartWorkout(
                 startWorkoutViewModel = FakeStartWorkoutViewModel(workouts),
-                onSelectWorkout = { onSelect() }
+                onSelectWorkout = { onSelect() },
             )
         }
     }
 }
 
-class FakeStartWorkoutViewModel(givenWorkouts: List<Plan>) : StartWorkoutViewModelContract {
-    override val workouts: List<Plan> = givenWorkouts
+class FakeStartWorkoutViewModel(
+    givenWorkouts: List<WorkoutDetailsEntity>,
+) : StartWorkoutViewModelContract {
+    override val workouts: List<WorkoutDetailsEntity> = givenWorkouts
 }

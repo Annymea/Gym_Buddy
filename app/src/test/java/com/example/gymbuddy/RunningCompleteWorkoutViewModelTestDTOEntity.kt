@@ -2,7 +2,7 @@ package com.example.gymbuddy
 
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.ExecutablePlanWithDetails
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.old.runningWorkout.ExerciseExecution
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkoutViewModel
 import io.mockk.coEvery
@@ -23,7 +23,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RunningWorkoutViewModelTest {
+class RunningCompleteWorkoutViewModelTestDTOEntity {
     @MockK
     private lateinit var workoutRepository: WorkoutRepository
 
@@ -45,7 +45,7 @@ class RunningWorkoutViewModelTest {
     fun `gets exercises and planName by workoutId`() =
         runTest {
             val exercises = getExerciseList()
-            val workout = Plan(planName = "Plan 1", id = 1)
+            val workout = WorkoutDetailsEntity(workoutName = "Plan 1", id = 1)
 
             val workoutId = 1L
 
@@ -56,13 +56,13 @@ class RunningWorkoutViewModelTest {
             viewModel =
                 RunningWorkoutViewModel(
                     workoutRepository = workoutRepository,
-                    workoutId = workoutId.toString()
+                    workoutId = workoutId.toString(),
                 )
 
             advanceUntilIdle()
 
             assertEquals(exercises, viewModel.exercises)
-            assertEquals(workout.planName, viewModel.planName.value)
+            assertEquals(workout.workoutName, viewModel.planName.value)
         }
 
     @Test
@@ -72,7 +72,7 @@ class RunningWorkoutViewModelTest {
                 listOf(
                     ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
                     ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55),
-                    ExerciseExecution(exerciseId = 2, set = 1, reps = 12, weight = 60)
+                    ExerciseExecution(exerciseId = 2, set = 1, reps = 12, weight = 60),
                 )
 
             viewModel = createViewModel()
@@ -93,20 +93,22 @@ class RunningWorkoutViewModelTest {
         runTest {
             viewModel = createViewModel()
 
-            val initialExecution = ExerciseExecution(
-                exerciseId = 1,
-                set = 1,
-                reps = 10,
-                weight = 50
-            )
+            val initialExecution =
+                ExerciseExecution(
+                    exerciseId = 1,
+                    set = 1,
+                    reps = 10,
+                    weight = 50,
+                )
             viewModel.addOrUpdateExecution(initialExecution)
 
-            val updatedExecution = ExerciseExecution(
-                exerciseId = 1,
-                set = 1,
-                reps = 12,
-                weight = 55
-            )
+            val updatedExecution =
+                ExerciseExecution(
+                    exerciseId = 1,
+                    set = 1,
+                    reps = 12,
+                    weight = 55,
+                )
             viewModel.addOrUpdateExecution(updatedExecution)
 
             val result = viewModel.getExecutions(1L)
@@ -121,12 +123,13 @@ class RunningWorkoutViewModelTest {
         runTest {
             viewModel = createViewModel()
 
-            val initialExecution = ExerciseExecution(
-                exerciseId = 1,
-                set = 1,
-                reps = 10,
-                weight = 50
-            )
+            val initialExecution =
+                ExerciseExecution(
+                    exerciseId = 1,
+                    set = 1,
+                    reps = 10,
+                    weight = 50,
+                )
             viewModel.addOrUpdateExecution(initialExecution)
 
             val newExecution = ExerciseExecution(exerciseId = 1, set = 2, reps = 12, weight = 55)
@@ -145,7 +148,7 @@ class RunningWorkoutViewModelTest {
             val executions =
                 listOf(
                     ExerciseExecution(exerciseId = 1, set = 1, reps = 10, weight = 50),
-                    ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55)
+                    ExerciseExecution(exerciseId = 1, set = 2, reps = 8, weight = 55),
                 )
 
             viewModel = createViewModel()
@@ -165,7 +168,7 @@ class RunningWorkoutViewModelTest {
 
     private fun createViewModel(): RunningWorkoutViewModel {
         val exercises = getExerciseList()
-        val workout = Plan(planName = "Plan 1", id = 1)
+        val workout = WorkoutDetailsEntity(workoutName = "Plan 1", id = 1)
         val workoutId = 1L
 
         coEvery { workoutRepository.getPlanWithDetailsBy(workoutId) } returns
@@ -186,7 +189,7 @@ class RunningWorkoutViewModelTest {
                 sets = 3,
                 order = 0,
                 exerciseId = 1,
-                executablePlanId = 0
+                executablePlanId = 0,
             ),
             ExecutablePlanWithDetails(
                 planId = 2,
@@ -195,7 +198,7 @@ class RunningWorkoutViewModelTest {
                 sets = 4,
                 order = 1,
                 exerciseId = 2,
-                executablePlanId = 0
-            )
+                executablePlanId = 0,
+            ),
         )
 }

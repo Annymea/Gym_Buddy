@@ -19,7 +19,7 @@ fun PlanList(
         } else {
             Text(text = "Pläne", modifier = Modifier)
             planListViewModel.planList.forEach {
-                Text(text = it.planName)
+                Text(text = it.workoutName)
             }
         }
         Button(onClick = { onCreateNewPlan() }) {

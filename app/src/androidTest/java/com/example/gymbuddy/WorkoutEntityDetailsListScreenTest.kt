@@ -4,24 +4,24 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.old.planList.PlanList
 import com.example.gymbuddy.ui.old.planList.PlanListViewModelContract
 import org.junit.Rule
 import org.junit.Test
 
-class PlanListScreenTest {
+class WorkoutEntityDetailsListScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
     fun planList_displaysEmptyMessageWhenListIsEmpty() {
-        val emptyPlanList = emptyList<Plan>()
+        val emptyPlanList = emptyList<WorkoutDetailsEntity>()
 
         composeTestRule.setContent {
             PlanList(
                 planListViewModel = FakePlanListViewModel(emptyPlanList),
-                onCreateNewPlan = {}
+                onCreateNewPlan = {},
             )
         }
 
@@ -32,15 +32,16 @@ class PlanListScreenTest {
 
     @Test
     fun planList_displaysPlansWhenListIsNotEmpty() {
-        val planList = listOf(
-            Plan(planName = "Plan A"),
-            Plan(planName = "Plan B")
-        )
+        val planList =
+            listOf(
+                WorkoutDetailsEntity(workoutName = "Plan A"),
+                WorkoutDetailsEntity(workoutName = "Plan B"),
+            )
 
         composeTestRule.setContent {
             PlanList(
                 planListViewModel = FakePlanListViewModel(planList),
-                onCreateNewPlan = {}
+                onCreateNewPlan = {},
             )
         }
 
@@ -55,7 +56,7 @@ class PlanListScreenTest {
         composeTestRule.setContent {
             PlanList(
                 planListViewModel = FakePlanListViewModel(emptyList()),
-                onCreateNewPlan = { isButtonClicked = true }
+                onCreateNewPlan = { isButtonClicked = true },
             )
         }
 
@@ -65,6 +66,8 @@ class PlanListScreenTest {
     }
 }
 
-class FakePlanListViewModel(plans: List<Plan>) : PlanListViewModelContract {
-    override val planList: List<Plan> = plans
+class FakePlanListViewModel(
+    plans: List<WorkoutDetailsEntity>,
+) : PlanListViewModelContract {
+    override val planList: List<WorkoutDetailsEntity> = plans
 }

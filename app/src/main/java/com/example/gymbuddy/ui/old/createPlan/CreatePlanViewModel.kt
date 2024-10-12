@@ -7,21 +7,26 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.ExecutablePlan
-import com.example.gymbuddy.data.localdatabase.Exercise
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.ExerciseDetailsEntity
+import com.example.gymbuddy.data.localdatabase.WorkoutEntity
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import kotlinx.coroutines.launch
 
 data class ViewModelExercise(
     val name: String,
-    val sets: Int
+    val sets: Int,
 )
 
 sealed class SavingPlanState {
     object Idle : SavingPlanState()
+
     object Saving : SavingPlanState()
+
     object Saved : SavingPlanState()
-    data class Error(val message: String) : SavingPlanState()
+
+    data class Error(
+        val message: String,
+    ) : SavingPlanState()
 }
 
 interface CreatePlanViewModelContract {
@@ -31,15 +36,20 @@ interface CreatePlanViewModelContract {
     val saveState: MutableState<SavingPlanState>
 
     fun resetErrorState()
+
     fun addExercise(exercise: ViewModelExercise)
+
     fun updateExercise(updatedExercise: ViewModelExercise)
+
     fun updatePlanName(newPlanName: String)
+
     fun savePlanToDatabase()
 }
 
 class CreatePlanViewModel(
-    private val workoutRepository: WorkoutRepository
-) : ViewModel(), CreatePlanViewModelContract {
+    private val workoutRepository: WorkoutRepository,
+) : ViewModel(),
+    CreatePlanViewModelContract {
     override var exerciseListToBeSaved = mutableStateListOf<ViewModelExercise>()
         private set
     override var exerciseToAdd = mutableStateOf(ViewModelExercise(name = "", sets = 0))
@@ -82,7 +92,7 @@ class CreatePlanViewModel(
                             exerciseName = exercise.name,
                             planId = planId,
                             index = index,
-                            sets = exercise.sets
+                            sets = exercise.sets,
                         )
                     } catch (e: Exception) {
                         val error = "Failed to add exercise: ${e.message}"
@@ -100,23 +110,23 @@ class CreatePlanViewModel(
         }
     }
 
-    private suspend fun addPlanToDatabase(planName: String): Long {
-        return workoutRepository.insertPlan(Plan(planName = planName))
-    }
+    private suspend fun addPlanToDatabase(planName: String): Long =
+        workoutRepository.insertPlan(WorkoutDetailsEntity(workoutName = planName))
 
     private suspend fun addExerciseToDatabase(
         exerciseName: String,
         planId: Long,
         index: Int,
-        sets: Int
+        sets: Int,
     ) {
-        val exerciseId = workoutRepository.insertExercise(Exercise(exerciseName = exerciseName))
+        val exerciseId =
+            workoutRepository.insertExercise(ExerciseDetailsEntity(exerciseName = exerciseName))
 
         addExecutablePlanToDatabase(
             planId = planId,
             exerciseId = exerciseId,
             sets = sets,
-            order = index
+            order = index,
         )
     }
 
@@ -124,15 +134,15 @@ class CreatePlanViewModel(
         planId: Long,
         exerciseId: Long,
         sets: Int,
-        order: Int
+        order: Int,
     ) {
         workoutRepository.insertExecutablePlan(
-            ExecutablePlan(
-                planId = planId,
-                exerciseId = exerciseId,
+            WorkoutEntity(
+                workoutDetailsId = planId,
+                exerciseDetailsId = exerciseId,
                 sets = sets,
-                order = order
-            )
+                order = order,
+            ),
         )
     }
 }

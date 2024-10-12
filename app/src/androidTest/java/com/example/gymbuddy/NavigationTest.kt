@@ -11,7 +11,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.ExecutablePlanWithDetails
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.navigation.AppNavigation
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -57,10 +57,10 @@ class NavigationTest {
 
         val plans =
             listOf(
-                Plan(planName = "Plan 1", id = 1),
-                Plan(planName = "Plan 2", id = 2)
+                WorkoutDetailsEntity(workoutName = "Plan 1", id = 1),
+                WorkoutDetailsEntity(workoutName = "Plan 2", id = 2),
             )
-        val plan = Plan(planName = "Plan 1", id = 1)
+        val plan = WorkoutDetailsEntity(workoutName = "Plan 1", id = 1)
 
         val executablePlansWithDetails =
             listOf(
@@ -71,7 +71,7 @@ class NavigationTest {
                     planName = "Plan 1",
                     exerciseName = "Exercise 1",
                     executablePlanId = 0,
-                    exerciseId = 1
+                    exerciseId = 1,
                 ),
                 ExecutablePlanWithDetails(
                     sets = 3,
@@ -80,8 +80,8 @@ class NavigationTest {
                     planName = "Plan 1",
                     exerciseName = "Exercise 2",
                     executablePlanId = 0,
-                    exerciseId = 2
-                )
+                    exerciseId = 2,
+                ),
             )
 
         coEvery { mockRepository.getAllPlanNames() } returns
@@ -101,7 +101,7 @@ class NavigationTest {
                 Log.i(
                     "NavigationTest",
                     "Mocking getExecutablePlanWithDetailsByPlanId flow with:" +
-                        " $executablePlansWithDetails"
+                        " $executablePlansWithDetails",
                 )
                 emit(executablePlansWithDetails)
             }
