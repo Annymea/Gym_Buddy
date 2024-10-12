@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.ExecutablePlanWithDetails
-import com.example.gymbuddy.data.localdatabase.Execution
+import com.example.gymbuddy.data.localdatabase.ExecutionEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -16,7 +16,7 @@ data class ExerciseExecution(
     val set: Int,
     var weight: Int,
     var reps: Int,
-    val exerciseId: Long
+    val exerciseId: Long,
 )
 
 interface RunningWorkoutViewModelContract {
@@ -32,7 +32,7 @@ interface RunningWorkoutViewModelContract {
 
 class RunningWorkoutViewModel(
     private val workoutRepository: WorkoutRepository,
-    private val workoutId: String
+    private val workoutId: String,
 ) : ViewModel(),
     RunningWorkoutViewModelContract {
     private var _exercises: SnapshotStateList<ExecutablePlanWithDetails> =
@@ -54,7 +54,7 @@ class RunningWorkoutViewModel(
                     .first()
             _exercises.addAll(exerciseList)
 
-            _planName.value = workoutRepository.getPlanById(workoutId.toLong()).first().planName
+            _planName.value = workoutRepository.getPlanById(workoutId.toLong()).first().workoutName
         }
     }
 
@@ -81,12 +81,12 @@ class RunningWorkoutViewModel(
         viewModelScope.launch {
             _executions.forEach {
                 workoutRepository.insertExecution(
-                    Execution(
-                        exerciseId = it.exerciseId,
+                    ExecutionEntity(
+                        exerciseDetailsId = it.exerciseId,
                         weight = it.weight,
                         reps = it.reps,
-                        date = System.currentTimeMillis()
-                    )
+                        date = System.currentTimeMillis(),
+                    ),
                 )
             }
         }

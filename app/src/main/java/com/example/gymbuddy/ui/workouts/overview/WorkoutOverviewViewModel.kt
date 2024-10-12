@@ -5,7 +5,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -18,7 +18,7 @@ sealed class WorkoutOverviewUiState {
 }
 
 interface WorkoutOverviewViewModelContract {
-    val workouts: List<Plan>
+    val workouts: List<WorkoutDetailsEntity>
     val uiState: StateFlow<WorkoutOverviewUiState>
 }
 
@@ -26,8 +26,8 @@ class WorkoutOverviewViewModel(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutOverviewViewModelContract {
-    private var _workouts: SnapshotStateList<Plan> = mutableStateListOf()
-    override val workouts: List<Plan>
+    private var _workouts: SnapshotStateList<WorkoutDetailsEntity> = mutableStateListOf()
+    override val workouts: List<WorkoutDetailsEntity>
         get() = _workouts
 
     private val _uiState =

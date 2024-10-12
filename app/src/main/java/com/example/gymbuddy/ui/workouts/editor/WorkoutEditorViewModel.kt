@@ -6,14 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.ExecutablePlan
-import com.example.gymbuddy.data.localdatabase.Exercise
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.ExerciseDetailsEntity
+import com.example.gymbuddy.data.localdatabase.WorkoutEntity
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import kotlinx.coroutines.launch
 
 data class ViewModelExercise(
     val name: String,
-    val sets: Int
+    val sets: Int,
 )
 
 sealed class SavingWorkoutState {
@@ -24,12 +24,12 @@ sealed class SavingWorkoutState {
     object Saved : SavingWorkoutState()
 
     data class Error(
-        val message: String
+        val message: String,
     ) : SavingWorkoutState()
 }
 
 class WorkoutEditorViewModel(
-    private val workoutRepository: WorkoutRepository
+    private val workoutRepository: WorkoutRepository,
 ) : ViewModel() {
     var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
         private set
@@ -47,7 +47,7 @@ class WorkoutEditorViewModel(
 
     fun updateExercise(
         index: Int,
-        exercise: ViewModelExercise
+        exercise: ViewModelExercise,
     ) {
         exerciseListToBeSaved[index] = exercise
     }
@@ -66,23 +66,27 @@ class WorkoutEditorViewModel(
             try {
                 val workoutId =
                     workoutRepository.insertPlan(
-                        Plan(planName = workoutName.value.takeIf { it.isNotBlank() } ?: "Workout")
+                        WorkoutDetailsEntity(
+                            workoutName =
+                                workoutName.value.takeIf { it.isNotBlank() }
+                                    ?: "Workout",
+                        ),
                     )
 
                 exerciseListToBeSaved.forEachIndexed { index, exercise ->
                     val exerciseId =
                         workoutRepository.insertExercise(
-                            Exercise(id = 0, exerciseName = exercise.name)
+                            ExerciseDetailsEntity(id = 0, exerciseName = exercise.name),
                         )
 
                     workoutRepository.insertExecutablePlan(
-                        ExecutablePlan(
+                        WorkoutEntity(
                             id = 0,
-                            planId = workoutId,
-                            exerciseId = exerciseId,
+                            workoutDetailsId = workoutId,
+                            exerciseDetailsId = exerciseId,
                             sets = exercise.sets,
-                            order = index
-                        )
+                            order = index,
+                        ),
                     )
                 }
                 saveState.value = SavingWorkoutState.Saved

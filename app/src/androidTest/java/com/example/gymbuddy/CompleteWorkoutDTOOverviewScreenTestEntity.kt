@@ -3,7 +3,7 @@ package com.example.gymbuddy
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewUiState
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModelContract
@@ -12,18 +12,18 @@ import kotlinx.coroutines.flow.StateFlow
 import org.junit.Rule
 import org.junit.Test
 
-class WorkoutOverviewScreenTest {
+class CompleteWorkoutDTOOverviewScreenTestEntity {
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
     fun workoutOverview_showsAddWorkoutButtonIfNoWorkouts() {
-        val workouts = emptyList<Plan>()
+        val workouts = emptyList<WorkoutDetailsEntity>()
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
                 workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
-                onExecuteWorkout = { }
+                onExecuteWorkout = { },
             )
         }
 
@@ -32,23 +32,27 @@ class WorkoutOverviewScreenTest {
 
     @Test
     fun workoutOverview_showsWorkoutNameIfWorkouts() {
-        val workouts = listOf(Plan(planName = "Workout 1"), Plan(planName = "Workout 2"))
+        val workouts =
+            listOf(
+                WorkoutDetailsEntity(workoutName = "Workout 1"),
+                WorkoutDetailsEntity(workoutName = "Workout 2"),
+            )
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
                 workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
-                onExecuteWorkout = { }
+                onExecuteWorkout = { },
             )
         }
 
         workouts.forEach { workout ->
-            composeTestRule.onNodeWithText(workout.planName).assertIsDisplayed()
+            composeTestRule.onNodeWithText(workout.workoutName).assertIsDisplayed()
         }
     }
 }
 
 class FakeWorkoutOverviewViewModel(
-    override val workouts: List<Plan>
+    override val workouts: List<WorkoutDetailsEntity>,
 ) : WorkoutOverviewViewModelContract {
     override val uiState: StateFlow<WorkoutOverviewUiState>
         get() = _uiState

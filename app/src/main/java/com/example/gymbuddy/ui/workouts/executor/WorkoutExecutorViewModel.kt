@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.ExecutablePlanWithDetails
-import com.example.gymbuddy.data.localdatabase.Execution
+import com.example.gymbuddy.data.localdatabase.ExecutionEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -47,7 +47,8 @@ class WorkoutExecutorViewModel(
             val exercises = workoutRepository.getPlanWithDetailsBy(workoutId.toLong()).first()
             Log.i("WorkoutExecutor", exercises.size.toString())
             if (workout.value == null) {
-                val workoutName = workoutRepository.getPlanById(workoutId.toLong()).first().planName
+                val workoutName =
+                    workoutRepository.getPlanById(workoutId.toLong()).first().workoutName
                 Log.i("WorkoutExecutor", workoutName)
                 workout.value =
                     Workout(
@@ -93,8 +94,8 @@ class WorkoutExecutorViewModel(
                         if (set.reps == 0) continue
                         try {
                             workoutRepository.insertExecution(
-                                Execution(
-                                    exerciseId = exercise.exerciseId,
+                                ExecutionEntity(
+                                    exerciseDetailsId = exercise.exerciseId,
                                     date = currentTime,
                                     reps = set.reps,
                                     weight = set.weight.toInt(),

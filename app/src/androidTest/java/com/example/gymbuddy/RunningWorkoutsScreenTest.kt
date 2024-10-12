@@ -9,7 +9,7 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.example.gymbuddy.data.localdatabase.ExecutablePlanWithDetails
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.old.runningWorkout.ExerciseExecution
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
 import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkoutViewModelContract
@@ -22,7 +22,7 @@ class RunningWorkoutsScreenTest {
 
     @Test
     fun runningWorkout_displayNoExercisesIfWorkoutIsEmpty() {
-        val workout = Plan(planName = "Running", id = 1)
+        val workout = WorkoutDetailsEntity(workoutName = "Running", id = 1)
         val exercises = emptyList<ExecutablePlanWithDetails>()
 
         setContent(workout, exercises)
@@ -34,7 +34,7 @@ class RunningWorkoutsScreenTest {
 
     @Test
     fun runningWorkout_SaveButtonTriggersSaveWorkout() {
-        val workout = Plan(planName = "Running", id = 1)
+        val workout = WorkoutDetailsEntity(workoutName = "Running", id = 1)
 
         var saveWorkoutCalled = false
 
@@ -46,17 +46,18 @@ class RunningWorkoutsScreenTest {
     }
 
     private fun setContent(
-        workout: Plan,
+        workout: WorkoutDetailsEntity,
         exercises: List<ExecutablePlanWithDetails>,
-        saveWorkout: () -> Unit = {}
+        saveWorkout: () -> Unit = {},
     ) {
         composeTestRule.setContent {
             RunningWorkout(
                 workoutId = "1",
-                planListViewModel = FakeRunningWorkoutViewModel(
-                    mockedExercises = exercises
-                ),
-                saveWorkout = { saveWorkout() }
+                planListViewModel =
+                    FakeRunningWorkoutViewModel(
+                        mockedExercises = exercises,
+                    ),
+                saveWorkout = { saveWorkout() },
             )
         }
     }
@@ -64,16 +65,17 @@ class RunningWorkoutsScreenTest {
 
 class FakeRunningWorkoutViewModel(
     mockedExercises: List<ExecutablePlanWithDetails> = emptyList(),
-    mockedPlanName: String = "Running"
+    mockedPlanName: String = "Running",
 ) : RunningWorkoutViewModelContract {
     override val exercises: List<ExecutablePlanWithDetails> = mockedExercises
     override val planName: MutableState<String> = mutableStateOf(mockedPlanName)
 
     private val executions = mutableListOf<ExerciseExecution>()
 
-    override fun getExecutions(exerciseId: Long): List<ExerciseExecution> {
-        return executions.filter { it.exerciseId == exerciseId }
-    }
+    override fun getExecutions(exerciseId: Long): List<ExerciseExecution> =
+        executions.filter {
+            it.exerciseId == exerciseId
+        }
 
     override fun addOrUpdateExecution(execution: ExerciseExecution) {}
 

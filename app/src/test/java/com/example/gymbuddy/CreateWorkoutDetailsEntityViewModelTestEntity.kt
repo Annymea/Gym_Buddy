@@ -1,8 +1,8 @@
 package com.example.gymbuddy
 
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.Exercise
-import com.example.gymbuddy.data.localdatabase.Plan
+import com.example.gymbuddy.data.localdatabase.ExerciseDetailsEntity
+import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.ui.old.createPlan.CreatePlanViewModel
 import com.example.gymbuddy.ui.old.createPlan.SavingPlanState
 import com.example.gymbuddy.ui.old.createPlan.ViewModelExercise
@@ -23,7 +23,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class CreatePlanViewModelTest {
+class CreateWorkoutDetailsEntityViewModelTestEntity {
     @MockK
     private lateinit var workoutRepository: WorkoutRepository
 
@@ -87,7 +87,7 @@ class CreatePlanViewModelTest {
             advanceUntilIdle()
             assertEquals(
                 SavingPlanState.Error("Plan name cannot be empty"),
-                createPlanViewModel.saveState.value
+                createPlanViewModel.saveState.value,
             )
         }
 
@@ -110,9 +110,17 @@ class CreatePlanViewModelTest {
 
             advanceUntilIdle()
 
-            coVerify { workoutRepository.insertPlan(Plan(planName = "My Plan")) }
-            coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Squat")) }
-            coVerify { workoutRepository.insertExercise(Exercise(exerciseName = "Push-Up")) }
+            coVerify { workoutRepository.insertPlan(WorkoutDetailsEntity(workoutName = "My Plan")) }
+            coVerify {
+                workoutRepository.insertExercise(
+                    ExerciseDetailsEntity(exerciseName = "Squat"),
+                )
+            }
+            coVerify {
+                workoutRepository.insertExercise(
+                    ExerciseDetailsEntity(exerciseName = "Push-Up"),
+                )
+            }
             coVerify(exactly = 2) { workoutRepository.insertExecutablePlan(any()) }
 
             assertEquals(SavingPlanState.Saved, createPlanViewModel.saveState.value)
@@ -125,7 +133,7 @@ class CreatePlanViewModelTest {
 
             coEvery { workoutRepository.insertPlan(any()) } throws
                 RuntimeException(
-                    "Database error"
+                    "Database error",
                 )
 
             createPlanViewModel.savePlanToDatabase()
@@ -134,7 +142,7 @@ class CreatePlanViewModelTest {
 
             assertEquals(
                 SavingPlanState.Error("Failed to add plan to database: Database error"),
-                createPlanViewModel.saveState.value
+                createPlanViewModel.saveState.value,
             )
         }
 
@@ -149,7 +157,7 @@ class CreatePlanViewModelTest {
             coEvery { workoutRepository.insertPlan(any()) } returns planId
             coEvery { workoutRepository.insertExercise(any()) } throws
                 RuntimeException(
-                    "Database error"
+                    "Database error",
                 )
 
             createPlanViewModel.savePlanToDatabase()
@@ -158,7 +166,7 @@ class CreatePlanViewModelTest {
 
             assertEquals(
                 SavingPlanState.Error("Failed to add exercise: Database error"),
-                createPlanViewModel.saveState.value
+                createPlanViewModel.saveState.value,
             )
         }
 }

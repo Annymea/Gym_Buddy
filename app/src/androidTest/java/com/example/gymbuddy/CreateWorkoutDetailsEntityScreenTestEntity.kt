@@ -15,7 +15,7 @@ import com.example.gymbuddy.ui.old.createPlan.ViewModelExercise
 import org.junit.Rule
 import org.junit.Test
 
-class CreatePlanScreenTest {
+class CreateWorkoutDetailsEntityScreenTestEntity {
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -26,7 +26,7 @@ class CreatePlanScreenTest {
         composeTestRule.setContent {
             CreatePlan(
                 createPlanViewModel = fakeViewModel,
-                onPlanSaved = {}
+                onPlanSaved = {},
             )
         }
 
@@ -44,7 +44,7 @@ class CreatePlanScreenTest {
         composeTestRule.setContent {
             CreatePlan(
                 createPlanViewModel = fakeViewModel,
-                onPlanSaved = {}
+                onPlanSaved = {},
             )
         }
         composeTestRule.onNodeWithText("Save").performClick()
@@ -62,7 +62,7 @@ class CreatePlanScreenTest {
         composeTestRule.setContent {
             CreatePlan(
                 createPlanViewModel = fakeViewModel,
-                onPlanSaved = { isPlanSaved = true }
+                onPlanSaved = { isPlanSaved = true },
             )
         }
         composeTestRule.onNodeWithText("Save Plan").performClick()
@@ -78,7 +78,7 @@ class CreatePlanScreenTest {
         composeTestRule.setContent {
             CreatePlan(
                 createPlanViewModel = fakeViewModel,
-                onPlanSaved = {}
+                onPlanSaved = {},
             )
         }
 
