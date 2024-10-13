@@ -8,10 +8,10 @@ import androidx.room.RoomDatabase
         WorkoutDetailsEntity::class,
         ExerciseDetailsEntity::class,
         WorkoutEntity::class,
-        ExecutionEntity::class,
+        ExecutionEntity::class
     ],
     version = 1,
-    exportSchema = false,
+    exportSchema = false
 )
 abstract class WorkoutDatabase : RoomDatabase() {
     abstract fun workoutDao(): WorkoutDAO

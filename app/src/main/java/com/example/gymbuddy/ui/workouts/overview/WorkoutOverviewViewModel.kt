@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -18,7 +18,7 @@ sealed class WorkoutOverviewUiState {
 }
 
 interface WorkoutOverviewViewModelContract {
-    val workouts: List<WorkoutDetailsEntity>
+    val workouts: List<Workout>
     val uiState: StateFlow<WorkoutOverviewUiState>
 }
 
@@ -26,29 +26,28 @@ class WorkoutOverviewViewModel(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutOverviewViewModelContract {
-    private var _workouts: SnapshotStateList<WorkoutDetailsEntity> = mutableStateListOf()
-    override val workouts: List<WorkoutDetailsEntity>
-        get() = _workouts
+    override var workouts: SnapshotStateList<Workout> = mutableStateListOf()
+        private set
 
-    private val _uiState =
+    override var uiState =
         MutableStateFlow<WorkoutOverviewUiState>(WorkoutOverviewUiState.NoWorkouts)
-    override val uiState: StateFlow<WorkoutOverviewUiState> = _uiState
+        private set
 
     init {
         viewModelScope.launch {
             workoutRepository
-                .getAllPlanNames()
+                .getAllWorkoutDetails()
                 .catch {
-                    _workouts.clear()
-                    _uiState.value = WorkoutOverviewUiState.NoWorkouts
-                }.collect { workouts ->
-                    _workouts.clear()
-                    _workouts.addAll(workouts)
+                    workouts.clear()
+                    uiState.value = WorkoutOverviewUiState.NoWorkouts
+                }.collect { foundWorkouts ->
+                    workouts.clear()
+                    workouts.addAll(foundWorkouts)
 
-                    if (_workouts.isNotEmpty()) {
-                        _uiState.value = WorkoutOverviewUiState.Workouts
+                    if (workouts.isNotEmpty()) {
+                        uiState.value = WorkoutOverviewUiState.Workouts
                     } else {
-                        _uiState.value = WorkoutOverviewUiState.NoWorkouts
+                        uiState.value = WorkoutOverviewUiState.NoWorkouts
                     }
                 }
         }

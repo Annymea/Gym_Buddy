@@ -1,6 +1,5 @@
 package com.example.gymbuddy.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
@@ -21,11 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.gymbuddy.ui.old.createPlan.CreatePlan
 import com.example.gymbuddy.ui.old.dashboard.Dashboard
-import com.example.gymbuddy.ui.old.planList.PlanList
-import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkout
-import com.example.gymbuddy.ui.old.startWorkout.StartWorkout
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
@@ -38,8 +33,6 @@ fun AppNavigation(
     val items =
         listOf(
             NavigationRoutes.DashboardGraph,
-            NavigationRoutes.CreateWorkoutGraph,
-            NavigationRoutes.RunWorkoutGraph,
             NavigationRoutes.WorkoutGraph
         )
 
@@ -105,9 +98,7 @@ fun Navigation(
         navController = navController,
         startDestination = NavigationRoutes.DashboardGraph.route
     ) {
-        createWorkoutNavigation(modifier, navController)
         dashboardNavigation(modifier, navController)
-        runWorkoutNavigation(modifier, navController)
         workoutNavigation(modifier, navController)
     }
 }
@@ -170,79 +161,7 @@ private fun NavGraphBuilder.dashboardNavigation(
     ) {
         composable(ScreenRoutes.Dashboard.route) {
             Dashboard(
-                modifier = modifier,
-                onCreatePlanButtonClicked = {
-                    navController.navigate(ScreenRoutes.PlanList.route)
-                },
-                onStartTrainingButtonClicked = {
-                    navController.navigate(ScreenRoutes.StartWorkout.route)
-                }
-            )
-        }
-    }
-}
-
-private fun NavGraphBuilder.runWorkoutNavigation(
-    modifier: Modifier,
-    navController: NavHostController
-) {
-    navigation(
-        startDestination = ScreenRoutes.StartWorkout.route,
-        route = NavigationRoutes.RunWorkoutGraph.route
-    ) {
-        composable(ScreenRoutes.StartWorkout.route) {
-            StartWorkout(
-                modifier = modifier,
-                onSelectWorkout = { workoutId: String ->
-                    navController.navigate(
-                        ScreenRoutes.RunningWorkout.route
-                            .replace(
-                                oldValue = "{workoutId}",
-                                newValue = workoutId
-                            )
-                    )
-                }
-            )
-        }
-
-        composable(ScreenRoutes.RunningWorkout.route) { backStackEntry ->
-            val workoutId = backStackEntry.arguments?.getString("workoutId")
-            workoutId?.let { id ->
-                RunningWorkout(
-                    workoutId = id,
-                    modifier = modifier,
-                    saveWorkout = {
-                        navController.navigate(ScreenRoutes.Dashboard.route)
-                    }
-                )
-            }
-        }
-    }
-}
-
-private fun NavGraphBuilder.createWorkoutNavigation(
-    modifier: Modifier,
-    navController: NavHostController
-) {
-    navigation(
-        startDestination = ScreenRoutes.PlanList.route,
-        route = NavigationRoutes.CreateWorkoutGraph.route
-    ) {
-        composable(ScreenRoutes.CreatePlan.route) {
-            CreatePlan(
-                modifier = modifier,
-                onPlanSaved = {
-                    Log.i("Navigation", "Plan saved")
-                    navController.popBackStack(ScreenRoutes.PlanList.route, false)
-                }
-            )
-        }
-        composable(ScreenRoutes.PlanList.route) {
-            PlanList(
-                modifier = modifier,
-                onCreateNewPlan = {
-                    navController.navigate(ScreenRoutes.CreatePlan.route)
-                }
+                modifier = modifier
             )
         }
     }

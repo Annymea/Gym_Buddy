@@ -1,117 +1,160 @@
 package com.example.gymbuddy.data.localdatabase
 
-import com.example.gymbuddy.data.Exercise
 import com.example.gymbuddy.data.Workout
+import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 
 class LocalDataRepository(
-    private val workoutDAO: WorkoutDAO,
+    private val workoutDAO: WorkoutDAO
 ) : WorkoutRepository {
-    override suspend fun getAllExerciseNames(): Flow<List<ExerciseDetailsEntity>> =
-        workoutDAO.getAllExerciseNames()
+    override suspend fun getWorkout(workoutId: Long): Workout? {
+        val workoutDetails =
+            workoutDAO.getWorkoutDetailsFor(workoutId).firstOrNull()
+                ?: return null
 
-    override suspend fun getAllPlanNames(): Flow<List<WorkoutDetailsEntity>> =
-        workoutDAO.getAllPlanNames()
+        val workoutEntities =
+            workoutDAO.getWorkoutFor(workoutId).firstOrNull()
+                ?: return null
 
-    override suspend fun getPlanById(planId: Long): Flow<WorkoutDetailsEntity> =
-        workoutDAO.getPlanById(planId)
+        val exercises: MutableList<WorkoutExercise> =
+            workoutEntities
+                .mapNotNull { workoutEntity ->
+                    val exerciseDetails =
+                        workoutDAO
+                            .getExerciseDetailsFor(
+                                workoutEntity.exerciseDetailsId
+                            ).firstOrNull()
+                            ?: return@mapNotNull null
 
-    override suspend fun getExecutablePlanById(planId: Long): Flow<List<WorkoutEntity>> =
-        workoutDAO.getExecutablePlanById(
-            planId,
-        )
-
-    override suspend fun getExecutionsById(exerciseId: Long): Flow<List<ExecutionEntity>> =
-        workoutDAO.getExecutionsById(
-            exerciseId,
-        )
-
-    override suspend fun getPlanWithDetailsBy(planId: Long): Flow<List<ExecutablePlanWithDetails>> =
-        workoutDAO.getExecutablePlanWithDetailsByPlanId(planId)
-
-    override suspend fun insertPlan(plan: WorkoutDetailsEntity): Long = workoutDAO.insertPlan(plan)
-
-    override suspend fun insertExercise(exercise: ExerciseDetailsEntity): Long =
-        workoutDAO.insertExercise(
-            exercise,
-        )
-
-    override suspend fun insertExecutablePlan(executablePlan: WorkoutEntity): Long =
-        workoutDAO.insertExecutablePlan(
-            executablePlan,
-        )
-
-    override suspend fun insertExecution(execution: ExecutionEntity): Long =
-        workoutDAO.insertExecution(
-            execution,
-        )
-
-    override suspend fun deletePlan(plan: WorkoutDetailsEntity) = workoutDAO.deletePlan(plan)
-
-    override suspend fun deleteExercise(exercise: ExerciseDetailsEntity) =
-        workoutDAO.deleteExercise(exercise)
-
-    override suspend fun deleteExercise(exerciseId: Long) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteExerciseFromPlan(executablePlan: WorkoutEntity) =
-        workoutDAO.deleteExerciseFromPlan(
-            executablePlan,
-        )
-
-    override suspend fun deleteExecution(execution: ExecutionEntity) =
-        workoutDAO.deleteExecution(
-            execution,
-        )
-
-    override suspend fun getWorkout(workoutId: Long): Workout {
-        val workoutDetails = workoutDAO.getWorkoutDetailsFor(workoutId).first()
-        val workoutEntities = workoutDAO.getWorkoutFor(workoutId).first()
-
-        val exercises =
-            workoutEntities.map { workoutEntity ->
-                val exerciseDetails =
-                    workoutDAO.getExerciseDetailsFor(workoutEntity.exerciseDetailsId).first()
-
-                Exercise(
-                    id = exerciseDetails.id,
-                    name = exerciseDetails.exerciseName,
-                    note = exerciseDetails.note,
-                    setCount = workoutEntity.sets,
-                    order = workoutEntity.order,
-                    sets = listOf(),
-                )
-            }
+                    WorkoutExercise(
+                        id = exerciseDetails.id,
+                        name = exerciseDetails.exerciseName,
+                        note = exerciseDetails.note,
+                        setCount = workoutEntity.sets,
+                        order = workoutEntity.order,
+                        sets = mutableListOf()
+                    )
+                }.toMutableList()
 
         return Workout(
             id = workoutDetails.id,
             name = workoutDetails.workoutName,
             category = workoutDetails.category,
             note = workoutDetails.note,
-            exercises = exercises,
+            exercises = exercises
         )
     }
 
-    override suspend fun createWorkout(workout: WorkoutEntity): Long {
-        TODO("Not yet implemented")
+    override suspend fun getAllWorkoutDetails(): Flow<List<Workout>> {
+        val workoutDetailsEntityList = workoutDAO.getAllWorkoutDetails()
+
+        return workoutDetailsEntityList.map { entityList ->
+            entityList.map { entity ->
+                Workout(
+                    id = entity.id,
+                    name = entity.workoutName,
+                    category = entity.category,
+                    note = entity.note,
+                    exercises = mutableListOf()
+                )
+            }
+        }
     }
 
-    override suspend fun createExercise(exercise: ExerciseDetailsEntity): Long {
-        TODO("Not yet implemented")
+    override suspend fun saveWorkoutExecution(
+        doneExercises: List<WorkoutExercise>,
+        date: Long
+    ) {
+        val executionEntities =
+            doneExercises.flatMap { exercise ->
+                exercise.sets.map { set ->
+                    ExecutionEntity(
+                        exerciseDetailsId = exercise.id,
+                        weight = set.weight,
+                        reps = set.reps,
+                        date = date
+                    )
+                }
+            }
+        workoutDAO.saveWorkoutExecution(executionEntities)
     }
 
-    override suspend fun saveWorkoutExecution(workoutExecution: WorkoutEntity) {
-        TODO("Not yet implemented")
+    override suspend fun updateWorkout(newWorkout: Workout) {
+        val currentWorkoutEntities =
+            workoutDAO.getExercisesFor(newWorkout.id).firstOrNull() ?: emptyList()
+
+        val newWorkoutEntities =
+            newWorkout.exercises.map { exercise ->
+                WorkoutEntity(
+                    workoutDetailsId = newWorkout.id,
+                    exerciseDetailsId = exercise.id,
+                    sets = exercise.setCount,
+                    order = exercise.order
+                )
+            }
+
+        val workoutEntitiesToDelete =
+            currentWorkoutEntities.filter { currentEntity ->
+                newWorkoutEntities.none { newEntity ->
+                    newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
+                        newEntity.order == currentEntity.order
+                }
+            }
+
+        val workoutEntitiesToUpdate =
+            newWorkoutEntities.filter { newEntity ->
+                currentWorkoutEntities.any { currentEntity ->
+                    newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
+                        newEntity.order == currentEntity.order
+                }
+            }
+
+        val workoutEntitiesToInsert =
+            newWorkoutEntities.filter { newEntity ->
+                currentWorkoutEntities.none { currentEntity ->
+                    newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
+                        newEntity.order == currentEntity.order
+                }
+            }
+
+        workoutDAO.deleteWorkoutEntities(workoutEntitiesToDelete)
+
+        workoutDAO.updateWorkoutEntities(workoutEntitiesToUpdate)
+
+        workoutDAO.insertWorkoutEntities(workoutEntitiesToInsert)
     }
 
-    override suspend fun editWorkout(updatedWorkout: WorkoutEntity) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createNewWorkout(newWorkout: Workout) {
+        val newWorkoutId =
+            workoutDAO.insertWorkoutDetails(
+                WorkoutDetailsEntity(
+                    workoutName = newWorkout.name,
+                    category = newWorkout.category,
+                    note = newWorkout.note
+                )
+            )
 
-    override suspend fun deleteWorkout(workoutId: Long) {
-        TODO("Not yet implemented")
+        newWorkout.exercises.forEach { exercise ->
+            val newExerciseId =
+                workoutDAO.insertExerciseDetails(
+                    ExerciseDetailsEntity(
+                        exerciseName = exercise.name,
+                        note = exercise.note,
+                        category = exercise.category
+                    )
+                )
+
+            workoutDAO.insertWorkoutEntity(
+                WorkoutEntity(
+                    workoutDetailsId = newWorkoutId,
+                    exerciseDetailsId = newExerciseId,
+                    sets = exercise.setCount,
+                    order = exercise.order
+                )
+            )
+        }
     }
 }

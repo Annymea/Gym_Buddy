@@ -43,6 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.gymbuddy.R
+import com.example.gymbuddy.data.WorkoutExercise
+import com.example.gymbuddy.data.WorkoutSet
 import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 import org.koin.androidx.compose.koinViewModel
@@ -54,24 +56,24 @@ fun WorkoutExecutorScreen(
     workoutId: String,
     viewModel: WorkoutExecutorViewModel =
         koinViewModel<WorkoutExecutorViewModel>(parameters = { parametersOf(workoutId) }),
-    navigateBack: () -> Unit = {},
+    navigateBack: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
-        ScreenTitle(text = viewModel.workout.value?.workoutName ?: "Default workout")
+        ScreenTitle(text = viewModel.workout.value?.name ?: "Default workout")
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
         ) {
-            itemsIndexed(viewModel.workout.value?.workoutExercises ?: listOf()) { index, exercise ->
+            itemsIndexed(viewModel.workout.value?.exercises ?: listOf()) { index, exercise ->
                 ExerciseCard(
                     exercise = exercise,
                     addSet = { viewModel.addSet(exercise) },
                     deleteExercise = { viewModel.deleteExercise(index) },
-                    updateSet = { set -> viewModel.updateSet(exerciseIndex = index, set = set) },
+                    updateSet = { set -> viewModel.updateSet(exerciseIndex = index, set = set) }
                 )
             }
         }
@@ -89,7 +91,7 @@ fun WorkoutExecutorScreen(
             },
             onCancelButtonClicked = {
                 navigateBack()
-            },
+            }
         )
     }
 }
@@ -99,7 +101,7 @@ private fun FinishAndCancelButton(
     modifier: Modifier = Modifier,
     onCancelButtonClicked: () -> Unit = {},
     onFinishWithoutChanges: () -> Unit = {},
-    onFinishWithChanges: () -> Unit = {},
+    onFinishWithChanges: () -> Unit = {}
 ) {
     var showFinishDialog by remember { mutableStateOf(false) }
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -108,7 +110,7 @@ private fun FinishAndCancelButton(
         FinishWorkoutDialog(
             onFinishWithoutChanges = { onFinishWithoutChanges() },
             onFinishWithChanges = { onFinishWithChanges() },
-            onDismissRequest = { showFinishDialog = false },
+            onDismissRequest = { showFinishDialog = false }
         )
     }
 
@@ -123,32 +125,32 @@ private fun FinishAndCancelButton(
             },
             onDismissRequest = {
                 showCancelDialog = false
-            },
+            }
         )
     }
 
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         OutlinedButton(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(end = 16.dp),
-            onClick = { showCancelDialog = true },
+            Modifier
+                .weight(1f)
+                .padding(end = 16.dp),
+            onClick = { showCancelDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
 
         Button(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp),
-            onClick = { showFinishDialog = true },
+            Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
+            onClick = { showFinishDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -161,26 +163,26 @@ fun ExerciseCard(
     exercise: WorkoutExercise,
     addSet: () -> Unit = {},
     deleteExercise: () -> Unit = {},
-    updateSet: (ExerciseSet) -> Unit = {},
+    updateSet: (WorkoutSet) -> Unit = {}
 ) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
-        modifier = modifier,
+        modifier = modifier
     ) {
         Row(
             modifier =
-                Modifier
-                    .padding(start = 16.dp, top = 8.dp)
-                    .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
+            Modifier
+                .padding(start = 16.dp, top = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = exercise.exerciseName,
+                text = exercise.name,
                 modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge
             )
             Box {
                 IconButton(onClick = { isDropDownExpanded.value = true }) {
@@ -189,54 +191,54 @@ fun ExerciseCard(
 
                 DropdownMenu(
                     expanded = isDropDownExpanded.value,
-                    onDismissRequest = { isDropDownExpanded.value = false },
+                    onDismissRequest = { isDropDownExpanded.value = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Delete exercise") },
                         onClick = {
                             isDropDownExpanded.value = false
                             deleteExercise()
-                        },
+                        }
                     )
                 }
             }
         }
         Column(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
         ) {
             Row(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = "Sets",
                     modifier = Modifier.width(40.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = "Reps",
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     text = "Weight",
                     modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
 
             Column(
-                modifier = Modifier,
+                modifier = Modifier
             ) {
-                exercise.exerciseSets.forEach { set ->
+                exercise.sets.forEach { set ->
                     ExecutionRow(
-                        set = set.setNumber,
+                        set = set.order,
                         reps = set.reps,
                         weight = set.weight,
                         updateSet = { updatedSet ->
                             updateSet(updatedSet)
-                        },
+                        }
                     )
                 }
             }
@@ -253,7 +255,7 @@ fun ExerciseCard(
 fun FinishWorkoutDialog(
     onFinishWithoutChanges: () -> Unit,
     onFinishWithChanges: () -> Unit,
-    onDismissRequest: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     BasicAlertDialog(
         onDismissRequest = { onDismissRequest() },
@@ -262,19 +264,19 @@ fun FinishWorkoutDialog(
             Card {
                 Column(
                     modifier =
-                        Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
                 ) {
                     Text(
                         text = "Finish workout",
                         style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(bottom = 8.dp),
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = "Do you want to save the changes on the workout?",
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(bottom = 16.dp),
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
 
                     Button(
@@ -282,7 +284,7 @@ fun FinishWorkoutDialog(
                             onFinishWithoutChanges()
                             onDismissRequest()
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Finish without changes")
                     }
@@ -293,9 +295,9 @@ fun FinishWorkoutDialog(
                             onDismissRequest()
                         },
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
                     ) {
                         Text("Finish with changes")
                     }
@@ -305,15 +307,15 @@ fun FinishWorkoutDialog(
                             onDismissRequest()
                         },
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp)
                     ) {
                         Text("Cancel")
                     }
                 }
             }
-        },
+        }
     )
 }
 
@@ -323,23 +325,23 @@ fun ExecutionRow(
     set: Int,
     reps: Int,
     weight: Float,
-    updateSet: (ExerciseSet) -> Unit,
+    updateSet: (WorkoutSet) -> Unit
 ) {
     var repsInput by remember { mutableStateOf(reps.toString()) }
     var weightInput by remember { mutableStateOf(weight.toString()) }
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = set.toString(),
             modifier = Modifier.width(40.dp),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
         Box(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             OutlinedTextField(
                 singleLine = true,
@@ -348,18 +350,18 @@ fun ExecutionRow(
                 onValueChange = { newReps ->
                     repsInput = newReps
                     val updatedReps = newReps.toIntOrNull() ?: reps
-                    updateSet(ExerciseSet(set, updatedReps, weight))
+                    updateSet(WorkoutSet(order = set, reps = updatedReps, weight = weight))
                 },
                 modifier = Modifier.width(80.dp),
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
             )
         }
         Box(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             OutlinedTextField(
                 singleLine = true,
@@ -368,13 +370,13 @@ fun ExecutionRow(
                 onValueChange = { newWeight ->
                     weightInput = newWeight
                     val updatedWeight = newWeight.toFloatOrNull() ?: weight
-                    updateSet(ExerciseSet(set, reps, updatedWeight))
+                    updateSet(WorkoutSet(order = set, reps = reps, weight = updatedWeight))
                 },
                 modifier = Modifier.width(80.dp),
                 keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal,
-                    ),
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal
+                )
             )
         }
     }
@@ -404,6 +406,6 @@ fun FinishWorkoutDialogPreview() {
     FinishWorkoutDialog(
         onFinishWithoutChanges = { /*TODO*/ },
         onFinishWithChanges = { /*TODO*/ },
-        onDismissRequest = { /*TODO*/ },
+        onDismissRequest = { /*TODO*/ }
     )
 }

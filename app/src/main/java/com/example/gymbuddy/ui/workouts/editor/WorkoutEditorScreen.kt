@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.gymbuddy.R
+import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ fun WorkoutEditorScreen(
                 label = {
                     Text(text = stringResource(id = R.string.workout_editor_workout_title))
                 },
-                value = workoutEditorViewModel.workoutName.value,
+                value = workoutEditorViewModel.workout.value?.name ?: "",
                 onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -77,7 +78,9 @@ fun WorkoutEditorScreen(
                     .weight(1f)
                     .padding(top = 16.dp)
             ) {
-                itemsIndexed(workoutEditorViewModel.exerciseListToBeSaved) { index, exercise ->
+                itemsIndexed(
+                    workoutEditorViewModel.workout.value?.exercises ?: emptyList()
+                ) { index, exercise ->
                     AddExerciseCard(
                         modifier = Modifier.padding(top = 16.dp),
                         exercise = exercise,
@@ -93,13 +96,21 @@ fun WorkoutEditorScreen(
                 item {
                     AddExerciseButton(
                         onAddExerciseButtonClicked = {
+                            val newExerciseIndex =
+                                workoutEditorViewModel.workout.value
+                                    ?.exercises
+                                    ?.size ?: 0
                             workoutEditorViewModel.addExercise(
-                                ViewModelExercise(name = "Default Exercise", sets = 3)
+                                WorkoutExercise(
+                                    name = "Default Exercise",
+                                    setCount = 3,
+                                    order = newExerciseIndex
+                                )
                             )
                             coroutineScope.launch {
-                                listState.animateScrollToItem(
-                                    workoutEditorViewModel.exerciseListToBeSaved.size
-                                )
+                                workoutEditorViewModel.workout.value?.exercises?.let { exercises ->
+                                    listState.animateScrollToItem(exercises.size)
+                                }
                             }
                         }
                     )
@@ -226,8 +237,8 @@ private fun AddExerciseButton(
 @Composable
 private fun AddExerciseCard(
     modifier: Modifier = Modifier,
-    exercise: ViewModelExercise,
-    onUpdateExercise: (ViewModelExercise) -> Unit = {},
+    exercise: WorkoutExercise,
+    onUpdateExercise: (WorkoutExercise) -> Unit = {},
     onDeleteExercise: () -> Unit = {}
 ) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
@@ -267,10 +278,10 @@ private fun AddExerciseCard(
             )
             OutlinedTextField(
                 label = { Text(text = stringResource(R.string.workout_editor_sets_input_title)) },
-                value = exercise.sets.toString(),
+                value = exercise.setCount.toString(),
                 onValueChange = { newSets ->
                     onUpdateExercise(
-                        exercise.copy(sets = newSets.toIntOrNull() ?: 0)
+                        exercise.copy(setCount = newSets.toIntOrNull() ?: 0)
                     )
                 },
                 modifier = Modifier.width(64.dp),
@@ -315,7 +326,7 @@ private fun WorkoutEditorScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun AddExerciseCardPreview() {
-    val exampleExercise = ViewModelExercise(name = "Squats", sets = 3)
+    val exampleExercise = WorkoutExercise(name = "Squats", setCount = 3, order = 1)
     AddExerciseCard(
         exercise = exampleExercise,
         onUpdateExercise = { _ -> }
