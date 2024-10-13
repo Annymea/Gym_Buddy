@@ -5,10 +5,6 @@ import androidx.room.Room
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.LocalDataRepository
 import com.example.gymbuddy.data.localdatabase.WorkoutDatabase
-import com.example.gymbuddy.ui.old.createPlan.CreatePlanViewModel
-import com.example.gymbuddy.ui.old.planList.PlanListViewModel
-import com.example.gymbuddy.ui.old.runningWorkout.RunningWorkoutViewModel
-import com.example.gymbuddy.ui.old.startWorkout.StartWorkoutViewModel
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorViewModel
 import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorViewModel
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModel
@@ -44,14 +40,6 @@ val appModule =
 
         single<WorkoutRepository> {
             LocalDataRepository(workoutDAO = get())
-        }
-
-        viewModel { CreatePlanViewModel(workoutRepository = get()) }
-        viewModel { PlanListViewModel(workoutRepository = get()) }
-        viewModel { StartWorkoutViewModel(workoutRepository = get()) }
-
-        viewModel { (workoutId: String) ->
-            RunningWorkoutViewModel(workoutRepository = get(), workoutId = workoutId)
         }
 
         viewModel { WorkoutOverviewViewModel(workoutRepository = get()) }

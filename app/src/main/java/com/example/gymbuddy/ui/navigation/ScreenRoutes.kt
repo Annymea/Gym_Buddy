@@ -2,10 +2,8 @@ package com.example.gymbuddy.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.gymbuddy.R
 
@@ -15,20 +13,6 @@ sealed class NavigationRoutes(
     @StringRes val resourceId: Int,
     val icon: ImageVector
 ) {
-    data object CreateWorkoutGraph : NavigationRoutes(
-        "createWorkoutGraph",
-        ScreenRoutes.CreatePlan.route,
-        R.string.create_workout,
-        Icons.Default.Add
-    )
-
-    data object RunWorkoutGraph : NavigationRoutes(
-        "runWorkoutGraph",
-        ScreenRoutes.StartWorkout.route,
-        R.string.run_workout,
-        Icons.Default.PlayArrow
-    )
-
     data object DashboardGraph : NavigationRoutes(
         "dashboardGraph",
         ScreenRoutes.Dashboard.route,
@@ -53,22 +37,6 @@ sealed class ScreenRoutes(
 
     data object Dashboard : ScreenRoutes(
         "dashboard"
-    )
-
-    data object CreatePlan : ScreenRoutes(
-        "createPlan"
-    )
-
-    data object PlanList : ScreenRoutes(
-        "planList"
-    )
-
-    data object StartWorkout : ScreenRoutes(
-        "startWorkout"
-    )
-
-    data object RunningWorkout : ScreenRoutes(
-        "runningWorkout/{workoutId}"
     )
 
     data object WorkoutEditor : ScreenRoutes(
