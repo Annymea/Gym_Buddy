@@ -16,7 +16,7 @@ interface WorkoutDAO {
     @Query("SELECT * FROM exercise_details WHERE id = :exerciseId")
     fun getExerciseDetailsFor(exerciseId: Long): Flow<ExerciseDetailsEntity>
 
-    @Query("SELECT * FROM workout WHERE id = :workoutId")
+    @Query("SELECT * FROM workout WHERE workout_details_id = :workoutId")
     fun getWorkoutFor(workoutId: Long): Flow<List<WorkoutEntity>>
 
     @Query("SELECT * FROM workout_details")

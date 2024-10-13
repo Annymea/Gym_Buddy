@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
         WorkoutEntity::class,
         ExecutionEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class WorkoutDatabase : RoomDatabase() {

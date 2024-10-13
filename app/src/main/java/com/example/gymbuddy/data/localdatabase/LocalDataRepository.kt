@@ -1,8 +1,12 @@
 package com.example.gymbuddy.data.localdatabase
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
+import com.example.gymbuddy.data.WorkoutSet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -19,7 +23,7 @@ class LocalDataRepository(
             workoutDAO.getWorkoutFor(workoutId).firstOrNull()
                 ?: return null
 
-        val exercises: MutableList<WorkoutExercise> =
+        val exercises: SnapshotStateList<WorkoutExercise> =
             workoutEntities
                 .mapNotNull { workoutEntity ->
                     val exerciseDetails =
@@ -29,15 +33,18 @@ class LocalDataRepository(
                             ).firstOrNull()
                             ?: return@mapNotNull null
 
+                    // hier kann ich dann die previos sets einfügen
+                    val sets = mutableStateListOf<WorkoutSet>()
+
                     WorkoutExercise(
                         id = exerciseDetails.id,
                         name = exerciseDetails.exerciseName,
                         note = exerciseDetails.note,
                         setCount = workoutEntity.sets,
                         order = workoutEntity.order,
-                        sets = mutableListOf()
+                        sets = sets
                     )
-                }.toMutableList()
+                }.toMutableStateList()
 
         return Workout(
             id = workoutDetails.id,
@@ -58,7 +65,7 @@ class LocalDataRepository(
                     name = entity.workoutName,
                     category = entity.category,
                     note = entity.note,
-                    exercises = mutableListOf()
+                    exercises = mutableStateListOf()
                 )
             }
         }

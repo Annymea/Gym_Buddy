@@ -33,7 +33,8 @@ val appModule =
                     get<Application>(),
                     WorkoutDatabase::class.java,
                     "workout-database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                .build()
         }
 
         single { get<WorkoutDatabase>().workoutDao() }
