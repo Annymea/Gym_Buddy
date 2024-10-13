@@ -1,11 +1,14 @@
 package com.example.gymbuddy.data
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+
 data class Workout(
     var id: Long = 0,
     var name: String = "",
     var category: String = "",
     var note: String = "",
-    var exercises: MutableList<WorkoutExercise> = mutableListOf()
+    var exercises: SnapshotStateList<WorkoutExercise> = mutableStateListOf()
 )
 
 data class WorkoutExercise(
@@ -15,7 +18,7 @@ data class WorkoutExercise(
     var note: String = "",
     var setCount: Int = 0,
     var order: Int,
-    var sets: MutableList<WorkoutSet> = mutableListOf()
+    var sets: SnapshotStateList<WorkoutSet> = mutableStateListOf()
 )
 
 data class WorkoutSet(

@@ -38,42 +38,18 @@ class WorkoutEditorViewModel(
     }
 
     fun addExercise(exercise: WorkoutExercise) {
-        workout.value =
-            workout.value?.copy(
-                exercises =
-                workout.value
-                    ?.exercises
-                    ?.toMutableList()
-                    ?.apply { add(exercise) }
-                    ?: mutableListOf(exercise)
-            )
+        workout.value?.exercises?.add(exercise)
     }
 
     fun updateExercise(
         index: Int,
         exercise: WorkoutExercise
     ) {
-        workout.value =
-            workout.value?.copy(
-                exercises =
-                workout.value
-                    ?.exercises
-                    ?.toMutableList()
-                    ?.apply { set(index, exercise) }
-                    ?: mutableListOf()
-            )
+        workout.value?.exercises?.set(index, exercise)
     }
 
     fun removeExercise(index: Int) {
-        workout.value =
-            workout.value?.copy(
-                exercises =
-                workout.value
-                    ?.exercises
-                    ?.toMutableList()
-                    ?.apply { removeAt(index) }
-                    ?: mutableListOf()
-            )
+        workout.value?.exercises?.removeAt(index)
     }
 
     fun updateWorkoutName(newName: String) {

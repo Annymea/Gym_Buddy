@@ -27,8 +27,24 @@ class WorkoutExecutorViewModel(
                 Log.e("WorkoutExecutor", "Workout not found")
                 return@launch
             }
-
+            Log.i("WorkoutExecutor", "Found workout: $foundWorkout")
             workout.value = foundWorkout
+            addSetsToExercises()
+            Log.i("WorkoutExecutor", "Workout: ${workout.value!!.name}")
+            Log.i("WorkoutExecutor", "Workout: ${workout.value!!.exercises.size}")
+        }
+    }
+
+    private fun addSetsToExercises() {
+        if (workout.value?.exercises == null || workout.value?.exercises?.isEmpty() == true) {
+            return
+        }
+        for (exercise in workout.value?.exercises!!) {
+            if (exercise.sets.isEmpty() || exercise.sets.size < exercise.setCount - 1) {
+                for (i in 1..exercise.setCount) {
+                    addSet(exercise)
+                }
+            }
         }
     }
 

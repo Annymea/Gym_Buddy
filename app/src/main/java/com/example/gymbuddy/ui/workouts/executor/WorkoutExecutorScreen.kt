@@ -1,5 +1,6 @@
 package com.example.gymbuddy.ui.workouts.executor
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -231,7 +232,9 @@ fun ExerciseCard(
             Column(
                 modifier = Modifier
             ) {
+                Log.d("ExerciseCard", "Sets: ${exercise.sets}")
                 exercise.sets.forEach { set ->
+                    Log.d("ExerciseCard", "Set: $set")
                     ExecutionRow(
                         set = set.order,
                         reps = set.reps,
