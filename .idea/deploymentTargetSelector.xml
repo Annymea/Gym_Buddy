@@ -13,12 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="workoutEditor_CorrectTitleIsShown()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="workoutEditor_CorrectInitialUi()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="WorkoutEditorScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
@@ -34,6 +28,12 @@
         <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="workoutEditor_DeleteWorkout()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="workoutExecutor_initialUiIsCorrect()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="workoutExecutor_deleteExercise()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
