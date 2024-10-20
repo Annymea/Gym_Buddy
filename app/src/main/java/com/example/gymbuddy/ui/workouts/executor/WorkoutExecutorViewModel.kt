@@ -2,6 +2,7 @@ package com.example.gymbuddy.ui.workouts.executor
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,11 +13,29 @@ import com.example.gymbuddy.data.WorkoutSet
 import java.time.Instant
 import kotlinx.coroutines.launch
 
+interface WorkoutExecutorViewModelContract {
+    val workout: State<Workout?>
+
+    fun saveExecutions()
+
+    fun updateWorkout()
+
+    fun addSet(exercise: WorkoutExercise)
+
+    fun updateSet(
+        set: WorkoutSet,
+        exerciseIndex: Int
+    )
+
+    fun deleteExercise(exerciseIndex: Int)
+}
+
 class WorkoutExecutorViewModel(
     private val workoutRepository: WorkoutRepository,
     private val workoutId: String
-) : ViewModel() {
-    var workout: MutableState<Workout?> = mutableStateOf(null)
+) : ViewModel(),
+    WorkoutExecutorViewModelContract {
+    override var workout: MutableState<Workout?> = mutableStateOf(null)
         private set
 
     init {
@@ -48,7 +67,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    fun saveExecutions() {
+    override fun saveExecutions() {
         viewModelScope.launch {
             val currentTime = Instant.now().toEpochMilli()
 
@@ -60,7 +79,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    fun updateWorkout() {
+    override fun updateWorkout() {
         viewModelScope.launch {
             try {
                 workoutRepository.updateWorkout(workout.value!!)
@@ -70,7 +89,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    fun addSet(exercise: WorkoutExercise) {
+    override fun addSet(exercise: WorkoutExercise) {
         val newSet =
             WorkoutSet(
                 order = exercise.sets.size + 1,
@@ -80,7 +99,7 @@ class WorkoutExecutorViewModel(
         exercise.sets += newSet
     }
 
-    fun updateSet(
+    override fun updateSet(
         set: WorkoutSet,
         exerciseIndex: Int
     ) {
@@ -92,7 +111,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    fun deleteExercise(exerciseIndex: Int) {
+    override fun deleteExercise(exerciseIndex: Int) {
         workout.value?.exercises?.removeAt(exerciseIndex)
     }
 }

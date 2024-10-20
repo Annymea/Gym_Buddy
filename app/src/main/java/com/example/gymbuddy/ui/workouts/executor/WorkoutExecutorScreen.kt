@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -55,7 +56,7 @@ import org.koin.core.parameter.parametersOf
 fun WorkoutExecutorScreen(
     modifier: Modifier = Modifier,
     workoutId: String,
-    viewModel: WorkoutExecutorViewModel =
+    viewModel: WorkoutExecutorViewModelContract =
         koinViewModel<WorkoutExecutorViewModel>(parameters = { parametersOf(workoutId) }),
     navigateBack: () -> Unit = {}
 ) {
@@ -143,7 +144,8 @@ private fun FinishAndCancelButton(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .testTag("cancelButton"),
             onClick = { showCancelDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
@@ -153,7 +155,8 @@ private fun FinishAndCancelButton(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(start = 16.dp),
+                .padding(start = 16.dp)
+                .testTag("finishButton"),
             onClick = { showFinishDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
@@ -174,7 +177,7 @@ fun ExerciseCard(
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
-        modifier = modifier
+        modifier = modifier.testTag("exerciseCard")
     ) {
         Row(
             modifier =
@@ -185,11 +188,14 @@ fun ExerciseCard(
         ) {
             Text(
                 text = exercise.name,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).testTag("exerciseName"),
                 style = MaterialTheme.typography.titleLarge
             )
             Box {
-                IconButton(onClick = { isDropDownExpanded.value = true }) {
+                IconButton(
+                    modifier = Modifier.testTag("moreVertButton"),
+                    onClick = { isDropDownExpanded.value = true }
+                ) {
                     Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
                 }
 
@@ -202,7 +208,8 @@ fun ExerciseCard(
                         onClick = {
                             isDropDownExpanded.value = false
                             deleteExercise()
-                        }
+                        },
+                        modifier = Modifier.testTag("deleteExerciseMenuItem")
                     )
                 }
             }
@@ -244,11 +251,15 @@ fun ExerciseCard(
                         weight = set.weight,
                         updateSet = { updatedSet ->
                             updateSet(updatedSet)
-                        }
+                        },
+                        modifier = Modifier.testTag("executionRow")
                     )
                 }
             }
-            TextButton(onClick = { addSet() }) {
+            TextButton(
+                onClick = { addSet() },
+                modifier = Modifier.testTag("addSetButton")
+            ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 Text(text = "Add set")
             }
@@ -264,6 +275,7 @@ fun FinishWorkoutDialog(
     onDismissRequest: () -> Unit
 ) {
     BasicAlertDialog(
+        modifier = Modifier.testTag("finishWorkoutDialog"),
         onDismissRequest = { onDismissRequest() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
         content = {

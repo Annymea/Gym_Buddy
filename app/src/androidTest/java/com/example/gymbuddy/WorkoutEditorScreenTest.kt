@@ -15,6 +15,7 @@ import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.workouts.editor.SavingWorkoutState
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorViewModelContract
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -22,14 +23,17 @@ class WorkoutEditorScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @Test
-    fun workoutEditor_CorrectInitialUi() {
+    @Before
+    fun setUp() {
         composeTestRule.setContent {
             WorkoutEditorScreen(
-                workoutEditorViewModel = FakeWorkoutEditorViewModel(),
+                workoutEditorViewModel = FakeWorkoutEditorViewModel()
             )
         }
+    }
 
+    @Test
+    fun workoutEditor_CorrectInitialUi() {
         composeTestRule
             .onNodeWithTag("screenTitle_Editor")
             .assertIsDisplayed()
@@ -58,12 +62,6 @@ class WorkoutEditorScreenTest {
 
     @Test
     fun workoutEditor_AddExercise() {
-        composeTestRule.setContent {
-            WorkoutEditorScreen(
-                workoutEditorViewModel = FakeWorkoutEditorViewModel(),
-            )
-        }
-
         composeTestRule
             .onNodeWithTag("addExerciseButton")
             .performClick()
@@ -82,12 +80,6 @@ class WorkoutEditorScreenTest {
 
     @Test
     fun workoutEditor_CancelDialog() {
-        composeTestRule.setContent {
-            WorkoutEditorScreen(
-                workoutEditorViewModel = FakeWorkoutEditorViewModel(),
-            )
-        }
-
         composeTestRule
             .onNodeWithTag("cancelButton")
             .performClick()
@@ -101,12 +93,6 @@ class WorkoutEditorScreenTest {
 
     @Test
     fun workoutEditor_SaveDialog() {
-        composeTestRule.setContent {
-            WorkoutEditorScreen(
-                workoutEditorViewModel = FakeWorkoutEditorViewModel(),
-            )
-        }
-
         composeTestRule
             .onNodeWithTag("saveButton")
             .performClick()
@@ -120,12 +106,6 @@ class WorkoutEditorScreenTest {
 
     @Test
     fun workoutEditor_DeleteWorkout() {
-        composeTestRule.setContent {
-            WorkoutEditorScreen(
-                workoutEditorViewModel = FakeWorkoutEditorViewModel(),
-            )
-        }
-
         composeTestRule
             .onNodeWithTag("addExerciseButton")
             .performClick()
@@ -159,7 +139,7 @@ class FakeWorkoutEditorViewModel : WorkoutEditorViewModelContract {
         workout.value =
             Workout(
                 name = "Workout",
-                exercises = mutableStateListOf(),
+                exercises = mutableStateListOf()
             )
     }
 
@@ -169,7 +149,7 @@ class FakeWorkoutEditorViewModel : WorkoutEditorViewModelContract {
 
     override fun updateExercise(
         index: Int,
-        exercise: WorkoutExercise,
+        exercise: WorkoutExercise
     ) {
     }
 
