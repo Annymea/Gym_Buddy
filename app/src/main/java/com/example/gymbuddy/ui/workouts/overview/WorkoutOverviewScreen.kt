@@ -26,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -74,7 +75,10 @@ fun CreateFirstWorkout(
         modifier
             .fillMaxSize()
     ) {
-        ScreenTitle(text = stringResource(R.string.workout_overview_title))
+        ScreenTitle(
+            text = stringResource(R.string.workout_overview_title),
+            testTag = "screenTitle_Overview"
+        )
 
         Box(
             modifier =
@@ -106,7 +110,8 @@ fun WorkoutOverview(
                 modifier =
                 Modifier
                     .weight(1f),
-                text = stringResource(R.string.workout_overview_title)
+                text = stringResource(R.string.workout_overview_title),
+                testTag = "screenTitle_Overview"
             )
 
             IconButton(
@@ -116,6 +121,7 @@ fun WorkoutOverview(
                 Modifier
                     .align(Alignment.CenterVertically)
                     .padding(end = 24.dp)
+                    .testTag("createWorkoutButton")
             ) {
                 Icon(
                     modifier = Modifier,
@@ -213,7 +219,8 @@ fun WorkoutCard(
             )
             IconButton(
                 colors = IconButtonDefaults.iconButtonColors(MaterialTheme.colorScheme.primary),
-                onClick = { onStartWorkout() }
+                onClick = { onStartWorkout() },
+                modifier = Modifier.testTag("startWorkoutButton")
             ) {
                 Icon(
                     tint = MaterialTheme.colorScheme.onPrimary,

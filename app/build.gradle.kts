@@ -61,6 +61,7 @@ dependencies {
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
+    implementation("androidx.test:core-ktx:1.4.0")
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
@@ -87,7 +88,6 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.testng)
-    testImplementation(libs.androidx.core.testing)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
 
@@ -100,8 +100,12 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation("androidx.test:core:1.2.0")
 
     kapt(libs.androidx.room.compiler)
+
+    // debugImplementation("androidx.fragment:fragment-testing-manifest:1.6.0-alpha04")
+    // androidTestImplementation("androidx.fragment:fragment-testing:1.6.0-alpha04")
 }
 
 ktlint {

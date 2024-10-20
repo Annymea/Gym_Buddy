@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,11 +49,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
-    workoutEditorViewModel: WorkoutEditorViewModel = koinViewModel<WorkoutEditorViewModel>(),
+    workoutEditorViewModel: WorkoutEditorViewModelContract =
+        koinViewModel<WorkoutEditorViewModel>(),
     navigateBack: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        ScreenTitle(text = stringResource(R.string.workout_editor_new_workout_screen_title))
+        ScreenTitle(
+            text = stringResource(R.string.workout_editor_new_workout_screen_title),
+            testTag = "screenTitle_Editor"
+        )
 
         Column(
             modifier =
@@ -66,7 +71,7 @@ fun WorkoutEditorScreen(
                 },
                 value = workoutEditorViewModel.workout.value?.name ?: "",
                 onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag("workoutNameInput")
             )
 
             val listState = rememberLazyListState()
@@ -95,6 +100,7 @@ fun WorkoutEditorScreen(
 
                 item {
                     AddExerciseButton(
+                        modifier = Modifier.testTag("addExerciseButton"),
                         onAddExerciseButtonClicked = {
                             val newExerciseIndex =
                                 workoutEditorViewModel.workout.value
@@ -185,7 +191,8 @@ private fun SaveAndCancelButton(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .testTag("cancelButton"),
             onClick = { showCancelDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
@@ -196,7 +203,8 @@ private fun SaveAndCancelButton(
             modifier =
             Modifier
                 .weight(1f)
-                .padding(start = 16.dp),
+                .padding(start = 16.dp)
+                .testTag("saveButton"),
             onClick = { showSaveDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
@@ -249,6 +257,7 @@ private fun AddExerciseCard(
         modifier =
         modifier
             .fillMaxWidth()
+            .testTag("addExerciseCard")
     ) {
         Row(
             modifier =
@@ -275,6 +284,7 @@ private fun AddExerciseCard(
                 Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
+                    .testTag("exerciseNameInput")
             )
             OutlinedTextField(
                 label = { Text(text = stringResource(R.string.workout_editor_sets_input_title)) },
@@ -291,7 +301,7 @@ private fun AddExerciseCard(
 
             Box {
                 IconButton(
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.padding(top = 8.dp).testTag("moreButton"),
                     onClick = { isDropDownExpanded.value = true }
                 ) {
                     Icon(
@@ -309,7 +319,8 @@ private fun AddExerciseCard(
                         onClick = {
                             isDropDownExpanded.value = false
                             onDeleteExercise()
-                        }
+                        },
+                        modifier = Modifier.testTag("deleteExerciseButton")
                     )
                 }
             }

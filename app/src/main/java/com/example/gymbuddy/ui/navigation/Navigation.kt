@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -28,23 +29,23 @@ import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
 @Composable
 fun AppNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val items =
         listOf(
             NavigationRoutes.DashboardGraph,
-            NavigationRoutes.WorkoutGraph
+            NavigationRoutes.WorkoutGraph,
         )
 
     Scaffold(
         modifier = modifier.systemBarsPadding(),
         bottomBar = {
             BottomNavigationBar(navController, items)
-        }
+        },
     ) { innerPadding ->
         Navigation(
             modifier = modifier.padding(innerPadding),
-            navController = navController
+            navController = navController,
         )
     }
 }
@@ -52,13 +53,17 @@ fun AppNavigation(
 @Composable
 private fun BottomNavigationBar(
     navController: NavHostController,
-    items: List<NavigationRoutes>
+    items: List<NavigationRoutes>,
 ) {
     NavigationBar {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         items.forEach { navigationRoute ->
             NavigationBarItem(
+                modifier =
+                    Modifier.testTag(
+                        "bottomNavigation_" + stringResource(navigationRoute.resourceId),
+                    ),
                 icon = {
                     Icon(navigationRoute.icon, contentDescription = null)
                 },
@@ -66,11 +71,11 @@ private fun BottomNavigationBar(
                     Text(text = stringResource(navigationRoute.resourceId))
                 },
                 selected =
-                currentDestination?.hierarchy?.any
-                { it.route == navigationRoute.route } == true,
+                    currentDestination?.hierarchy?.any
+                        { it.route == navigationRoute.route } == true,
                 onClick = {
                     if (currentDestination?.hierarchy?.any
-                        { it.route == navigationRoute.route } == true
+                            { it.route == navigationRoute.route } == true
                     ) {
                         navController.popBackStack(navigationRoute.startDestination, false)
                     } else {
@@ -83,7 +88,7 @@ private fun BottomNavigationBar(
                             restoreState = false
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -92,24 +97,24 @@ private fun BottomNavigationBar(
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavigationRoutes.DashboardGraph.route
+        startDestination = NavigationRoutes.DashboardGraph.route,
     ) {
-        dashboardNavigation(modifier, navController)
+        dashboardNavigation(modifier)
         workoutNavigation(modifier, navController)
     }
 }
 
 private fun NavGraphBuilder.workoutNavigation(
     modifier: Modifier,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     navigation(
         startDestination = ScreenRoutes.WorkoutOverview.route,
-        route = NavigationRoutes.WorkoutGraph.route
+        route = NavigationRoutes.WorkoutGraph.route,
     ) {
         composable(ScreenRoutes.WorkoutOverview.route) {
             WorkoutOverviewScreen(
@@ -120,10 +125,10 @@ private fun NavGraphBuilder.workoutNavigation(
                         ScreenRoutes.WorkoutExecutor.route
                             .replace(
                                 oldValue = "{workoutId}",
-                                newValue = workoutId.toString()
-                            )
+                                newValue = workoutId.toString(),
+                            ),
                     )
-                }
+                },
             )
         }
 
@@ -132,7 +137,7 @@ private fun NavGraphBuilder.workoutNavigation(
                 modifier = modifier,
                 navigateBack = {
                     navController.popBackStack(ScreenRoutes.WorkoutOverview.route, false)
-                }
+                },
             )
         }
 
@@ -144,24 +149,21 @@ private fun NavGraphBuilder.workoutNavigation(
                     modifier = modifier,
                     navigateBack = {
                         navController.popBackStack(ScreenRoutes.WorkoutOverview.route, false)
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-private fun NavGraphBuilder.dashboardNavigation(
-    modifier: Modifier,
-    navController: NavHostController
-) {
+private fun NavGraphBuilder.dashboardNavigation(modifier: Modifier) {
     navigation(
         startDestination = ScreenRoutes.Dashboard.route,
-        route = NavigationRoutes.DashboardGraph.route
+        route = NavigationRoutes.DashboardGraph.route,
     ) {
         composable(ScreenRoutes.Dashboard.route) {
             Dashboard(
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
