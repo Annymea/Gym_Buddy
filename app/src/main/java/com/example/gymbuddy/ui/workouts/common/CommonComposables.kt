@@ -8,6 +8,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -15,12 +16,16 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ScreenTitle(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    testTag: String
 ) {
     Text(
         fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
         fontStyle = MaterialTheme.typography.headlineLarge.fontStyle,
-        modifier = modifier.padding(24.dp),
+        modifier =
+        modifier
+            .padding(24.dp)
+            .testTag(testTag),
         fontSize = 24.sp,
         color = MaterialTheme.colorScheme.onBackground,
         text = text
@@ -37,6 +42,7 @@ fun ConfirmationDialog(
     onDismissRequest: () -> Unit
 ) {
     AlertDialog(
+        modifier = Modifier.testTag("confirmationDialog"),
         onDismissRequest = { onDismissRequest() },
         title = {
             Text(text = title)

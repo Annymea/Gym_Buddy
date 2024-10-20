@@ -62,7 +62,10 @@ fun WorkoutExecutorScreen(
     Column(
         modifier = modifier.fillMaxSize()
     ) {
-        ScreenTitle(text = viewModel.workout.value?.name ?: "Default workout")
+        ScreenTitle(
+            text = viewModel.workout.value?.name ?: "Default workout",
+            testTag = "screenTitle_Executor"
+        )
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),

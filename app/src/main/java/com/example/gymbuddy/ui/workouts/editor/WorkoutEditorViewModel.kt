@@ -1,6 +1,7 @@
 package com.example.gymbuddy.ui.workouts.editor
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,24 @@ import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import kotlinx.coroutines.launch
+
+interface WorkoutEditorViewModelContract {
+    val saveState: State<SavingWorkoutState>
+    val workout: State<Workout?>
+
+    fun addExercise(exercise: WorkoutExercise)
+
+    fun updateExercise(
+        index: Int,
+        exercise: WorkoutExercise
+    )
+
+    fun removeExercise(index: Int)
+
+    fun updateWorkoutName(newName: String)
+
+    fun saveWorkout()
+}
 
 sealed class SavingWorkoutState {
     data object Idle : SavingWorkoutState()
@@ -23,11 +42,12 @@ sealed class SavingWorkoutState {
 
 class WorkoutEditorViewModel(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-    var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
+) : ViewModel(),
+    WorkoutEditorViewModelContract {
+    override var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
         private set
 
-    var workout = mutableStateOf<Workout?>(null)
+    override var workout = mutableStateOf<Workout?>(null)
         private set
 
     init {
@@ -37,26 +57,26 @@ class WorkoutEditorViewModel(
             )
     }
 
-    fun addExercise(exercise: WorkoutExercise) {
+    override fun addExercise(exercise: WorkoutExercise) {
         workout.value?.exercises?.add(exercise)
     }
 
-    fun updateExercise(
+    override fun updateExercise(
         index: Int,
         exercise: WorkoutExercise
     ) {
         workout.value?.exercises?.set(index, exercise)
     }
 
-    fun removeExercise(index: Int) {
+    override fun removeExercise(index: Int) {
         workout.value?.exercises?.removeAt(index)
     }
 
-    fun updateWorkoutName(newName: String) {
+    override fun updateWorkoutName(newName: String) {
         workout.value = workout.value?.copy(name = newName)
     }
 
-    fun saveWorkout() {
+    override fun saveWorkout() {
         saveState.value = SavingWorkoutState.Saving
         viewModelScope.launch {
             try {

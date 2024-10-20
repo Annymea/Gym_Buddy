@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.gymbuddy.ui.theme.Gym_BuddyTheme
 
@@ -17,7 +18,10 @@ fun Dashboard(modifier: Modifier) {
 @Composable
 fun FirstButtons(modifier: Modifier) {
     Column(modifier = modifier) {
-        Text(text = "Dashboard Content")
+        Text(
+            modifier = modifier.testTag("dashboardTitle"),
+            text = "Dashboard Content"
+        )
     }
 }
 
