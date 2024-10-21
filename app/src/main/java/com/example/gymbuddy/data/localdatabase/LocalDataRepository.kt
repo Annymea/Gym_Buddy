@@ -143,7 +143,8 @@ class LocalDataRepository(
                     note = newWorkout.note
                 )
             )
-
+        // workaround until i implemented the correct workflow for exercises
+        // later no new exercises should be created here
         newWorkout.exercises.forEach { exercise ->
             val newExerciseId =
                 workoutDAO.insertExerciseDetails(

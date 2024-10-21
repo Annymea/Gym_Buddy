@@ -32,37 +32,37 @@ class WorkoutExecutorScreenTest {
             Workout(
                 name = "Test Workout",
                 exercises =
-                    mutableStateListOf(
-                        WorkoutExercise(
-                            name = "Test Exercise",
-                            order = 0,
-                            setCount = 3,
-                            sets =
-                                mutableStateListOf(
-                                    WorkoutSet(
-                                        order = 0,
-                                        reps = 10,
-                                        weight = 50F,
-                                    ),
-                                    WorkoutSet(
-                                        order = 1,
-                                        reps = 10,
-                                        weight = 50F,
-                                    ),
-                                    WorkoutSet(
-                                        order = 2,
-                                        reps = 10,
-                                        weight = 50F,
-                                    ),
-                                ),
-                        ),
-                    ),
+                mutableStateListOf(
+                    WorkoutExercise(
+                        name = "Test Exercise",
+                        order = 0,
+                        setCount = 3,
+                        sets =
+                        mutableStateListOf(
+                            WorkoutSet(
+                                order = 0,
+                                reps = 10,
+                                weight = 50F
+                            ),
+                            WorkoutSet(
+                                order = 1,
+                                reps = 10,
+                                weight = 50F
+                            ),
+                            WorkoutSet(
+                                order = 2,
+                                reps = 10,
+                                weight = 50F
+                            )
+                        )
+                    )
+                )
             )
 
         composeTestRule.setContent {
             WorkoutExecutorScreen(
                 workoutId = workoutId,
-                viewModel = FakeWorkoutExecutorViewModel(testWorkout),
+                viewModel = FakeWorkoutExecutorViewModel(testWorkout)
             )
         }
     }
@@ -159,7 +159,7 @@ class WorkoutExecutorScreenTest {
 }
 
 class FakeWorkoutExecutorViewModel(
-    testWorkout: Workout,
+    testWorkout: Workout
 ) : WorkoutExecutorViewModelContract {
     override val workout: MutableState<Workout?> = mutableStateOf(testWorkout)
 
@@ -174,14 +174,14 @@ class FakeWorkoutExecutorViewModel(
             WorkoutSet(
                 order = exercise.sets.size + 1,
                 reps = 0,
-                weight = 0f,
-            ),
+                weight = 0f
+            )
         )
     }
 
     override fun updateSet(
         set: WorkoutSet,
-        exerciseIndex: Int,
+        exerciseIndex: Int
     ) {
     }
 
