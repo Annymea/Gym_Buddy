@@ -7,38 +7,139 @@ import com.example.gymbuddy.data.localdatabase.WorkoutDAO
 import com.example.gymbuddy.data.localdatabase.WorkoutDatabase
 import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.data.localdatabase.WorkoutEntity
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDate
+import java.time.Instant
 
-//class CompleteWorkoutDTODaoTestEntity {
-//    private lateinit var workoutDao: WorkoutDAO
-//    private lateinit var workoutDatabase: WorkoutDatabase
-//
-//    @Before
-//    fun createDB() {
-//        val context = ApplicationProvider.getApplicationContext<Context>()
-//
-//        workoutDatabase =
-//            Room
-//                .inMemoryDatabaseBuilder(
-//                    context,
-//                    WorkoutDatabase::class.java,
-//                ).allowMainThreadQueries()
-//                .build()
-//
-//        workoutDao = workoutDatabase.workoutDao()
-//    }
-//
-//    @After
-//    fun closeDb() {
-//        workoutDatabase.close()
-//    }
+class WorkoutDAOTest {
+    private lateinit var workoutDao: WorkoutDAO
+    private lateinit var workoutDatabase: WorkoutDatabase
+
+    @Before
+    fun createDB() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        workoutDatabase =
+            Room
+                .inMemoryDatabaseBuilder(
+                    context,
+                    WorkoutDatabase::class.java,
+                ).allowMainThreadQueries()
+                .build()
+        workoutDao = workoutDatabase.workoutDao()
+    }
+
+    @After
+    fun closeDb() {
+        workoutDatabase.close()
+    }
+
+    /*
+     *       Insert Tests
+     */
+
+    @Test
+    fun insertWorkoutExecutionListToDatabase() =
+        runBlocking {
+            val exerciseDetails = getExerciseDetails()
+
+            val workoutExecutions =
+                listOf(
+                    ExecutionEntity(
+                        id = 1,
+                        weight = 20F,
+                        date = Instant.now().toEpochMilli(),
+                        reps = 10,
+                        exerciseDetailsId = 1,
+                    ),
+                    ExecutionEntity(
+                        id = 2,
+                        weight = 20F,
+                        date = Instant.now().toEpochMilli(),
+                        reps = 10,
+                        exerciseDetailsId = 1,
+                    ),
+                )
+
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.saveWorkoutExecution(workoutExecutions)
+
+            val savedExecutions: List<ExecutionEntity> =
+                workoutDao.getExecutionsFor(1).first()
+
+            assert(savedExecutions.size == 2)
+            assert(savedExecutions.containsAll(workoutExecutions))
+        }
+
+    @Test
+    fun insertWorkoutListToDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+            val exerciseDetails = getExerciseDetails()
+
+            val workout =
+                listOf(
+                    WorkoutEntity(
+                        id = 1,
+                        workoutDetailsId = 1,
+                        exerciseDetailsId = 1,
+                        sets = 3,
+                        order = 1,
+                    ),
+                    WorkoutEntity(
+                        id = 2,
+                        workoutDetailsId = 1,
+                        exerciseDetailsId = 1,
+                        sets = 3,
+                        order = 2,
+                    ),
+                )
+
+            workoutDao.insertWorkoutDetails(workoutDetails)
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.insertWorkoutEntities(workout)
+
+            val savedWorkout: List<WorkoutEntity> =
+                workoutDao.getWorkoutFor(1).first()
+
+            assert(savedWorkout.size == 2)
+            assert(savedWorkout.containsAll(workout))
+        }
+
+    @Test
+    fun insertWorkoutDetailsToDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+
+            val savedWorkoutDetailsId: Long = workoutDao.insertWorkoutDetails(workoutDetails)
+            val savedWorkoutDetails: WorkoutDetailsEntity =
+                workoutDao.getWorkoutDetailsFor(1L).first()
+
+            assert(savedWorkoutDetails == workoutDetails)
+            assert(savedWorkoutDetailsId == 1L)
+        }
+
+    private fun getExerciseDetails(): ExerciseDetailsEntity =
+        ExerciseDetailsEntity(
+            exerciseName = "Test Exercise",
+            id = 1,
+            note = "",
+            category = "",
+        )
+
+    private fun getWorkoutDetails(): WorkoutDetailsEntity =
+        WorkoutDetailsEntity(
+            workoutName = "Test Workout",
+            id = 1,
+            category = "",
+            note = "",
+        )
+}
+
+// class CompleteWorkoutDTODaoTestEntity {
+
 //
 //    // Insert tests
 //    @Test
@@ -339,5 +440,5 @@ import java.time.LocalDate
 //        weight: Int = 200,
 //        date: Long = LocalDate.now().toEpochDay(),
 //    ): ExecutionEntity = ExecutionEntity(id, exerciseId, weight, reps, date)
-//}
+// }
 //

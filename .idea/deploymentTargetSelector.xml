@@ -13,27 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="WorkoutEditorScreenTest">
+      <SelectionState runConfigName="workoutExecutor_cancelDialog()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="workoutEditor_AddExercise()">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-10-20T18:18:34.327834900Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Anna\.android\avd\Running_App.avd" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection />
-      </SelectionState>
-      <SelectionState runConfigName="workoutEditor_DeleteWorkout()">
+      <SelectionState runConfigName="workoutExecutor_saveDialog()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="workoutExecutor_initialUiIsCorrect()">
+      <SelectionState runConfigName="saveWorkoutExecutionToDatabase()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="workoutExecutor_deleteExercise()">
+      <SelectionState runConfigName="insertWorkoutListToDatabase()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="insertWorkoutDetailsToDatabase()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
