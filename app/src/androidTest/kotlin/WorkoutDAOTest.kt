@@ -80,22 +80,7 @@ class WorkoutDAOTest {
             val exerciseDetails = getExerciseDetails()
 
             val workout =
-                listOf(
-                    WorkoutEntity(
-                        id = 1,
-                        workoutDetailsId = 1,
-                        exerciseDetailsId = 1,
-                        sets = 3,
-                        order = 1,
-                    ),
-                    WorkoutEntity(
-                        id = 2,
-                        workoutDetailsId = 1,
-                        exerciseDetailsId = 1,
-                        sets = 3,
-                        order = 2,
-                    ),
-                )
+                listOf(getWorkout(1), getWorkout(2))
 
             workoutDao.insertWorkoutDetails(workoutDetails)
             workoutDao.insertExerciseDetails(exerciseDetails)
@@ -121,6 +106,137 @@ class WorkoutDAOTest {
             assert(savedWorkoutDetailsId == 1L)
         }
 
+    @Test
+    fun insertWorkoutToDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+            val exerciseDetails = getExerciseDetails()
+            val workout = getWorkout()
+
+            workoutDao.insertWorkoutDetails(workoutDetails)
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.insertWorkoutEntity(workout)
+
+            val savedWorkout: List<WorkoutEntity> =
+                workoutDao.getWorkoutFor(1).first()
+
+            assert(savedWorkout.size == 1)
+            assert(savedWorkout.contains(workout))
+        }
+
+    @Test
+    fun insertExerciseDetailsToDatabase() =
+        runBlocking {
+            val exerciseDetails = getExerciseDetails()
+            workoutDao.insertExerciseDetails(exerciseDetails)
+
+            val savedExerciseDetails: ExerciseDetailsEntity =
+                workoutDao.getExerciseDetailsFor(1L).first()
+
+            assert(savedExerciseDetails == exerciseDetails)
+            assert(savedExerciseDetails.id == 1L)
+        }
+
+    /*
+     *       Update Tests
+     */
+
+    @Test
+    fun updateWorkoutsToDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+            val exerciseDetails = getExerciseDetails()
+
+            val workout =
+                listOf(getWorkout(1), getWorkout(2))
+
+            workoutDao.insertWorkoutDetails(workoutDetails)
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.insertWorkoutEntities(workout)
+
+            val updatedWorkout =
+                listOf(getWorkout(id = 1L, sets = 4), getWorkout(id = 2L, sets = 2))
+
+            workoutDao.updateWorkoutEntities(updatedWorkout)
+
+            val savedWorkout: List<WorkoutEntity> =
+                workoutDao.getWorkoutFor(1).first()
+
+            assert(savedWorkout.size == 2)
+            assert(savedWorkout.containsAll(updatedWorkout))
+        }
+
+    /*
+     *       Delete Tests
+     */
+
+    @Test
+    fun deleteWorkoutsFromDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+            val exerciseDetails = getExerciseDetails()
+
+            val workout =
+                listOf(getWorkout(1), getWorkout(2))
+
+            workoutDao.insertWorkoutDetails(workoutDetails)
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.insertWorkoutEntities(workout)
+
+            workoutDao.deleteWorkoutEntities(listOf(workout[0]))
+
+            val savedWorkout: List<WorkoutEntity> =
+                workoutDao.getWorkoutFor(1).first()
+
+            assert(savedWorkout.size == 1)
+            assert(savedWorkout.contains(workout[1]))
+        }
+
+    /*
+     *       Special Query Tests
+     */
+
+    @Test
+    fun getAllWorkoutDetailsFromDatabase() =
+        runBlocking {
+            val workoutDetails =
+                listOf(
+                    getWorkoutDetails(id = 1, name = "Test Workout 1"),
+                    getWorkoutDetails(id = 2, name = "Test Workout 2"),
+                    getWorkoutDetails(id = 3, name = "Test Workout 3"),
+                )
+
+            for (workoutDetail in workoutDetails) {
+                workoutDao.insertWorkoutDetails(workoutDetail)
+            }
+
+            val savedWorkoutDetails: List<WorkoutDetailsEntity> =
+                workoutDao.getAllWorkoutDetails().first()
+
+            assert(savedWorkoutDetails.size == 3)
+            assert(savedWorkoutDetails.containsAll(workoutDetails))
+        }
+
+    @Test
+    fun getAllExerciseForWorkoutFromDatabase() =
+        runBlocking {
+            val workoutDetails = getWorkoutDetails()
+            val exerciseDetails = getExerciseDetails()
+
+            val workout =
+                listOf(getWorkout(1), getWorkout(2))
+
+            workoutDao.insertWorkoutDetails(workoutDetails)
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.insertWorkoutEntities(workout)
+
+            val savedWorkout: List<WorkoutEntity> =
+                workoutDao.getExercisesFor(1).first()
+
+            assert(savedWorkout.size == 2)
+            assert(savedWorkout.containsAll(workout))
+        }
+
     private fun getExerciseDetails(): ExerciseDetailsEntity =
         ExerciseDetailsEntity(
             exerciseName = "Test Exercise",
@@ -129,12 +245,27 @@ class WorkoutDAOTest {
             category = "",
         )
 
-    private fun getWorkoutDetails(): WorkoutDetailsEntity =
+    private fun getWorkoutDetails(
+        id: Long = 1L,
+        name: String = "Test Workout",
+    ): WorkoutDetailsEntity =
         WorkoutDetailsEntity(
-            workoutName = "Test Workout",
-            id = 1,
+            workoutName = name,
+            id = id,
             category = "",
             note = "",
+        )
+
+    private fun getWorkout(
+        id: Long = 1L,
+        sets: Int = 3,
+    ): WorkoutEntity =
+        WorkoutEntity(
+            id = id,
+            workoutDetailsId = 1,
+            exerciseDetailsId = 1,
+            sets = sets,
+            order = 1,
         )
 }
 
