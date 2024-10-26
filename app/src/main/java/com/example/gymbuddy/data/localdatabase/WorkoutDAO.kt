@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WorkoutDAO {
     @Query("SELECT * FROM workout_details WHERE id = :workoutId")
-    fun getWorkoutDetailsFor(workoutId: Long): Flow<WorkoutDetailsEntity>
+    fun getWorkoutDetailsFor(workoutId: Long): Flow<WorkoutDetailsEntity?>
 
     @Query("SELECT * FROM exercise_details WHERE id = :exerciseId")
-    fun getExerciseDetailsFor(exerciseId: Long): Flow<ExerciseDetailsEntity>
+    fun getExerciseDetailsFor(exerciseId: Long): Flow<ExerciseDetailsEntity?>
 
     @Query("SELECT * FROM workout WHERE workout_details_id = :workoutId")
     fun getWorkoutFor(workoutId: Long): Flow<List<WorkoutEntity>>

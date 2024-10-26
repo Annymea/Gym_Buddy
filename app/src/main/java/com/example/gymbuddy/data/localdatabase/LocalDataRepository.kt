@@ -75,6 +75,8 @@ class LocalDataRepository(
         doneExercises: List<WorkoutExercise>,
         date: Long
     ) {
+        if (doneExercises.isEmpty()) return
+
         val executionEntities =
             doneExercises.flatMap { exercise ->
                 exercise.sets.map { set ->
@@ -127,11 +129,17 @@ class LocalDataRepository(
                 }
             }
 
-        workoutDAO.deleteWorkoutEntities(workoutEntitiesToDelete)
+        if (workoutEntitiesToDelete.isNotEmpty()) {
+            workoutDAO.deleteWorkoutEntities(workoutEntitiesToDelete)
+        }
 
-        workoutDAO.updateWorkoutEntities(workoutEntitiesToUpdate)
+        if (workoutEntitiesToUpdate.isNotEmpty()) {
+            workoutDAO.updateWorkoutEntities(workoutEntitiesToUpdate)
+        }
 
-        workoutDAO.insertWorkoutEntities(workoutEntitiesToInsert)
+        if (workoutEntitiesToInsert.isNotEmpty()) {
+            workoutDAO.insertWorkoutEntities(workoutEntitiesToInsert)
+        }
     }
 
     override suspend fun createNewWorkout(newWorkout: Workout) {

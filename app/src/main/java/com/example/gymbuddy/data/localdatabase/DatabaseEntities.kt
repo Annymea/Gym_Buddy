@@ -10,16 +10,16 @@ import androidx.room.PrimaryKey
 data class WorkoutDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "workout_name") val workoutName: String,
-    val note: String,
-    val category: String
+    val note: String = "",
+    val category: String = ""
 )
 
 @Entity(tableName = "exercise_details")
 data class ExerciseDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "exercise_name") val exerciseName: String,
-    val note: String,
-    val category: String
+    val note: String = "",
+    val category: String = ""
 )
 
 @Entity(

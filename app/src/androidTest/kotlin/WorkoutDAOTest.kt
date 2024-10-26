@@ -99,7 +99,7 @@ class WorkoutDAOTest {
             val workoutDetails = getWorkoutDetails()
 
             val savedWorkoutDetailsId: Long = workoutDao.insertWorkoutDetails(workoutDetails)
-            val savedWorkoutDetails: WorkoutDetailsEntity =
+            val savedWorkoutDetails: WorkoutDetailsEntity? =
                 workoutDao.getWorkoutDetailsFor(1L).first()
 
             assert(savedWorkoutDetails == workoutDetails)
@@ -130,11 +130,11 @@ class WorkoutDAOTest {
             val exerciseDetails = getExerciseDetails()
             workoutDao.insertExerciseDetails(exerciseDetails)
 
-            val savedExerciseDetails: ExerciseDetailsEntity =
+            val savedExerciseDetails: ExerciseDetailsEntity? =
                 workoutDao.getExerciseDetailsFor(1L).first()
 
             assert(savedExerciseDetails == exerciseDetails)
-            assert(savedExerciseDetails.id == 1L)
+            assert(savedExerciseDetails?.id == 1L)
         }
 
     /*
@@ -236,35 +236,4 @@ class WorkoutDAOTest {
             assert(savedWorkout.size == 2)
             assert(savedWorkout.containsAll(workout))
         }
-
-    private fun getExerciseDetails(): ExerciseDetailsEntity =
-        ExerciseDetailsEntity(
-            exerciseName = "Test Exercise",
-            id = 1,
-            note = "",
-            category = "",
-        )
-
-    private fun getWorkoutDetails(
-        id: Long = 1L,
-        name: String = "Test Workout",
-    ): WorkoutDetailsEntity =
-        WorkoutDetailsEntity(
-            workoutName = name,
-            id = id,
-            category = "",
-            note = "",
-        )
-
-    private fun getWorkout(
-        id: Long = 1L,
-        sets: Int = 3,
-    ): WorkoutEntity =
-        WorkoutEntity(
-            id = id,
-            workoutDetailsId = 1,
-            exerciseDetailsId = 1,
-            sets = sets,
-            order = 1,
-        )
 }
