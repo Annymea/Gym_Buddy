@@ -65,7 +65,6 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    // +
     override fun saveExecutions() {
         viewModelScope.launch {
             val currentTime = Instant.now().toEpochMilli()
@@ -78,7 +77,6 @@ class WorkoutExecutorViewModel(
         }
     }
 
-    // +
     override fun updateWorkout() {
         viewModelScope.launch {
             try {
