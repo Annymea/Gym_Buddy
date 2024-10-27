@@ -42,15 +42,13 @@ class WorkoutExecutorViewModel(
         viewModelScope.launch {
             val foundWorkout = workoutRepository.getWorkout(workoutId.toLong())
 
+            // What happens if the workout is null?
             if (foundWorkout == null) {
                 Log.e("WorkoutExecutor", "Workout not found")
                 return@launch
             }
-            Log.i("WorkoutExecutor", "Found workout: $foundWorkout")
             workout.value = foundWorkout
             addSetsToExercises()
-            Log.i("WorkoutExecutor", "Workout: ${workout.value!!.name}")
-            Log.i("WorkoutExecutor", "Workout: ${workout.value!!.exercises.size}")
         }
     }
 
@@ -67,6 +65,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
+    // +
     override fun saveExecutions() {
         viewModelScope.launch {
             val currentTime = Instant.now().toEpochMilli()
@@ -79,6 +78,7 @@ class WorkoutExecutorViewModel(
         }
     }
 
+    // +
     override fun updateWorkout() {
         viewModelScope.launch {
             try {
@@ -96,6 +96,7 @@ class WorkoutExecutorViewModel(
                 reps = 0,
                 weight = 0f
             )
+        exercise.setCount += 1
         exercise.sets += newSet
     }
 
