@@ -28,7 +28,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -100,12 +100,9 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    debugImplementation("androidx.test:core:1.2.0")
+    debugImplementation(libs.androidx.core)
 
     kapt(libs.androidx.room.compiler)
-
-    // debugImplementation("androidx.fragment:fragment-testing-manifest:1.6.0-alpha04")
-    // androidTestImplementation("androidx.fragment:fragment-testing:1.6.0-alpha04")
 }
 
 ktlint {
