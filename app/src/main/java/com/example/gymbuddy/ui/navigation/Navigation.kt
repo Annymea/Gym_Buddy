@@ -21,7 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.gymbuddy.ui.old.dashboard.Dashboard
+import com.example.gymbuddy.ui.dashboard.Dashboard
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
