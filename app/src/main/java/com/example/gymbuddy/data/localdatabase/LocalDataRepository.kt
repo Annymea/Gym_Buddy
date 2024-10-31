@@ -7,6 +7,7 @@ import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.WorkoutSet
+import java.util.Calendar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -171,6 +172,37 @@ class LocalDataRepository(
                     order = exercise.order
                 )
             )
+        }
+    }
+
+    override suspend fun getDaysOfCompletedWorkoutsForMonth(
+        month: Int,
+        year: Int
+    ): Flow<List<Int>> {
+        val calendar =
+            Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month - 1)
+                set(Calendar.DAY_OF_MONTH, 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+        val startDate = calendar.timeInMillis
+
+        calendar.add(Calendar.MONTH, 1)
+        calendar.add(Calendar.MILLISECOND, -1)
+        val endDate = calendar.timeInMillis
+
+        return workoutDAO.getAllDatesOfExecutionsForTimeSpan(startDate, endDate).map { timestamps ->
+            timestamps.map { timestamp ->
+                val dayCalendar =
+                    Calendar.getInstance().apply {
+                        timeInMillis = timestamp
+                    }
+                dayCalendar.get(Calendar.DAY_OF_MONTH)
+            }
         }
     }
 }
