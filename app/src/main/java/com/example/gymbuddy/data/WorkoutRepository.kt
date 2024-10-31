@@ -17,4 +17,9 @@ interface WorkoutRepository {
     suspend fun updateWorkout(newWorkout: Workout)
 
     suspend fun createNewWorkout(newWorkout: Workout)
+
+    suspend fun getDaysOfCompletedWorkoutsForMonth(
+        month: Int,
+        year: Int
+    ): Flow<List<Int>>
 }

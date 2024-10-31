@@ -20,64 +20,46 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 
 @Composable
-fun TrainingsCalender(modifier: Modifier = Modifier) {
+fun TrainingsCalender(
+    modifier: Modifier = Modifier,
+    viewModel: TrainingsCalenderViewModel = koinViewModel<TrainingsCalenderViewModel>(),
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
     ) {
         Column {
-            val currentDate = LocalDate.now()
-            var shownMonth by remember { mutableIntStateOf(currentDate.month.value) }
-            var shownYear by remember { mutableIntStateOf(currentDate.year) }
-
-            fun updateMonth(increment: Boolean) {
-                if (increment) {
-                    if (shownMonth == 12) {
-                        shownMonth = 1
-                        shownYear += 1
-                    } else {
-                        shownMonth += 1
-                    }
-                } else {
-                    if (shownMonth == 1) {
-                        shownMonth = 12
-                        shownYear -= 1
-                    } else {
-                        shownMonth -= 1
-                    }
-                }
-            }
-
             MonthNavigation(
-                shownMonth = shownMonth,
-                shownYear = shownYear,
-                onPreviousMonthClick = { updateMonth(increment = false) },
-                onNextMonthClick = { updateMonth(increment = true) }
+                shownMonth =
+                    viewModel.nameOfMonth(
+                        viewModel.shownMonth.value,
+                    ),
+                shownYear = viewModel.shownYear.value,
+                onPreviousMonthClick = {
+                    viewModel.updateMonth(
+                        increment = false,
+                    )
+                },
+                onNextMonthClick = { viewModel.updateMonth(increment = true) },
             )
 
             WeekdayHeaders()
 
-            val highligtedDays = listOf(1, 13, 6, 3, 17, 25, 29)
-
             MonthlyCalendar(
-                shownMonth = shownMonth,
-                shownYear = shownYear,
-                currentDate = currentDate,
-                highligtedDays = highligtedDays
+                shownMonth = viewModel.shownMonth.value,
+                shownYear = viewModel.shownYear.value,
+                currentDate = viewModel.currentDate,
+                highlightedDays = viewModel.highlightedForShownMonth,
             )
         }
     }
@@ -85,28 +67,28 @@ fun TrainingsCalender(modifier: Modifier = Modifier) {
 
 @Composable
 fun MonthNavigation(
-    shownMonth: Int,
+    shownMonth: String,
     shownYear: Int,
     onPreviousMonthClick: () -> Unit,
-    onNextMonthClick: () -> Unit
+    onNextMonthClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         IconButton(onClick = onPreviousMonthClick, modifier = Modifier.weight(1f)) {
             Icon(
                 rememberVectorPainter(Icons.Filled.KeyboardArrowLeft),
-                contentDescription = "Previous"
+                contentDescription = "Previous",
             )
         }
         Text(
-            text = "${nameOfMonth(shownMonth)} $shownYear",
-            modifier = Modifier.align(Alignment.CenterVertically)
+            text = "$shownMonth $shownYear",
+            modifier = Modifier.align(Alignment.CenterVertically),
         )
         IconButton(onClick = onNextMonthClick, modifier = Modifier.weight(1f)) {
             Icon(
                 rememberVectorPainter(Icons.Filled.KeyboardArrowRight),
-                contentDescription = "After"
+                contentDescription = "After",
             )
         }
     }
@@ -119,7 +101,7 @@ fun WeekdayHeaders() {
             Text(
                 text = day,
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -130,7 +112,7 @@ fun MonthlyCalendar(
     shownMonth: Int,
     shownYear: Int,
     currentDate: LocalDate,
-    highligtedDays: List<Int> = emptyList()
+    highlightedDays: List<Int> = emptyList(),
 ) {
     var day = 1
     val firstWeekDay = LocalDate.of(shownYear, shownMonth, 1).dayOfWeek.value
@@ -149,9 +131,9 @@ fun MonthlyCalendar(
                                 currentDate.dayOfMonth == day &&
                                     currentDate.monthValue == shownMonth &&
                                     currentDate.year == shownYear
-                                ),
+                            ),
                             modifier = Modifier.weight(1f),
-                            highlighted = highligtedDays.contains(day)
+                            highlighted = highlightedDays.contains(day),
                         )
                         day++
                     }
@@ -166,17 +148,17 @@ fun DayButton(
     modifier: Modifier = Modifier,
     day: Int,
     isToday: Boolean,
-    highlighted: Boolean = false
+    highlighted: Boolean = false,
 ) {
     if (highlighted && !isToday) {
         FilledTonalButton(
             modifier = modifier,
             contentPadding = PaddingValues(0.dp),
-            onClick = { /*TODO*/ }
+            onClick = { /*TODO*/ },
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     } else if (isToday && highlighted) {
@@ -184,58 +166,39 @@ fun DayButton(
             modifier = modifier,
             onClick = { /*TODO*/ },
             contentPadding = PaddingValues(0.dp),
-            border = ButtonDefaults.outlinedButtonBorder()
+            border = ButtonDefaults.outlinedButtonBorder(),
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     } else if (isToday) {
         OutlinedButton(
             modifier = modifier,
             onClick = { /*TODO*/ },
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     } else {
         TextButton(
             modifier = modifier,
-            onClick = { /*TODO*/ }
+            onClick = { /*TODO*/ },
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TrainingsCalenderPreview() {
-    TrainingsCalender()
-}
-
-fun nameOfMonth(month: Int): String {
-    val monthNames =
-        arrayOf(
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December"
-        )
-    return if (month in 1..12) monthNames[month - 1] else "Unknown"
-}
+// @Preview(showBackground = true)
+// @Composable
+// fun TrainingsCalenderPreview() {
+//    TrainingsCalender()
+// }
