@@ -236,4 +236,55 @@ class WorkoutDAOTest {
             assert(savedWorkout.size == 2)
             assert(savedWorkout.containsAll(workout))
         }
+
+    @Test
+    fun getAllDatesOfExecutionsForTimeSpan() =
+        runBlocking {
+            val startDate = Instant.now().minusSeconds(60 * 60 * 24 * 10).toEpochMilli()
+            val endDate = Instant.now().toEpochMilli()
+
+            val executionEntities =
+                listOf(
+                    ExecutionEntity(
+                        id = 1,
+                        weight = 20F,
+                        date = startDate + 1000,
+                        reps = 10,
+                        exerciseDetailsId = 1,
+                    ),
+                    ExecutionEntity(
+                        id = 2,
+                        weight = 25F,
+                        date = startDate + (60 * 60 * 24 * 2 * 1000),
+                        reps = 12,
+                        exerciseDetailsId = 1,
+                    ),
+                    ExecutionEntity(
+                        id = 3,
+                        weight = 30F,
+                        date = endDate - 1000,
+                        reps = 15,
+                        exerciseDetailsId = 2,
+                    ),
+                    ExecutionEntity(
+                        id = 4,
+                        weight = 20F,
+                        date = startDate - (60 * 60 * 24 * 5 * 1000),
+                        reps = 8,
+                        exerciseDetailsId = 2,
+                    ),
+                )
+
+            workoutDao.insertExerciseDetails(getExerciseDetails(id = 1L))
+            workoutDao.insertExerciseDetails(getExerciseDetails(id = 2L))
+            workoutDao.saveWorkoutExecution(executionEntities)
+
+            val dates = workoutDao.getAllDatesOfExecutionsForTimeSpan(startDate, endDate).first()
+
+            assert(dates.size == 3)
+            assert(dates.contains(executionEntities[0].date))
+            assert(dates.contains(executionEntities[1].date))
+            assert(dates.contains(executionEntities[2].date))
+            assert(!dates.contains(executionEntities[3].date))
+        }
 }

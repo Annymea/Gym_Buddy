@@ -2,10 +2,10 @@ import com.example.gymbuddy.data.localdatabase.ExerciseDetailsEntity
 import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
 import com.example.gymbuddy.data.localdatabase.WorkoutEntity
 
-fun getExerciseDetails(): ExerciseDetailsEntity =
+fun getExerciseDetails(id: Long = 1L): ExerciseDetailsEntity =
     ExerciseDetailsEntity(
         exerciseName = "Test Exercise",
-        id = 1,
+        id = id,
         note = "",
         category = "",
     )

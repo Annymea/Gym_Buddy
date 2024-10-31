@@ -74,9 +74,9 @@ class NavigationTest {
     @Test
     fun navigation_startOnDashboard() {
         composeTestRule
-            .onNodeWithTag("dashboardTitle")
+            .onNodeWithTag("dashboard_title")
             .assertIsDisplayed()
-            .assertTextContains("Dashboard Content")
+            .assertTextContains("Dashboard")
     }
 
     // --------- Workout workflow ---------

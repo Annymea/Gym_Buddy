@@ -23,34 +23,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TrainingsCalender(
     modifier: Modifier = Modifier,
-    viewModel: TrainingsCalenderViewModel = koinViewModel<TrainingsCalenderViewModel>(),
+    viewModel: TrainingsCalenderViewModelContract = koinViewModel<TrainingsCalenderViewModel>()
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth()
     ) {
         Column {
             MonthNavigation(
                 shownMonth =
-                    viewModel.nameOfMonth(
-                        viewModel.shownMonth.value,
-                    ),
+                viewModel.nameOfMonth(
+                    viewModel.shownMonth.value
+                ),
                 shownYear = viewModel.shownYear.value,
                 onPreviousMonthClick = {
                     viewModel.updateMonth(
-                        increment = false,
+                        increment = false
                     )
                 },
-                onNextMonthClick = { viewModel.updateMonth(increment = true) },
+                onNextMonthClick = { viewModel.updateMonth(increment = true) }
             )
 
             WeekdayHeaders()
@@ -59,7 +60,7 @@ fun TrainingsCalender(
                 shownMonth = viewModel.shownMonth.value,
                 shownYear = viewModel.shownYear.value,
                 currentDate = viewModel.currentDate,
-                highlightedDays = viewModel.highlightedForShownMonth,
+                highlightedDays = viewModel.highlightedForShownMonth
             )
         }
     }
@@ -70,25 +71,40 @@ fun MonthNavigation(
     shownMonth: String,
     shownYear: Int,
     onPreviousMonthClick: () -> Unit,
-    onNextMonthClick: () -> Unit,
+    onNextMonthClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
-        IconButton(onClick = onPreviousMonthClick, modifier = Modifier.weight(1f)) {
+        IconButton(
+            onClick = onPreviousMonthClick,
+            modifier =
+            Modifier
+                .weight(1f)
+                .testTag("trainingsCalender_previousMonthButton")
+        ) {
             Icon(
                 rememberVectorPainter(Icons.Filled.KeyboardArrowLeft),
-                contentDescription = "Previous",
+                contentDescription = "Previous"
             )
         }
         Text(
             text = "$shownMonth $shownYear",
-            modifier = Modifier.align(Alignment.CenterVertically),
+            modifier =
+            Modifier
+                .align(Alignment.CenterVertically)
+                .testTag("trainingsCalender_monthYearText")
         )
-        IconButton(onClick = onNextMonthClick, modifier = Modifier.weight(1f)) {
+        IconButton(
+            onClick = onNextMonthClick,
+            modifier =
+            Modifier
+                .weight(1f)
+                .testTag("trainingsCalender_nextMonthButton")
+        ) {
             Icon(
                 rememberVectorPainter(Icons.Filled.KeyboardArrowRight),
-                contentDescription = "After",
+                contentDescription = "After"
             )
         }
     }
@@ -96,12 +112,17 @@ fun MonthNavigation(
 
 @Composable
 fun WeekdayHeaders() {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier =
+        Modifier
+            .fillMaxWidth()
+            .testTag("trainingsCalender_weekdayHeaders")
+    ) {
         listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").forEach { day ->
             Text(
                 text = day,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f).testTag("trainingsCalender_weekdayHeader_$day"),
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -112,7 +133,7 @@ fun MonthlyCalendar(
     shownMonth: Int,
     shownYear: Int,
     currentDate: LocalDate,
-    highlightedDays: List<Int> = emptyList(),
+    highlightedDays: List<Int> = emptyList()
 ) {
     var day = 1
     val firstWeekDay = LocalDate.of(shownYear, shownMonth, 1).dayOfWeek.value
@@ -131,9 +152,9 @@ fun MonthlyCalendar(
                                 currentDate.dayOfMonth == day &&
                                     currentDate.monthValue == shownMonth &&
                                     currentDate.year == shownYear
-                            ),
+                                ),
                             modifier = Modifier.weight(1f),
-                            highlighted = highlightedDays.contains(day),
+                            highlighted = highlightedDays.contains(day)
                         )
                         day++
                     }
@@ -149,49 +170,82 @@ fun DayButton(
     day: Int,
     isToday: Boolean,
     highlighted: Boolean = false,
+    onDateClick: (LocalDate) -> Unit = {}
 ) {
     if (highlighted && !isToday) {
         FilledTonalButton(
-            modifier = modifier,
+            modifier = modifier.testTag("trainingsCalender_highlightedDay"),
             contentPadding = PaddingValues(0.dp),
-            onClick = { /*TODO*/ },
+            onClick = {
+                onDateClick(
+                    LocalDate.of(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue,
+                        day
+                    )
+                )
+            }
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     } else if (isToday && highlighted) {
         FilledTonalButton(
-            modifier = modifier,
-            onClick = { /*TODO*/ },
+            modifier = modifier.testTag("trainingsCalender_todayHighlighted"),
+            onClick = {
+                onDateClick(
+                    LocalDate.of(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue,
+                        day
+                    )
+                )
+            },
             contentPadding = PaddingValues(0.dp),
-            border = ButtonDefaults.outlinedButtonBorder(),
+            border = ButtonDefaults.outlinedButtonBorder()
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     } else if (isToday) {
         OutlinedButton(
-            modifier = modifier,
-            onClick = { /*TODO*/ },
-            contentPadding = PaddingValues(0.dp),
+            modifier = modifier.testTag("trainingsCalender_todayDay"),
+            onClick = {
+                onDateClick(
+                    LocalDate.of(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue,
+                        day
+                    )
+                )
+            },
+            contentPadding = PaddingValues(0.dp)
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     } else {
         TextButton(
-            modifier = modifier,
-            onClick = { /*TODO*/ },
+            modifier = modifier.testTag("trainingsCalender_day"),
+            onClick = {
+                onDateClick(
+                    LocalDate.of(
+                        LocalDate.now().year,
+                        LocalDate.now().monthValue,
+                        day
+                    )
+                )
+            }
         ) {
             Text(
                 text = day.toString(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     }

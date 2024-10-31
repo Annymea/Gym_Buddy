@@ -12,23 +12,35 @@ import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+interface TrainingsCalenderViewModelContract {
+    val shownMonth: MutableState<Int>
+    val shownYear: MutableState<Int>
+    val currentDate: LocalDate
+    val highlightedForShownMonth: SnapshotStateList<Int>
+
+    fun nameOfMonth(month: Int): String
+
+    fun updateMonth(increment: Boolean)
+}
+
 class TrainingsCalenderViewModel(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-    var shownMonth: MutableState<Int> = mutableIntStateOf(LocalDate.now().monthValue)
+) : ViewModel(),
+    TrainingsCalenderViewModelContract {
+    override var shownMonth: MutableState<Int> = mutableIntStateOf(LocalDate.now().monthValue)
         private set
-    var shownYear: MutableState<Int> = mutableIntStateOf(LocalDate.now().year)
+    override var shownYear: MutableState<Int> = mutableIntStateOf(LocalDate.now().year)
         private set
-    var currentDate: LocalDate = LocalDate.now()
+    override var currentDate: LocalDate = LocalDate.now()
         private set
-    var highlightedForShownMonth: SnapshotStateList<Int> = mutableStateListOf()
+    override var highlightedForShownMonth: SnapshotStateList<Int> = mutableStateListOf()
         private set
 
     init {
         updateHighlightedDays(shownMonth.value, shownYear.value)
     }
 
-    fun nameOfMonth(month: Int): String {
+    override fun nameOfMonth(month: Int): String {
         val monthNames =
             arrayOf(
                 "January",
@@ -47,7 +59,7 @@ class TrainingsCalenderViewModel(
         return if (month in 1..12) monthNames[month - 1] else "Unknown"
     }
 
-    fun updateMonth(increment: Boolean) {
+    override fun updateMonth(increment: Boolean) {
         if (increment) {
             if (shownMonth.value == 12) {
                 shownMonth.value = 1
