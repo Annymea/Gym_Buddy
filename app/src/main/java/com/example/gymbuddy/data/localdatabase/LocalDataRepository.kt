@@ -7,13 +7,13 @@ import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.WorkoutSet
+import java.util.Calendar
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import java.util.Calendar
 
 class LocalDataRepository(
-    private val workoutDAO: WorkoutDAO,
+    private val workoutDAO: WorkoutDAO
 ) : WorkoutRepository {
     override suspend fun getWorkout(workoutId: Long): Workout? {
         val workoutDetails =
@@ -30,7 +30,7 @@ class LocalDataRepository(
                     val exerciseDetails =
                         workoutDAO
                             .getExerciseDetailsFor(
-                                workoutEntity.exerciseDetailsId,
+                                workoutEntity.exerciseDetailsId
                             ).firstOrNull()
                             ?: return@mapNotNull null
 
@@ -43,7 +43,7 @@ class LocalDataRepository(
                         note = exerciseDetails.note,
                         setCount = workoutEntity.sets,
                         order = workoutEntity.order,
-                        sets = sets,
+                        sets = sets
                     )
                 }.toMutableStateList()
 
@@ -52,7 +52,7 @@ class LocalDataRepository(
             name = workoutDetails.workoutName,
             category = workoutDetails.category,
             note = workoutDetails.note,
-            exercises = exercises,
+            exercises = exercises
         )
     }
 
@@ -66,7 +66,7 @@ class LocalDataRepository(
                     name = entity.workoutName,
                     category = entity.category,
                     note = entity.note,
-                    exercises = mutableStateListOf(),
+                    exercises = mutableStateListOf()
                 )
             }
         }
@@ -74,7 +74,7 @@ class LocalDataRepository(
 
     override suspend fun saveWorkoutExecution(
         doneExercises: List<WorkoutExercise>,
-        date: Long,
+        date: Long
     ) {
         if (doneExercises.isEmpty()) return
 
@@ -85,7 +85,7 @@ class LocalDataRepository(
                         exerciseDetailsId = exercise.id,
                         weight = set.weight,
                         reps = set.reps,
-                        date = date,
+                        date = date
                     )
                 }
             }
@@ -102,7 +102,7 @@ class LocalDataRepository(
                     workoutDetailsId = newWorkout.id,
                     exerciseDetailsId = exercise.id,
                     sets = exercise.setCount,
-                    order = exercise.order,
+                    order = exercise.order
                 )
             }
 
@@ -149,8 +149,8 @@ class LocalDataRepository(
                 WorkoutDetailsEntity(
                     workoutName = newWorkout.name,
                     category = newWorkout.category,
-                    note = newWorkout.note,
-                ),
+                    note = newWorkout.note
+                )
             )
         // workaround until i implemented the correct workflow for exercises
         // later no new exercises should be created here
@@ -160,8 +160,8 @@ class LocalDataRepository(
                     ExerciseDetailsEntity(
                         exerciseName = exercise.name,
                         note = exercise.note,
-                        category = exercise.category,
-                    ),
+                        category = exercise.category
+                    )
                 )
 
             workoutDAO.insertWorkoutEntity(
@@ -169,15 +169,15 @@ class LocalDataRepository(
                     workoutDetailsId = newWorkoutId,
                     exerciseDetailsId = newExerciseId,
                     sets = exercise.setCount,
-                    order = exercise.order,
-                ),
+                    order = exercise.order
+                )
             )
         }
     }
 
     override suspend fun getDaysOfCompletedWorkoutsForMonth(
         month: Int,
-        year: Int,
+        year: Int
     ): Flow<List<Int>> {
         val (startDate, endDate) = getStartAndEndOfMonth(month, year)
 
@@ -191,7 +191,7 @@ class LocalDataRepository(
 
     private fun getStartAndEndOfMonth(
         month: Int,
-        year: Int,
+        year: Int
     ): Pair<Long, Long> {
         val calendar =
             Calendar.getInstance().apply {
@@ -215,7 +215,7 @@ class LocalDataRepository(
     private fun extractDayIfInMonth(
         timestamp: Long,
         month: Int,
-        year: Int,
+        year: Int
     ): Int? {
         val dayCalendar =
             Calendar.getInstance().apply {
