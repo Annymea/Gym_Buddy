@@ -24,7 +24,7 @@ class TrainingsCalenderWidgetTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    val viewModel = FakeTrainingsCalenderViewModel()
+    private val viewModel = FakeTrainingsCalenderViewModel()
 
     @Before
     fun setUp() {

@@ -91,10 +91,6 @@ class TrainingsCalenderViewModel(
                         .first()
                 highlightedForShownMonth.clear()
                 highlightedForShownMonth.addAll(dates)
-                Log.d(
-                    "TrainingsCalenderViewModel",
-                    "updateHighlightedDays: $highlightedForShownMonth"
-                )
             } catch (e: Exception) {
                 Log.d("TrainingsCalenderViewModel", "updateHighlightedDays: $e")
             }
