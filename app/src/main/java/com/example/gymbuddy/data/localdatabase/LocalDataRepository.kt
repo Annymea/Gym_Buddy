@@ -34,8 +34,18 @@ class LocalDataRepository(
                             ).firstOrNull()
                             ?: return@mapNotNull null
 
-                    // hier kann ich dann die previos sets einfügen
+                    val executionEntities =
+                        workoutDAO.getExecutionsFor(workoutEntity.exerciseDetailsId).firstOrNull()
                     val sets = mutableStateListOf<WorkoutSet>()
+                    executionEntities?.forEachIndexed { index, it ->
+                        sets.add(
+                            WorkoutSet(
+                                weight = it.weight,
+                                reps = it.reps,
+                                order = index
+                            )
+                        )
+                    }
 
                     WorkoutExercise(
                         id = exerciseDetails.id,
