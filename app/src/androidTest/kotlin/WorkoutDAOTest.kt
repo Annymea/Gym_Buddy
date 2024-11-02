@@ -287,4 +287,46 @@ class WorkoutDAOTest {
             assert(dates.contains(executionEntities[2].date))
             assert(!dates.contains(executionEntities[3].date))
         }
+
+    @Test
+    fun getLatestExecutionForExercise() =
+        runBlocking {
+            val exerciseId = 1L
+            val exerciseDetails = getExerciseDetails(id = exerciseId)
+
+            val execution1 =
+                ExecutionEntity(
+                    id = 1,
+                    weight = 20F,
+                    date = Instant.now().minusSeconds(60 * 60 * 24).toEpochMilli(),
+                    reps = 10,
+                    exerciseDetailsId = exerciseId,
+                )
+            val execution2 =
+                ExecutionEntity(
+                    id = 2,
+                    weight = 25F,
+                    date = Instant.now().toEpochMilli(),
+                    reps = 12,
+                    exerciseDetailsId = exerciseId,
+                )
+
+            workoutDao.insertExerciseDetails(exerciseDetails)
+            workoutDao.saveWorkoutExecution(listOf(execution1, execution2))
+
+            val latestExecutions = workoutDao.getLatestExecutionsFor(exerciseId).first()
+
+            assert(latestExecutions.size == 1)
+            assert(latestExecutions[0] == execution2)
+        }
+
+    @Test
+    fun getLatestExecutionForExercise_returnsEmptyListWhenNoEntriesExist() =
+        runBlocking {
+            val exerciseId = 1L
+
+            val latestExecutions = workoutDao.getLatestExecutionsFor(exerciseId).first()
+
+            assert(latestExecutions.isEmpty())
+        }
 }

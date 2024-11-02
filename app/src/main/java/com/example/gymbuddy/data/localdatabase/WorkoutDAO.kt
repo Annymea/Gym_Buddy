@@ -28,11 +28,19 @@ interface WorkoutDAO {
     @Query("SELECT * FROM executions WHERE exercise_details_id = :workoutId")
     fun getExecutionsFor(workoutId: Long): Flow<List<ExecutionEntity>>
 
-    @Query("""SELECT DISTINCT date FROM executions WHERE date BETWEEN :startDate AND :endDate""")
+    @Query("SELECT DISTINCT date FROM executions WHERE date BETWEEN :startDate AND :endDate")
     fun getAllDatesOfExecutionsForTimeSpan(
         startDate: Long,
         endDate: Long
     ): Flow<List<Long>>
+
+    @Query(
+        "SELECT * FROM executions " +
+            "WHERE date = " +
+            "(SELECT MAX(date) FROM executions WHERE exercise_details_id = :exerciseId) " +
+            "AND exercise_details_id = :exerciseId"
+    )
+    fun getLatestExecutionsFor(exerciseId: Long): Flow<List<ExecutionEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveWorkoutExecution(executionEntities: List<ExecutionEntity>)

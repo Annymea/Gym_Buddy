@@ -92,6 +92,9 @@ class LocalDataRepositoryTest {
                     )
                 }
 
+            coEvery { workoutDao.getExecutionsFor(any()) } returns
+                flow { emit(emptyList()) }
+
             val result = workoutRepository.getWorkout(1L)
 
             if (result != null) {
@@ -185,6 +188,8 @@ class LocalDataRepositoryTest {
                     )
                 }
             coEvery { workoutDao.getExerciseDetailsFor(2) } returns flow { emit(null) }
+            coEvery { workoutDao.getExecutionsFor(any()) } returns
+                flow { emit(emptyList()) }
 
             val result = workoutRepository.getWorkout(2L)
 
@@ -669,5 +674,79 @@ class LocalDataRepositoryTest {
 
             val result = workoutRepository.getDaysOfCompletedWorkoutsForMonth(month, year).first()
             assertEquals(expectedDays, result)
+        }
+
+    @Test
+    fun testGetWorkout_FillsExercisesWithPreviousSets() =
+        runTest {
+            val workoutDetails = getWorkoutDetails()
+            val workoutEntities = listOf(getWorkout(1L), getWorkout(2L))
+            val exerciseDetails = getExerciseDetails()
+
+            val executionEntities =
+                listOf(
+                    ExecutionEntity(
+                        id = 1,
+                        weight = 20F,
+                        date = 123456789L,
+                        reps = 10,
+                        exerciseDetailsId = 1L,
+                    ),
+                    ExecutionEntity(
+                        id = 2,
+                        weight = 25F,
+                        date = 123456789L,
+                        reps = 8,
+                        exerciseDetailsId = 1L,
+                    ),
+                )
+
+            val expectedSets =
+                mutableStateListOf(
+                    WorkoutSet(weight = 20F, reps = 10, order = 0),
+                    WorkoutSet(weight = 25F, reps = 8, order = 1),
+                )
+
+            coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
+            coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
+            coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
+                flow { emit(exerciseDetails) }
+            coEvery { workoutDao.getExecutionsFor(1) } returns flow { emit(executionEntities) }
+            coEvery { workoutDao.getExecutionsFor(2) } returns flow { emit(emptyList()) }
+
+            val result = workoutRepository.getWorkout(1L)
+
+            if (result != null) {
+                val actualSets = result.exercises.firstOrNull()?.sets
+                assertEquals(expectedSets.size, actualSets?.size)
+                expectedSets.forEachIndexed { index, expectedSet ->
+                    assertEquals(expectedSet.weight, actualSets?.get(index)?.weight)
+                    assertEquals(expectedSet.reps, actualSets?.get(index)?.reps)
+                    assertEquals(expectedSet.order, actualSets?.get(index)?.order)
+                }
+            }
+        }
+
+    @Test
+    fun testGetWorkout_ReturnsEmptySetsWhenNoPreviousExecutions() =
+        runTest {
+            val workoutDetails = getWorkoutDetails()
+            val workoutEntities = listOf(getWorkout(1))
+            val exerciseDetails = getExerciseDetails()
+
+            val executionEntities = emptyList<ExecutionEntity>()
+
+            coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
+            coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
+            coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
+                flow { emit(exerciseDetails) }
+            coEvery { workoutDao.getExecutionsFor(1) } returns flow { emit(executionEntities) }
+
+            val result = workoutRepository.getWorkout(1)
+
+            if (result != null) {
+                val actualSets = result.exercises.firstOrNull()?.sets
+                assertEquals(0, actualSets?.size)
+            }
         }
 }
