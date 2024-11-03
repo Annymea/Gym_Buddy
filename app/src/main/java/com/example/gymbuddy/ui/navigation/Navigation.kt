@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.gymbuddy.ui.dashboard.Dashboard
+import com.example.gymbuddy.ui.exercises.overview.ExerciseOverviewScreen
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorScreen
 import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorScreen
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
@@ -34,7 +35,8 @@ fun AppNavigation(
     val items =
         listOf(
             NavigationRoutes.DashboardGraph,
-            NavigationRoutes.WorkoutGraph
+            NavigationRoutes.WorkoutGraph,
+            NavigationRoutes.ExerciseGraph
         )
 
     Scaffold(
@@ -105,6 +107,7 @@ fun Navigation(
     ) {
         dashboardNavigation(modifier)
         workoutNavigation(modifier, navController)
+        exerciseNavigation(modifier)
     }
 }
 
@@ -163,6 +166,19 @@ private fun NavGraphBuilder.dashboardNavigation(modifier: Modifier) {
     ) {
         composable(ScreenRoutes.Dashboard.route) {
             Dashboard(
+                modifier = modifier
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.exerciseNavigation(modifier: Modifier) {
+    navigation(
+        startDestination = ScreenRoutes.ExerciseOverview.route,
+        route = NavigationRoutes.ExerciseGraph.route
+    ) {
+        composable(ScreenRoutes.ExerciseOverview.route) {
+            ExerciseOverviewScreen(
                 modifier = modifier
             )
         }

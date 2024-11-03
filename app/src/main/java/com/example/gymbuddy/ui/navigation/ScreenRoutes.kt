@@ -2,6 +2,7 @@ package com.example.gymbuddy.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,6 +27,13 @@ sealed class NavigationRoutes(
         R.string.bottom_navigation_workouts_button_text,
         Icons.Default.Menu
     )
+
+    data object ExerciseGraph : NavigationRoutes(
+        "exerciseGraph",
+        ScreenRoutes.WorkoutOverview.route,
+        R.string.bottom_navigation_exercises_button_text,
+        Icons.Default.FavoriteBorder
+    )
 }
 
 sealed class ScreenRoutes(
@@ -45,5 +53,9 @@ sealed class ScreenRoutes(
 
     data object WorkoutExecutor : ScreenRoutes(
         "workoutExecutor/{workoutId}"
+    )
+
+    data object ExerciseOverview : ScreenRoutes(
+        "exerciseOverview"
     )
 }

@@ -32,4 +32,5 @@
     <string name="workoutEditor_saveDialog_text">Are you sure you want to save your changes?</string>
     <string name="dialogButton_save">Save</string>
     <string name="dialogButton_cancel">Cancel</string>
+    <string name="bottom_navigation_exercises_button_text">Exercises</string>
 </resources>

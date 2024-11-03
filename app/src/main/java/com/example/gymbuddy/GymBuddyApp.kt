@@ -6,6 +6,7 @@ import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.LocalDataRepository
 import com.example.gymbuddy.data.localdatabase.WorkoutDatabase
 import com.example.gymbuddy.ui.dashboard.widgets.trainingsCalender.TrainingsCalenderViewModel
+import com.example.gymbuddy.ui.exercises.overview.ExerciseOverviewViewModel
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorViewModel
 import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorViewModel
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModel
@@ -50,4 +51,5 @@ val appModule =
             WorkoutExecutorViewModel(workoutRepository = get(), workoutId = workoutId)
         }
         viewModel { TrainingsCalenderViewModel(workoutRepository = get()) }
+        viewModel { ExerciseOverviewViewModel(workoutRepository = get()) }
     }

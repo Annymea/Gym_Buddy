@@ -82,6 +82,20 @@ class LocalDataRepository(
         }
     }
 
+    override suspend fun getAllExercises(): Flow<List<WorkoutExercise>> =
+        workoutDAO.getAllExerciseDetails().map {
+            it.map { entity ->
+                WorkoutExercise(
+                    id = entity.id,
+                    name = entity.exerciseName,
+                    note = entity.note,
+                    setCount = 0,
+                    order = 0,
+                    sets = mutableStateListOf()
+                )
+            }
+        }
+
     override suspend fun saveWorkoutExecution(
         doneExercises: List<WorkoutExercise>,
         date: Long

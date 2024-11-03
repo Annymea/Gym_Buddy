@@ -13,19 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+      <SelectionState runConfigName="getLatestExecutionForExercise()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="getLatestExecutionForExercise_returnsEmptyListWhenNoEntriesExist()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
       <SelectionState runConfigName="LocalDataRepositoryTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="All Tests">
+      <SelectionState runConfigName="testGetWorkout_FillsExercisesWithPreviousSets()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="navigation_startOnDashboard()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="trainingsCalender_showsMonthNavigationAndWeekdays()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="TrainingsCalenderWidgetTest">
+      <SelectionState runConfigName="testGetWorkout_ReturnsEmptySetsWhenNoPreviousExecutions()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
