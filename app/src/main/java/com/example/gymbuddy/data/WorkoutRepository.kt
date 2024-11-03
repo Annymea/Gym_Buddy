@@ -9,6 +9,8 @@ interface WorkoutRepository {
 
     suspend fun getAllWorkoutDetails(): Flow<List<Workout>>
 
+    suspend fun getAllExercises(): Flow<List<WorkoutExercise>>
+
     suspend fun saveWorkoutExecution(
         doneExercises: List<WorkoutExercise>,
         date: Long

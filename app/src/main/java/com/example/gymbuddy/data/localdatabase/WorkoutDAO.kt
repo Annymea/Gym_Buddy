@@ -42,6 +42,9 @@ interface WorkoutDAO {
     )
     fun getLatestExecutionsFor(exerciseId: Long): Flow<List<ExecutionEntity>>
 
+    @Query("SELECT * FROM exercise_details")
+    fun getAllExerciseDetails(): Flow<List<ExerciseDetailsEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveWorkoutExecution(executionEntities: List<ExecutionEntity>)
 
