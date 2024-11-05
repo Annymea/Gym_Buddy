@@ -65,4 +65,7 @@ interface WorkoutDAO {
 
     @Delete
     suspend fun deleteWorkoutEntities(workoutEntities: List<WorkoutEntity>)
+
+    @Query("DELETE FROM exercise_details WHERE id = :exerciseId")
+    suspend fun deleteExerciseDetailsById(exerciseId: Long)
 }

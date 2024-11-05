@@ -9,19 +9,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -29,21 +34,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
 import com.example.gymbuddy.ui.workouts.common.ScreenTitle
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,6 +60,8 @@ fun WorkoutEditorScreen(
         koinViewModel<WorkoutEditorViewModel>(),
     navigateBack: () -> Unit = {}
 ) {
+    val addExerciseDialogShown = remember { mutableStateOf(false) }
+
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(
             text = stringResource(R.string.workout_editor_new_workout_screen_title),
@@ -102,22 +111,23 @@ fun WorkoutEditorScreen(
                     AddExerciseButton(
                         modifier = Modifier.testTag("addExerciseButton"),
                         onAddExerciseButtonClicked = {
-                            val newExerciseIndex =
-                                workoutEditorViewModel.workout.value
-                                    ?.exercises
-                                    ?.size ?: 0
-                            workoutEditorViewModel.addExercise(
-                                WorkoutExercise(
-                                    name = "Default Exercise",
-                                    setCount = 3,
-                                    order = newExerciseIndex
-                                )
-                            )
-                            coroutineScope.launch {
-                                workoutEditorViewModel.workout.value?.exercises?.let { exercises ->
-                                    listState.animateScrollToItem(exercises.size)
-                                }
-                            }
+                            addExerciseDialogShown.value = true
+                            // val newExerciseIndex =
+                            //     workoutEditorViewModel.workout.value
+                            //         ?.exercises
+                            //         ?.size ?: 0
+                            // workoutEditorViewModel.addExercise(
+                            //     WorkoutExercise(
+                            //         name = "Default Exercise",
+                            //         setCount = 3,
+                            //         order = newExerciseIndex,
+                            //     ),
+                            // )
+                            // coroutineScope.launch {
+                            //     workoutEditorViewModel.workout.value?.exercises?.let { exercises ->
+                            //         listState.animateScrollToItem(exercises.size)
+                            //     }
+                            // }
                         }
                     )
                 }
@@ -138,6 +148,82 @@ fun WorkoutEditorScreen(
                 navigateBack()
             }
         )
+
+        if (addExerciseDialogShown.value) {
+            AddExerciseDialog(
+                existingExercises = workoutEditorViewModel.getExistingExercises(),
+                onDismissRequest = { addExerciseDialogShown.value = false },
+                onExercisesSelected = { selectedExercises ->
+                    workoutEditorViewModel.addAllSelectedExercises(selectedExercises)
+                    addExerciseDialogShown.value = false
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddExerciseDialog(
+    existingExercises: List<WorkoutExercise>,
+    onDismissRequest: () -> Unit,
+    onExercisesSelected: (List<WorkoutExercise>) -> Unit
+) {
+    val selectedExercises = remember { mutableStateListOf<WorkoutExercise>() }
+
+    BasicAlertDialog(
+        onDismissRequest = { onDismissRequest() },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+    ) {
+        Card {
+            Column(
+                modifier =
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Exercises",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier =
+                    Modifier
+                        .padding(bottom = 16.dp)
+                        .align(Alignment.Start)
+                )
+                LazyColumn {
+                    items(existingExercises) { exercise ->
+                        ListItem(
+                            headlineContent = {
+                                Text(text = exercise.name)
+                            },
+                            leadingContent = {
+                                Checkbox(
+                                    checked = selectedExercises.contains(exercise),
+                                    onCheckedChange = { isChecked ->
+                                        if (isChecked) {
+                                            selectedExercises.add(exercise)
+                                        } else {
+                                            selectedExercises.remove(exercise)
+                                        }
+                                    }
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                Button(
+                    onClick = { onExercisesSelected(selectedExercises) },
+                    modifier =
+                    Modifier
+                        .align(Alignment.End)
+                        .padding(top = 16.dp)
+                ) {
+                    Text("Add Selected")
+                }
+            }
+        }
     }
 }
 
