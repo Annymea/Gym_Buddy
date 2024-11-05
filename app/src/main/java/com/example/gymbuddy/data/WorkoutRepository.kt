@@ -16,6 +16,10 @@ interface WorkoutRepository {
         date: Long
     )
 
+    suspend fun addExercise(newExercise: WorkoutExercise)
+
+    suspend fun deleteExercise(exerciseId: Long)
+
     suspend fun updateWorkout(newWorkout: Workout)
 
     suspend fun createNewWorkout(newWorkout: Workout)

@@ -1,5 +1,6 @@
 package com.example.gymbuddy.ui.exercises.overview
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -42,6 +43,19 @@ class ExerciseOverviewViewModel(
                             ExerciseOverviewUiState.NoExercises
                         }
                 }
+        }
+    }
+
+    fun saveNewExercise(exercise: WorkoutExercise) {
+        viewModelScope.launch {
+            workoutRepository.addExercise(exercise)
+        }
+    }
+
+    fun deleteExercise(exerciseId: Long) {
+        Log.d("ExerciseOverviewViewModel", "Deleting exercise with ID: $exerciseId")
+        viewModelScope.launch {
+            workoutRepository.deleteExercise(exerciseId)
         }
     }
 }

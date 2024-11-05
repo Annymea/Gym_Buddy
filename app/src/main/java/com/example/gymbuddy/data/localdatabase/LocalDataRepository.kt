@@ -116,6 +116,22 @@ class LocalDataRepository(
         workoutDAO.saveWorkoutExecution(executionEntities)
     }
 
+    override suspend fun addExercise(newExercise: WorkoutExercise) {
+        workoutDAO.insertExerciseDetails(
+            ExerciseDetailsEntity(
+                exerciseName = newExercise.name,
+                note = newExercise.note,
+                category = newExercise.category
+            )
+        )
+    }
+
+    override suspend fun deleteExercise(exerciseId: Long) {
+        workoutDAO.deleteExerciseDetailsById(
+            exerciseId
+        )
+    }
+
     override suspend fun updateWorkout(newWorkout: Workout) {
         val currentWorkoutEntities =
             workoutDAO.getExercisesFor(newWorkout.id).firstOrNull() ?: emptyList()

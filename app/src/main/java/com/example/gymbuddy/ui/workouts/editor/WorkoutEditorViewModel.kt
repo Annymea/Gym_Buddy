@@ -2,6 +2,7 @@ package com.example.gymbuddy.ui.workouts.editor
 
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,9 +17,11 @@ interface WorkoutEditorViewModelContract {
 
     fun addExercise(exercise: WorkoutExercise)
 
+    fun addAllSelectedExercises(exercises: List<WorkoutExercise>)
+
     fun updateExercise(
         index: Int,
-        exercise: WorkoutExercise
+        exercise: WorkoutExercise,
     )
 
     fun removeExercise(index: Int)
@@ -26,6 +29,8 @@ interface WorkoutEditorViewModelContract {
     fun updateWorkoutName(newName: String)
 
     fun saveWorkout()
+
+    fun getExistingExercises(): List<WorkoutExercise>
 }
 
 sealed class SavingWorkoutState {
@@ -36,12 +41,12 @@ sealed class SavingWorkoutState {
     data object Saved : SavingWorkoutState()
 
     data class Error(
-        val message: String
+        val message: String,
     ) : SavingWorkoutState()
 }
 
 class WorkoutEditorViewModel(
-    private val workoutRepository: WorkoutRepository
+    private val workoutRepository: WorkoutRepository,
 ) : ViewModel(),
     WorkoutEditorViewModelContract {
     override var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
@@ -53,7 +58,7 @@ class WorkoutEditorViewModel(
     init {
         workout.value =
             Workout(
-                name = "Workout"
+                name = "Workout",
             )
     }
 
@@ -61,9 +66,13 @@ class WorkoutEditorViewModel(
         workout.value?.exercises?.add(exercise)
     }
 
+    override fun addAllSelectedExercises(exercises: List<WorkoutExercise>) {
+        workout.value?.exercises?.addAll(exercises)
+    }
+
     override fun updateExercise(
         index: Int,
-        exercise: WorkoutExercise
+        exercise: WorkoutExercise,
     ) {
         workout.value?.exercises?.set(index, exercise)
     }
@@ -88,5 +97,17 @@ class WorkoutEditorViewModel(
                 Log.e("WorkoutEditorViewModel", error)
             }
         }
+    }
+
+    override fun getExistingExercises(): List<WorkoutExercise> {
+        val result = mutableStateListOf<WorkoutExercise>()
+        viewModelScope.launch {
+            workoutRepository.getAllExercises().collect {
+                result.clear()
+                result.addAll(it)
+            }
+        }
+        Log.d("WorkoutEditorViewModel", "getExistingExercises: $result")
+        return result
     }
 }
