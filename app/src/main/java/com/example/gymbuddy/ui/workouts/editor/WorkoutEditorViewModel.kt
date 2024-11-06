@@ -21,7 +21,7 @@ interface WorkoutEditorViewModelContract {
 
     fun updateExercise(
         index: Int,
-        exercise: WorkoutExercise,
+        exercise: WorkoutExercise
     )
 
     fun removeExercise(index: Int)
@@ -41,12 +41,12 @@ sealed class SavingWorkoutState {
     data object Saved : SavingWorkoutState()
 
     data class Error(
-        val message: String,
+        val message: String
     ) : SavingWorkoutState()
 }
 
 class WorkoutEditorViewModel(
-    private val workoutRepository: WorkoutRepository,
+    private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutEditorViewModelContract {
     override var saveState = mutableStateOf<SavingWorkoutState>(SavingWorkoutState.Idle)
@@ -58,7 +58,7 @@ class WorkoutEditorViewModel(
     init {
         workout.value =
             Workout(
-                name = "Workout",
+                name = "Workout"
             )
     }
 
@@ -72,7 +72,7 @@ class WorkoutEditorViewModel(
 
     override fun updateExercise(
         index: Int,
-        exercise: WorkoutExercise,
+        exercise: WorkoutExercise
     ) {
         workout.value?.exercises?.set(index, exercise)
     }
