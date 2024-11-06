@@ -1,5 +1,6 @@
 package com.example.gymbuddy.ui.workouts.editor
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -112,22 +113,6 @@ fun WorkoutEditorScreen(
                         modifier = Modifier.testTag("addExerciseButton"),
                         onAddExerciseButtonClicked = {
                             addExerciseDialogShown.value = true
-                            // val newExerciseIndex =
-                            //     workoutEditorViewModel.workout.value
-                            //         ?.exercises
-                            //         ?.size ?: 0
-                            // workoutEditorViewModel.addExercise(
-                            //     WorkoutExercise(
-                            //         name = "Default Exercise",
-                            //         setCount = 3,
-                            //         order = newExerciseIndex,
-                            //     ),
-                            // )
-                            // coroutineScope.launch {
-                            //     workoutEditorViewModel.workout.value?.exercises?.let { exercises ->
-                            //         listState.animateScrollToItem(exercises.size)
-                            //     }
-                            // }
                         }
                     )
                 }
@@ -179,7 +164,6 @@ fun AddExerciseDialog(
             Column(
                 modifier =
                 Modifier
-                    .padding(16.dp)
                     .fillMaxWidth()
             ) {
                 Text(
@@ -187,28 +171,32 @@ fun AddExerciseDialog(
                     style = MaterialTheme.typography.titleLarge,
                     modifier =
                     Modifier
-                        .padding(bottom = 16.dp)
+                        .padding(16.dp)
                         .align(Alignment.Start)
                 )
                 LazyColumn {
                     items(existingExercises) { exercise ->
+                        val isChecked = selectedExercises.contains(exercise)
                         ListItem(
                             headlineContent = {
                                 Text(text = exercise.name)
                             },
                             leadingContent = {
                                 Checkbox(
-                                    checked = selectedExercises.contains(exercise),
-                                    onCheckedChange = { isChecked ->
-                                        if (isChecked) {
-                                            selectedExercises.add(exercise)
-                                        } else {
-                                            selectedExercises.remove(exercise)
-                                        }
-                                    }
+                                    checked = isChecked,
+                                    onCheckedChange = null // OnClick handling only on the ListItem
                                 )
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (isChecked) {
+                                        selectedExercises.remove(exercise)
+                                    } else {
+                                        selectedExercises.add(exercise)
+                                    }
+                                }
                         )
                     }
                 }
@@ -218,7 +206,7 @@ fun AddExerciseDialog(
                     modifier =
                     Modifier
                         .align(Alignment.End)
-                        .padding(top = 16.dp)
+                        .padding(16.dp)
                 ) {
                     Text("Add Selected")
                 }
@@ -351,27 +339,16 @@ private fun AddExerciseCard(
                 .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
                 .fillMaxWidth()
         ) {
-            OutlinedTextField(
-                label = {
-                    Text(
-                        text =
-                        stringResource(
-                            R.string.workout_editor_exercise_name_input_title
-                        )
-                    )
-                },
-                value = exercise.name,
-                onValueChange = { newName ->
-                    onUpdateExercise(
-                        exercise.copy(name = newName)
-                    )
-                },
+            Text(
+                text = exercise.name,
                 modifier =
                 Modifier
-                    .weight(1f)
                     .padding(end = 16.dp)
-                    .testTag("exerciseNameInput")
+                    .weight(1f)
+                    .testTag("exerciseNameText")
+                    .align(Alignment.CenterVertically)
             )
+
             OutlinedTextField(
                 label = { Text(text = stringResource(R.string.workout_editor_sets_input_title)) },
                 value = exercise.setCount.toString(),
