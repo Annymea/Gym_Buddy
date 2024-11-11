@@ -46,12 +46,6 @@ class ExerciseOverviewViewModel(
         }
     }
 
-    fun saveNewExercise(exercise: WorkoutExercise) {
-        viewModelScope.launch {
-            workoutRepository.addExercise(exercise)
-        }
-    }
-
     fun deleteExercise(exerciseId: Long) {
         Log.d("ExerciseOverviewViewModel", "Deleting exercise with ID: $exerciseId")
         viewModelScope.launch {

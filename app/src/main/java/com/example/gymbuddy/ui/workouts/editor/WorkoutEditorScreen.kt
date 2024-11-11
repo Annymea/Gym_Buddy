@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.BasicAlertDialog
@@ -38,9 +39,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -50,8 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
-import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
-import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import com.example.gymbuddy.ui.common.ConfirmationDialog
+import com.example.gymbuddy.ui.common.ScreenTitle
+import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -81,11 +83,13 @@ fun WorkoutEditorScreen(
                 },
                 value = workoutEditorViewModel.workout.value?.name ?: "",
                 onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
-                modifier = Modifier.fillMaxWidth().testTag("workoutNameInput")
+                modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .testTag("workoutNameInput")
             )
 
             val listState = rememberLazyListState()
-            val coroutineScope = rememberCoroutineScope()
             LazyColumn(
                 state = listState,
                 modifier =
@@ -135,7 +139,7 @@ fun WorkoutEditorScreen(
         )
 
         if (addExerciseDialogShown.value) {
-            AddExerciseDialog(
+            AddExerciseDialogToWorkout(
                 existingExercises = workoutEditorViewModel.getExistingExercises(),
                 onDismissRequest = { addExerciseDialogShown.value = false },
                 onExercisesSelected = { selectedExercises ->
@@ -149,32 +153,58 @@ fun WorkoutEditorScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddExerciseDialog(
+fun AddExerciseDialogToWorkout(
     existingExercises: List<WorkoutExercise>,
     onDismissRequest: () -> Unit,
     onExercisesSelected: (List<WorkoutExercise>) -> Unit
 ) {
     val selectedExercises = remember { mutableStateListOf<WorkoutExercise>() }
+    val addExerciseDialogShown = remember { mutableStateOf(false) }
+
+    if (addExerciseDialogShown.value) {
+        AddExerciseDialog(
+            onDismissRequest = { addExerciseDialogShown.value = false }
+        )
+    }
 
     BasicAlertDialog(
         onDismissRequest = { onDismissRequest() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
-        Card {
+        Card(
+            modifier =
+            Modifier.padding(top = 16.dp, bottom = 16.dp)
+        ) {
             Column(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "Exercises",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .align(Alignment.Start)
+                Modifier.height(
+                    500.dp
                 )
-                LazyColumn {
+            ) {
+                Row(
+                    verticalAlignment = CenterVertically
+                ) {
+                    Text(
+                        text = "Exercises",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .weight(1f)
+                    )
+                    OutlinedButton(
+                        onClick = { addExerciseDialogShown.value = true },
+                        modifier =
+                        Modifier
+                            .padding(end = 8.dp)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "")
+                        Text(text = "Create")
+                    }
+                }
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
                     items(existingExercises) { exercise ->
                         val isChecked = selectedExercises.contains(exercise)
                         ListItem(
@@ -184,7 +214,7 @@ fun AddExerciseDialog(
                             leadingContent = {
                                 Checkbox(
                                     checked = isChecked,
-                                    onCheckedChange = null // OnClick handling only on the ListItem
+                                    onCheckedChange = null
                                 )
                             },
                             modifier =
@@ -201,14 +231,27 @@ fun AddExerciseDialog(
                     }
                 }
 
-                Button(
-                    onClick = { onExercisesSelected(selectedExercises) },
-                    modifier =
-                    Modifier
-                        .align(Alignment.End)
-                        .padding(16.dp)
+                Row(
+                    verticalAlignment = CenterVertically
                 ) {
-                    Text("Add Selected")
+                    OutlinedButton(
+                        onClick = { onDismissRequest() },
+                        modifier =
+                        Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                    ) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = { onExercisesSelected(selectedExercises) },
+                        modifier =
+                        Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                    ) {
+                        Text("Add Selected")
+                    }
                 }
             }
         }
@@ -364,7 +407,10 @@ private fun AddExerciseCard(
 
             Box {
                 IconButton(
-                    modifier = Modifier.padding(top = 8.dp).testTag("moreButton"),
+                    modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .testTag("moreButton"),
                     onClick = { isDropDownExpanded.value = true }
                 ) {
                     Icon(

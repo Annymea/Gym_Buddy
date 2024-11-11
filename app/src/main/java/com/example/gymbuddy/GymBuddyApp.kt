@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.localdatabase.LocalDataRepository
 import com.example.gymbuddy.data.localdatabase.WorkoutDatabase
+import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialogViewModel
 import com.example.gymbuddy.ui.dashboard.widgets.trainingsCalender.TrainingsCalenderViewModel
 import com.example.gymbuddy.ui.exercises.overview.ExerciseOverviewViewModel
 import com.example.gymbuddy.ui.workouts.editor.WorkoutEditorViewModel
@@ -52,4 +53,6 @@ val appModule =
         }
         viewModel { TrainingsCalenderViewModel(workoutRepository = get()) }
         viewModel { ExerciseOverviewViewModel(workoutRepository = get()) }
+
+        viewModel { AddExerciseDialogViewModel(workoutRepository = get()) }
     }

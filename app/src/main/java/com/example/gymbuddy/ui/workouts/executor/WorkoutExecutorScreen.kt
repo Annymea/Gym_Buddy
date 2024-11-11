@@ -47,8 +47,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutSet
-import com.example.gymbuddy.ui.workouts.common.ConfirmationDialog
-import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import com.example.gymbuddy.ui.common.ConfirmationDialog
+import com.example.gymbuddy.ui.common.ScreenTitle
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
