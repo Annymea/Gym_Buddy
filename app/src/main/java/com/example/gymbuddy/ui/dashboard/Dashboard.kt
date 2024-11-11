@@ -6,9 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.gymbuddy.ui.common.ScreenTitle
 import com.example.gymbuddy.ui.dashboard.widgets.trainingsCalender.TrainingsCalender
 import com.example.gymbuddy.ui.theme.Gym_BuddyTheme
-import com.example.gymbuddy.ui.workouts.common.ScreenTitle
 
 @Composable
 fun Dashboard(modifier: Modifier = Modifier) {

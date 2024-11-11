@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.Workout
-import com.example.gymbuddy.ui.workouts.common.ScreenTitle
+import com.example.gymbuddy.ui.common.ScreenTitle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

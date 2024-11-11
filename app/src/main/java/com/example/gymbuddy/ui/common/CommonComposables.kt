@@ -1,4 +1,4 @@
-package com.example.gymbuddy.ui.workouts.common
+package com.example.gymbuddy.ui.common
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
