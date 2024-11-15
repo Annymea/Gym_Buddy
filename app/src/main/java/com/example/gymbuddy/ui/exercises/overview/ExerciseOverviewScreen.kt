@@ -30,15 +30,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.common.ScreenTitle
 import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ExerciseOverviewScreen(
     modifier: Modifier = Modifier,
-    viewModel: ExerciseOverviewViewModel = koinViewModel<ExerciseOverviewViewModel>()
+    viewModel: ExerciseOverviewViewModel = hiltViewModel<ExerciseOverviewViewModel>()
 ) {
     Column(
         modifier = modifier.fillMaxSize()

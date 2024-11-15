@@ -26,8 +26,6 @@ class WorkoutExecutorScreenTest {
 
     @Before
     fun setUp() {
-        val workoutId = "1"
-
         val testWorkout =
             Workout(
                 name = "Test Workout",
@@ -61,7 +59,6 @@ class WorkoutExecutorScreenTest {
 
         composeTestRule.setContent {
             WorkoutExecutorScreen(
-                workoutId = workoutId,
                 viewModel = FakeWorkoutExecutorViewModel(testWorkout)
             )
         }

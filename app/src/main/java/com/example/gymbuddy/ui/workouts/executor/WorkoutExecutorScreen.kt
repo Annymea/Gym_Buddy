@@ -44,20 +44,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutSet
 import com.example.gymbuddy.ui.common.ConfirmationDialog
 import com.example.gymbuddy.ui.common.ScreenTitle
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun WorkoutExecutorScreen(
     modifier: Modifier = Modifier,
-    workoutId: String,
     viewModel: WorkoutExecutorViewModelContract =
-        koinViewModel<WorkoutExecutorViewModel>(parameters = { parametersOf(workoutId) }),
+        hiltViewModel<WorkoutExecutorViewModel>(),
     navigateBack: () -> Unit = {}
 ) {
     Column(
@@ -415,7 +413,7 @@ fun ExecutionRow(
 @Preview(showBackground = true)
 @Composable
 fun WorkoutExecutorScreenPreview() {
-    WorkoutExecutorScreen(workoutId = "1")
+    WorkoutExecutorScreen()
 }
 
 @Preview(showBackground = true)

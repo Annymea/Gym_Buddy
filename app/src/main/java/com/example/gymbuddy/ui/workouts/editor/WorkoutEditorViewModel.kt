@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 interface WorkoutEditorViewModelContract {
@@ -45,7 +47,10 @@ sealed class SavingWorkoutState {
     ) : SavingWorkoutState()
 }
 
-class WorkoutEditorViewModel(
+@HiltViewModel
+class WorkoutEditorViewModel
+@Inject
+constructor(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutEditorViewModelContract {

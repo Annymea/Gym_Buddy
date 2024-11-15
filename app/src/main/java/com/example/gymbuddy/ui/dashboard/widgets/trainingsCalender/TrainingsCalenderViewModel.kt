@@ -8,7 +8,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,10 @@ interface TrainingsCalenderViewModelContract {
     fun updateMonth(increment: Boolean)
 }
 
-class TrainingsCalenderViewModel(
+@HiltViewModel
+class TrainingsCalenderViewModel
+@Inject
+constructor(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     TrainingsCalenderViewModelContract {

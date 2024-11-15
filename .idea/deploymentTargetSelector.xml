@@ -13,19 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="getLatestExecutionForExercise()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="getLatestExecutionForExercise_returnsEmptyListWhenNoEntriesExist()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="LocalDataRepositoryTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testGetWorkout_FillsExercisesWithPreviousSets()">
+      <SelectionState runConfigName="testGetWorkout_ReturnsEmptySetsWhenNoPreviousExecutions()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testGetWorkout_ReturnsEmptySetsWhenNoPreviousExecutions()">
+      <SelectionState runConfigName="All Tests">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="Tests in 'com.example.gymbuddy'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

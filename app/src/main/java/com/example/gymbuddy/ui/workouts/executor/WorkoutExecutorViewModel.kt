@@ -4,13 +4,16 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.WorkoutSet
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 interface WorkoutExecutorViewModelContract {
@@ -30,11 +33,18 @@ interface WorkoutExecutorViewModelContract {
     fun deleteExercise(exerciseIndex: Int)
 }
 
-class WorkoutExecutorViewModel(
+@HiltViewModel
+class WorkoutExecutorViewModel
+@Inject
+constructor(
     private val workoutRepository: WorkoutRepository,
-    private val workoutId: String
+    savedStateHandle: SavedStateHandle
 ) : ViewModel(),
     WorkoutExecutorViewModelContract {
+    private val workoutId: String =
+        savedStateHandle["workoutId"]
+            ?: throw IllegalArgumentException("Workout ID is required")
+
     override var workout: MutableState<Workout?> = mutableStateOf(null)
         private set
 
