@@ -8,11 +8,14 @@ import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.WorkoutSet
 import java.util.Calendar
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-class LocalDataRepository(
+class LocalDataRepository
+@Inject
+constructor(
     private val workoutDAO: WorkoutDAO
 ) : WorkoutRepository {
     override suspend fun getWorkout(workoutId: Long): Workout? {
@@ -35,7 +38,10 @@ class LocalDataRepository(
                             ?: return@mapNotNull null
 
                     val executionEntities =
-                        workoutDAO.getExecutionsFor(workoutEntity.exerciseDetailsId).firstOrNull()
+                        workoutDAO
+                            .getExecutionsFor(
+                                workoutEntity.exerciseDetailsId
+                            ).firstOrNull()
                     val sets = mutableStateListOf<WorkoutSet>()
                     executionEntities?.forEachIndexed { index, it ->
                         sets.add(

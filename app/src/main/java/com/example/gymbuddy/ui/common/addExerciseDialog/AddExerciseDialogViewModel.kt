@@ -1,34 +1,24 @@
 package com.example.gymbuddy.ui.common.addExerciseDialog
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-class AddExerciseDialogViewModel(
+@HiltViewModel
+class AddExerciseDialogViewModel
+@Inject
+constructor(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel() {
-    var newExercise: MutableState<WorkoutExercise?> =
-        mutableStateOf(
-            WorkoutExercise(
-                name = "",
-                order = 0
-            )
-        )
-        private set
-
-    fun onNameChange(name: String) {
-        newExercise.value = newExercise.value?.copy(name = name)
-    }
-
-    fun onSaveExercise() {
+    fun onSaveExercise(newExercise: WorkoutExercise) {
         viewModelScope.launch {
             try {
-                workoutRepository.addExercise(newExercise.value!!)
+                workoutRepository.addExercise(newExercise)
             } catch (e: Exception) {
                 Log.d("AddExerciseDialogViewModel", "Error saving exercise:")
             }

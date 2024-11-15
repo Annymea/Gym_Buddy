@@ -31,20 +31,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.ui.common.ScreenTitle
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorkoutOverviewScreen(
     modifier: Modifier = Modifier,
-    workoutOverviewViewModel: WorkoutOverviewViewModelContract =
-        koinViewModel<WorkoutOverviewViewModel>(),
+    viewModel: WorkoutOverviewViewModelContract = hiltViewModel<WorkoutOverviewViewModel>(),
     onCreateWorkout: () -> Unit = {},
     onExecuteWorkout: (id: Long) -> Unit
 ) {
-    val uiState by workoutOverviewViewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {
         is WorkoutOverviewUiState.NoWorkouts -> {
@@ -57,7 +57,7 @@ fun WorkoutOverviewScreen(
         is WorkoutOverviewUiState.Workouts -> {
             WorkoutOverview(
                 modifier = modifier,
-                workouts = workoutOverviewViewModel.workouts,
+                workouts = viewModel.workouts,
                 onCreateWorkout = { onCreateWorkout() },
                 onExecuteWorkout = { id -> onExecuteWorkout(id) }
             )

@@ -26,13 +26,13 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import java.time.LocalDate
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TrainingsCalender(
     modifier: Modifier = Modifier,
-    viewModel: TrainingsCalenderViewModelContract = koinViewModel<TrainingsCalenderViewModel>()
+    viewModel: TrainingsCalenderViewModelContract = hiltViewModel<TrainingsCalenderViewModel>()
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -121,7 +121,10 @@ fun WeekdayHeaders() {
         listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun").forEach { day ->
             Text(
                 text = day,
-                modifier = Modifier.weight(1f).testTag("trainingsCalender_weekdayHeader_$day"),
+                modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag("trainingsCalender_weekdayHeader_$day"),
                 textAlign = TextAlign.Center
             )
         }
@@ -139,7 +142,12 @@ fun MonthlyCalendar(
     val firstWeekDay = LocalDate.of(shownYear, shownMonth, 1).dayOfWeek.value
     val daysInMonth = LocalDate.of(shownYear, shownMonth, 1).lengthOfMonth()
 
-    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+    Column(
+        modifier =
+        Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
         while (day <= daysInMonth) {
             Row {
                 for (weekday in 1..7) {

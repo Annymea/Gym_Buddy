@@ -49,18 +49,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.common.ConfirmationDialog
 import com.example.gymbuddy.ui.common.ScreenTitle
 import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
     workoutEditorViewModel: WorkoutEditorViewModelContract =
-        koinViewModel<WorkoutEditorViewModel>(),
+        hiltViewModel<WorkoutEditorViewModel>(),
     navigateBack: () -> Unit = {}
 ) {
     val addExerciseDialogShown = remember { mutableStateOf(false) }

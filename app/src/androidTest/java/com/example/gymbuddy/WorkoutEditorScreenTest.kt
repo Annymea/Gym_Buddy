@@ -147,6 +147,10 @@ class FakeWorkoutEditorViewModel : WorkoutEditorViewModelContract {
         workout.value?.exercises?.add(exercise)
     }
 
+    override fun addAllSelectedExercises(exercises: List<WorkoutExercise>) {
+        TODO("Not yet implemented")
+    }
+
     override fun updateExercise(
         index: Int,
         exercise: WorkoutExercise
@@ -161,5 +165,9 @@ class FakeWorkoutEditorViewModel : WorkoutEditorViewModelContract {
     }
 
     override fun saveWorkout() {
+    }
+
+    override fun getExistingExercises(): List<WorkoutExercise> {
+        TODO("Not yet implemented")
     }
 }

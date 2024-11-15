@@ -1,6 +1,22 @@
 package com.example.gymbuddy.data
 
+import com.example.gymbuddy.data.localdatabase.LocalDataRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class LocalDataRepositoryModule {
+    @Binds
+    @Singleton
+    abstract fun bindWorkoutRepository(
+        workoutRepositoryImpl: LocalDataRepository
+    ): WorkoutRepository
+}
 
 interface WorkoutRepository {
     // Yet not a flow due to complex implementation.

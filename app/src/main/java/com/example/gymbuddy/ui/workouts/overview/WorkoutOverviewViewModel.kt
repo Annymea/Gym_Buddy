@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -22,7 +24,10 @@ interface WorkoutOverviewViewModelContract {
     val uiState: StateFlow<WorkoutOverviewUiState>
 }
 
-class WorkoutOverviewViewModel(
+@HiltViewModel
+class WorkoutOverviewViewModel
+@Inject
+constructor(
     private val workoutRepository: WorkoutRepository
 ) : ViewModel(),
     WorkoutOverviewViewModelContract {

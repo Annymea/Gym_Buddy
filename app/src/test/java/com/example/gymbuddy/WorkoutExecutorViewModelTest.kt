@@ -2,6 +2,7 @@ package com.example.gymbuddy
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.lifecycle.SavedStateHandle
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
@@ -10,6 +11,7 @@ import com.example.gymbuddy.ui.workouts.executor.WorkoutExecutorViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +33,9 @@ class WorkoutExecutorViewModelTest {
 
     @MockK
     private lateinit var workoutRepository: WorkoutRepository
+
+    @MockK
+    private lateinit var savedStateHandle: SavedStateHandle
 
     @Before
     fun setup() {
@@ -63,7 +68,7 @@ class WorkoutExecutorViewModelTest {
 
             advanceUntilIdle()
 
-            viewModel = WorkoutExecutorViewModel(workoutRepository, workoutId.toString())
+            viewModel = WorkoutExecutorViewModel(workoutRepository, savedStateHandle)
 
             // assertEquals(null, viewModel.workout.value)
         }
@@ -191,10 +196,12 @@ class WorkoutExecutorViewModelTest {
                 note = "This is a test workout",
                 exercises = exerciseList
             )
-        val workoutId = 1L
+        val workoutId = "1"
 
-        coEvery { workoutRepository.getWorkout(workoutId) } returns workout
-        viewModel = WorkoutExecutorViewModel(workoutRepository, workoutId.toString())
+        coEvery { workoutRepository.getWorkout(workoutId.toLong()) } returns workout
+        every { savedStateHandle.get<String>("workoutId") } returns workoutId
+
+        viewModel = WorkoutExecutorViewModel(workoutRepository, savedStateHandle)
 
         return workout
     }

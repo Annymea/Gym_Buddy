@@ -15,18 +15,33 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import org.koin.androidx.compose.koinViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.gymbuddy.data.WorkoutExercise
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExerciseDialog(
     onDismissRequest: () -> Unit,
-    viewModel: AddExerciseDialogViewModel = koinViewModel<AddExerciseDialogViewModel>()
+    viewModel: AddExerciseDialogViewModel = hiltViewModel<AddExerciseDialogViewModel>()
 ) {
+    // build here exercise to save so get a fresh start every time the dialog opens
+    var newExercise by remember {
+        mutableStateOf(
+            WorkoutExercise(
+                name = "",
+                order = 0
+            )
+        )
+    }
+
     BasicAlertDialog(
         onDismissRequest = {
             onDismissRequest()
@@ -62,9 +77,11 @@ fun AddExerciseDialog(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     },
-                    value = viewModel.newExercise.value!!.name,
+                    value = newExercise.name,
                     modifier = Modifier,
-                    onValueChange = { viewModel.onNameChange(it) }
+                    onValueChange = {
+                        newExercise = newExercise.copy(name = it)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -74,17 +91,23 @@ fun AddExerciseDialog(
                         onClick = {
                             onDismissRequest()
                         },
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                        modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
                     ) {
                         Text(text = "Cancel")
                     }
 
                     Button(
                         onClick = {
-                            viewModel.onSaveExercise()
+                            viewModel.onSaveExercise(newExercise)
                             onDismissRequest()
                         },
-                        modifier = Modifier.weight(1f).padding(start = 8.dp)
+                        modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
                     ) {
                         Text(text = "Save")
                     }

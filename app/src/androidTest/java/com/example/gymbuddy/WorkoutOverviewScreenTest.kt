@@ -21,7 +21,7 @@ class WorkoutOverviewScreenTest {
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
-                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
+                viewModel = FakeWorkoutOverviewViewModel(workouts),
                 onExecuteWorkout = { }
             )
         }
@@ -39,7 +39,7 @@ class WorkoutOverviewScreenTest {
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
-                workoutOverviewViewModel = FakeWorkoutOverviewViewModel(workouts),
+                viewModel = FakeWorkoutOverviewViewModel(workouts),
                 onExecuteWorkout = { }
             )
         }

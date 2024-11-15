@@ -1,12 +1,39 @@
 package com.example.gymbuddy.data.localdatabase
 
+import android.content.Context
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Room
 import androidx.room.Update
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+
+@Module
+@InstallIn(SingletonComponent::class)
+class DatabaseModule {
+    @Provides
+    @Singleton
+    fun provideWorkoutDatabase(
+        @ApplicationContext appContext: Context
+    ): WorkoutDatabase =
+        Room
+            .databaseBuilder(
+                appContext,
+                WorkoutDatabase::class.java,
+                "gym_buddy_database"
+            ).build()
+
+    @Provides
+    fun provideWorkoutDao(database: WorkoutDatabase): WorkoutDAO = database.workoutDao()
+}
 
 @Dao
 interface WorkoutDAO {
