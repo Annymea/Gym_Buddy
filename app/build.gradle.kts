@@ -17,7 +17,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.gymbuddy.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.monitor)
+    implementation(libs.core)
 
     testImplementation(libs.junit)
     testImplementation(libs.testng)
