@@ -14,6 +14,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
@@ -110,6 +113,208 @@ class LocalDataRepositoryTest {
                     expectedResult.note,
                     result.note,
                 )
+            }
+        }
+
+    @Test
+    fun testGetAllExercises_ReturnsCorrectMappedData() =
+        runTest {
+            val exerciseDetailsEntities =
+                listOf(
+                    getExerciseDetails(id = 1L),
+                    getExerciseDetails(
+                        id = 2L,
+                    ).copy(exerciseName = "Squat", note = "Leg strength exercise"),
+                )
+
+            val expectedExercises =
+                listOf(
+                    WorkoutExercise(
+                        id = 1L,
+                        name = "Test Exercise",
+                        note = "",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf(),
+                    ),
+                    WorkoutExercise(
+                        id = 2L,
+                        name = "Squat",
+                        note = "Leg strength exercise",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf(),
+                    ),
+                )
+
+            coEvery { workoutDao.getAllExerciseDetails() } returns
+                flow { emit(exerciseDetailsEntities) }
+
+            val result = workoutRepository.getAllExercises().first()
+
+            assertEquals(expectedExercises.size, result.size)
+            expectedExercises.forEachIndexed { index, expectedExercise ->
+                val actualExercise = result[index]
+                assertEquals(expectedExercise.id, actualExercise.id)
+                assertEquals(expectedExercise.name, actualExercise.name)
+                assertEquals(expectedExercise.note, actualExercise.note)
+                assertEquals(expectedExercise.setCount, actualExercise.setCount)
+                assertEquals(expectedExercise.order, actualExercise.order)
+                assertTrue(actualExercise.sets.isEmpty())
+            }
+        }
+
+    @Test
+    fun testGetAllExercises_ReturnsEmptyListWhenNoData() =
+        runTest {
+            coEvery { workoutDao.getAllExerciseDetails() } returns flow { emit(emptyList()) }
+
+            val result = workoutRepository.getAllExercises().first()
+
+            assertTrue(result.isEmpty())
+        }
+
+    @Test
+    fun testAddExercise_InsertsExerciseDetails() =
+        runTest {
+            val newExercise =
+                WorkoutExercise(
+                    id = 0L,
+                    name = "Pull-Up",
+                    note = "Upper body strength exercise",
+                    category = "Strength",
+                    setCount = 0,
+                    order = 0,
+                    sets = mutableStateListOf(),
+                )
+
+            coEvery { workoutDao.insertExerciseDetails(any()) } returns 1L
+
+            workoutRepository.addExercise(newExercise)
+
+            coVerify {
+                workoutDao.insertExerciseDetails(
+                    ExerciseDetailsEntity(
+                        exerciseName = "Pull-Up",
+                        note = "Upper body strength exercise",
+                        category = "Strength",
+                    ),
+                )
+            }
+        }
+
+    @Test
+    fun testAddExercise_HandlesDatabaseError() =
+        runTest {
+            val validExercise =
+                WorkoutExercise(
+                    id = 0L,
+                    name = "Valid Exercise",
+                    note = "Some note",
+                    category = "Strength",
+                    setCount = 0,
+                    order = 0,
+                    sets = mutableStateListOf(),
+                )
+
+            coEvery { workoutDao.insertExerciseDetails(any()) } throws
+                RuntimeException("Database error")
+
+            try {
+                workoutRepository.addExercise(validExercise)
+                fail("Expected a RuntimeException to be thrown")
+            } catch (e: RuntimeException) {
+                assertEquals("Database error", e.message)
+            }
+
+            coVerify { workoutDao.insertExerciseDetails(any()) }
+        }
+
+    @Test
+    fun testDeleteExercise_DeletesExerciseDetailsById() =
+        runTest {
+            val exerciseId = 1L
+
+            coEvery { workoutDao.deleteExerciseDetailsById(any()) } returns Unit
+
+            workoutRepository.deleteExercise(exerciseId)
+
+            coVerify {
+                workoutDao.deleteExerciseDetailsById(exerciseId)
+            }
+        }
+
+    @Test
+    fun testGetWorkout_AddsSetsWhenExecutionsExist() =
+        runTest {
+            val workoutDetails = getWorkoutDetails()
+            val workoutEntities = listOf(getWorkout(1L))
+            val exerciseDetails = getExerciseDetails()
+
+            val executionEntities =
+                listOf(
+                    ExecutionEntity(
+                        id = 1,
+                        weight = 50F,
+                        reps = 10,
+                        date = 123456789L,
+                        exerciseDetailsId = 1L,
+                    ),
+                    ExecutionEntity(
+                        id = 2,
+                        weight = 60F,
+                        reps = 8,
+                        date = 123456789L,
+                        exerciseDetailsId = 1L,
+                    ),
+                )
+
+            val expectedSets =
+                listOf(
+                    WorkoutSet(weight = 50F, reps = 10, order = 0),
+                    WorkoutSet(weight = 60F, reps = 8, order = 1),
+                )
+
+            coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
+            coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
+            coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
+                flow { emit(exerciseDetails) }
+            coEvery { workoutDao.getExecutionsFor(any()) } returns flow { emit(executionEntities) }
+
+            val result = workoutRepository.getWorkout(1L)
+
+            if (result != null) {
+                val actualSets = result.exercises.firstOrNull()?.sets
+                assertEquals(expectedSets.size, actualSets?.size)
+                expectedSets.forEachIndexed { index, expectedSet ->
+                    assertEquals(expectedSet.weight, actualSets?.get(index)?.weight)
+                    assertEquals(expectedSet.reps, actualSets?.get(index)?.reps)
+                    assertEquals(expectedSet.order, actualSets?.get(index)?.order)
+                }
+            }
+        }
+
+    @Test
+    fun testGetWorkout_NoSetsWhenExecutionsEmpty() =
+        runTest {
+            val workoutDetails = getWorkoutDetails()
+            val workoutEntities = listOf(getWorkout(1L))
+            val exerciseDetails = getExerciseDetails()
+
+            val executionEntities = emptyList<ExecutionEntity>()
+
+            coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
+            coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
+            coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
+                flow { emit(exerciseDetails) }
+            coEvery { workoutDao.getExecutionsFor(any()) } returns flow { emit(executionEntities) }
+
+            val result = workoutRepository.getWorkout(1L)
+
+            if (result != null) {
+                val actualSets = result.exercises.firstOrNull()?.sets
+                assertNotNull(actualSets)
+                assertTrue(actualSets?.isEmpty() == true)
             }
         }
 

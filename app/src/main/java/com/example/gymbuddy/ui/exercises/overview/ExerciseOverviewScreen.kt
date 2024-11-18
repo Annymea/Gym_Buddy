@@ -38,7 +38,7 @@ import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
 @Composable
 fun ExerciseOverviewScreen(
     modifier: Modifier = Modifier,
-    viewModel: ExerciseOverviewViewModel = hiltViewModel<ExerciseOverviewViewModel>()
+    viewModel: ExerciseOverviewViewModelContract = hiltViewModel<ExerciseOverviewViewModel>()
 ) {
     Column(
         modifier = modifier.fillMaxSize()

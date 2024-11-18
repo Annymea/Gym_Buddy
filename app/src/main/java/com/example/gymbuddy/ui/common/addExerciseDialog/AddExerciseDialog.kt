@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,7 +31,7 @@ import com.example.gymbuddy.data.WorkoutExercise
 @Composable
 fun AddExerciseDialog(
     onDismissRequest: () -> Unit,
-    viewModel: AddExerciseDialogViewModel = hiltViewModel<AddExerciseDialogViewModel>()
+    viewModel: AddExerciseDialogViewModelContract = hiltViewModel<AddExerciseDialogViewModel>()
 ) {
     // build here exercise to save so get a fresh start every time the dialog opens
     var newExercise by remember {
@@ -50,7 +51,8 @@ fun AddExerciseDialog(
         DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true
-        )
+        ),
+        modifier = Modifier.testTag("addExerciseDialog")
     ) {
         Card {
             Column(
@@ -78,7 +80,7 @@ fun AddExerciseDialog(
                         )
                     },
                     value = newExercise.name,
-                    modifier = Modifier,
+                    modifier = Modifier.testTag("nameInput"),
                     onValueChange = {
                         newExercise = newExercise.copy(name = it)
                     }
@@ -95,11 +97,13 @@ fun AddExerciseDialog(
                         Modifier
                             .weight(1f)
                             .padding(end = 8.dp)
+                            .testTag("cancelExerciseButton")
                     ) {
                         Text(text = "Cancel")
                     }
 
                     Button(
+                        enabled = newExercise.name.isNotBlank(),
                         onClick = {
                             viewModel.onSaveExercise(newExercise)
                             onDismissRequest()
@@ -108,6 +112,7 @@ fun AddExerciseDialog(
                         Modifier
                             .weight(1f)
                             .padding(start = 8.dp)
+                            .testTag("saveExerciseButton")
                     ) {
                         Text(text = "Save")
                     }

@@ -13,19 +13,16 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="NavigationTest">
+      <SelectionState runConfigName="addExerciseDialog_noInitialExerciseName()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="trainingsCalender_showsHighlightedDays()">
+      <SelectionState runConfigName="Tests in 'com.example.gymbuddy'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DashboardScreenTest">
+      <SelectionState runConfigName="exerciseOverview_showsCorrectTitle()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="trainingsCalender_showsHighlightedDays() (1)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="All Tests">
+      <SelectionState runConfigName="exerciseOverview_opensAddExerciseDialog()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

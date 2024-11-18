@@ -1,4 +1,4 @@
-package com.example.gymbuddy
+package com.example.gymbuddy.screens
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
