@@ -1,4 +1,4 @@
-package com.example.gymbuddy
+package com.example.gymbuddy.screens
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

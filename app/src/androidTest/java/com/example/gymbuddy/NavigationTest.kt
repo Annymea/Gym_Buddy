@@ -22,14 +22,14 @@ import dagger.hilt.testing.TestInstallIn
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.mockk
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @HiltAndroidTest
 @UninstallModules(LocalDataRepositoryModule::class)
@@ -121,7 +121,7 @@ class NavigationTest {
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [LocalDataRepositoryModule::class],
+    replaces = [LocalDataRepositoryModule::class]
 )
 object TestRepositoryModule {
     @Provides
@@ -140,7 +140,7 @@ object TestRepositoryModule {
 
         coEvery { mockRepository.getDaysOfCompletedWorkoutsForMonth(any(), any()) } returns
             flowOf(
-                listOf(1, 5, 10),
+                listOf(1, 5, 10)
             )
 
         return mockRepository

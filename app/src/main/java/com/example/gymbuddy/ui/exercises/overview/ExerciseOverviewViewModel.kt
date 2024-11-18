@@ -1,6 +1,5 @@
 package com.example.gymbuddy.ui.exercises.overview
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -19,14 +18,23 @@ sealed class ExerciseOverviewUiState {
     data object Exercises : ExerciseOverviewUiState()
 }
 
+interface ExerciseOverviewViewModelContract {
+    val exercises: SnapshotStateList<WorkoutExercise>
+    val uiState: MutableStateFlow<ExerciseOverviewUiState>
+
+    fun deleteExercise(exerciseId: Long)
+}
+
 @HiltViewModel
 class ExerciseOverviewViewModel
 @Inject
 constructor(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-    val exercises: SnapshotStateList<WorkoutExercise> = mutableStateListOf()
-    var uiState: MutableStateFlow<ExerciseOverviewUiState> =
+) : ViewModel(),
+    ExerciseOverviewViewModelContract {
+    override val exercises: SnapshotStateList<WorkoutExercise> = mutableStateListOf()
+
+    override var uiState: MutableStateFlow<ExerciseOverviewUiState> =
         MutableStateFlow(ExerciseOverviewUiState.NoExercises)
         private set
 
@@ -51,8 +59,7 @@ constructor(
         }
     }
 
-    fun deleteExercise(exerciseId: Long) {
-        Log.d("ExerciseOverviewViewModel", "Deleting exercise with ID: $exerciseId")
+    override fun deleteExercise(exerciseId: Long) {
         viewModelScope.launch {
             workoutRepository.deleteExercise(exerciseId)
         }

@@ -9,13 +9,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
+interface AddExerciseDialogViewModelContract {
+    fun onSaveExercise(newExercise: WorkoutExercise)
+}
+
 @HiltViewModel
 class AddExerciseDialogViewModel
 @Inject
 constructor(
     private val workoutRepository: WorkoutRepository
-) : ViewModel() {
-    fun onSaveExercise(newExercise: WorkoutExercise) {
+) : ViewModel(),
+    AddExerciseDialogViewModelContract {
+    override fun onSaveExercise(newExercise: WorkoutExercise) {
         viewModelScope.launch {
             try {
                 workoutRepository.addExercise(newExercise)

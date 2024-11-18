@@ -329,4 +329,63 @@ class WorkoutDAOTest {
 
             assert(latestExecutions.isEmpty())
         }
+
+    @Test
+    fun getAllExerciseDetails_ReturnsAllInsertedExercises() =
+        runBlocking {
+            val exerciseDetails =
+                listOf(
+                    getExerciseDetails(id = 1L).copy(exerciseName = "Push-Up"),
+                    getExerciseDetails(id = 2L).copy(exerciseName = "Pull-Up"),
+                )
+
+            for (exercise in exerciseDetails) {
+                workoutDao.insertExerciseDetails(exercise)
+            }
+
+            val savedExerciseDetails = workoutDao.getAllExerciseDetails().first()
+
+            assert(savedExerciseDetails.size == 2)
+            assert(savedExerciseDetails.containsAll(exerciseDetails))
+        }
+
+    @Test
+    fun getAllExerciseDetails_ReturnsEmptyListWhenNoDataExists() =
+        runBlocking {
+            val savedExerciseDetails = workoutDao.getAllExerciseDetails().first()
+
+            assert(savedExerciseDetails.isEmpty())
+        }
+
+    @Test
+    fun deleteExerciseDetailsById_RemovesCorrectEntry() =
+        runBlocking {
+            val exercise1 = getExerciseDetails(id = 1L).copy(exerciseName = "Push-Up")
+            val exercise2 = getExerciseDetails(id = 2L).copy(exerciseName = "Pull-Up")
+
+            workoutDao.insertExerciseDetails(exercise1)
+            workoutDao.insertExerciseDetails(exercise2)
+
+            workoutDao.deleteExerciseDetailsById(1L)
+
+            val savedExerciseDetails = workoutDao.getAllExerciseDetails().first()
+
+            assert(savedExerciseDetails.size == 1)
+            assert(savedExerciseDetails[0] == exercise2)
+        }
+
+    @Test
+    fun deleteExerciseDetailsById_DoesNotFailWhenIdDoesNotExist() =
+        runBlocking {
+            val exercise = getExerciseDetails(id = 1L).copy(exerciseName = "Push-Up")
+
+            workoutDao.insertExerciseDetails(exercise)
+
+            workoutDao.deleteExerciseDetailsById(2L)
+
+            val savedExerciseDetails = workoutDao.getAllExerciseDetails().first()
+
+            assert(savedExerciseDetails.size == 1)
+            assert(savedExerciseDetails[0] == exercise)
+        }
 }
