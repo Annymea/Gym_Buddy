@@ -14,6 +14,10 @@ class DashboardScreenTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
+    // mainactivity is used because it is annotated with @AndroidEntryPoint
+    // If other usecases are needed I need to think about a test activity
+    // this annotation is needed for tests marked with HiltAndroidTest
+    // HiltAndroidTests are needed if I need DI within the composable
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
