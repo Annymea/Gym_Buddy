@@ -109,6 +109,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     kaptAndroidTest(libs.hilt.android.compiler)
     kaptTest(libs.hilt.android.compiler)
+    debugImplementation(libs.ui.test.manifest)
 
     kapt(libs.androidx.room.compiler)
 }
