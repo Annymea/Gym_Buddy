@@ -25,6 +25,7 @@ uiTestJunit4 = "1.7.0"
 ktlint = "11.3.2"
 monitor = "1.7.2"
 coreVersion = "1.46.0"
+uiTestManifest = "1.7.5"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
@@ -62,6 +63,7 @@ ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = 
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 core = { group = "com.google.ar", name = "core", version.ref = "coreVersion" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

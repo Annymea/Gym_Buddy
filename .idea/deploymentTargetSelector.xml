@@ -13,16 +13,27 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="addExerciseDialog_noInitialExerciseName()">
+      <SelectionState runConfigName="exerciseOverview_opensAndClosesAddExerciseDialog()">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-11-19T19:43:50.063346500Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Anna\.android\avd\Running_App.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="exerciseOverview_showsCorrectExercises()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="Tests in 'com.example.gymbuddy'">
+      <SelectionState runConfigName="exerciseOverview_callsDeleteExerciseForCorrectExercise()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="exerciseOverview_showsCorrectTitle()">
+      <SelectionState runConfigName="exerciseOverview_showsNewExercisesAfterAdding()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="exerciseOverview_opensAddExerciseDialog()">
+      <SelectionState runConfigName="exerciseOverview_showsSateChangeToNoExercises()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

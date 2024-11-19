@@ -95,7 +95,7 @@ fun ExerciseOverviewScreen(
 
 @Composable
 fun NoExercisesScreen() {
-    Text(text = "No Exercises")
+    Text(text = "No Exercises", modifier = Modifier.testTag("noExercisesText"))
 }
 
 @Composable
@@ -106,7 +106,8 @@ fun ExerciseScreen(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(16.dp),
+        modifier = Modifier.testTag("exerciseList")
     ) {
         items(exercises) { exercise ->
             ExerciseCard(
@@ -145,6 +146,7 @@ fun ExerciseCard(
             )
 
             ExerciseOptions(
+                idForTag = exercise.id,
                 onDeleteExercise = onDeleteExercise,
                 onEditExercise = onEditExercise
             )
@@ -154,6 +156,7 @@ fun ExerciseCard(
 
 @Composable
 fun ExerciseOptions(
+    idForTag: Long,
     onDeleteExercise: () -> Unit,
     onEditExercise: () -> Unit
 ) {
@@ -162,7 +165,7 @@ fun ExerciseOptions(
     Box {
         IconButton(
             onClick = { isDropDownExpanded.value = true },
-            modifier = Modifier.testTag("exerciseOptionsButton")
+            modifier = Modifier.testTag("exerciseOptionsButton$idForTag")
         ) {
             Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
         }
