@@ -12,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.gymbuddy.data.LocalDataRepositoryModule
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutRepository
+import com.example.gymbuddy.ui.navigation.AppNavigation
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -37,12 +38,8 @@ class NavigationTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    // mainactivity is used because it is annotated with @AndroidEntryPoint
-    // If other usecases are needed I need to think about a test activity
-    // this annotation is needed for tests marked with HiltAndroidTest
-    // HiltAndroidTests are needed if I need DI within the composable
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     @Inject
     lateinit var mockRepository: WorkoutRepository
@@ -57,6 +54,10 @@ class NavigationTest {
         navController = TestNavHostController(context)
         navController.navigatorProvider.addNavigator(ComposeNavigator())
         navController.setLifecycleOwner(TestLifecycleOwner())
+
+        composeTestRule.setContent {
+            AppNavigation()
+        }
     }
 
     @After
@@ -114,6 +115,17 @@ class NavigationTest {
         composeTestRule.waitForIdle()
         composeTestRule
             .onNodeWithTag("screenTitle_Executor")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun navigation_navigateToExerciseOverview() {
+        composeTestRule
+            .onNodeWithTag("bottomNavigation_Exercises")
+            .performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule
+            .onNodeWithTag("exercise_overview_screen_title")
             .assertIsDisplayed()
     }
 }
