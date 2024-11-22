@@ -197,10 +197,6 @@ class FakeWorkoutEditorViewModel : WorkoutEditorViewModelContract {
             )
     }
 
-    override fun addExercise(exercise: WorkoutExercise) {
-        workout.value?.exercises?.add(exercise)
-    }
-
     override fun addAllSelectedExercises(exercises: List<WorkoutExercise>) {
         workout.value?.exercises?.addAll(exercises)
     }
