@@ -17,7 +17,7 @@ data class WorkoutExercise(
     var name: String,
     var note: String = "",
     var setCount: Int = 0,
-    var order: Int,
+    var order: Int = 0,
     var sets: SnapshotStateList<WorkoutSet> = mutableStateListOf()
 )
 
