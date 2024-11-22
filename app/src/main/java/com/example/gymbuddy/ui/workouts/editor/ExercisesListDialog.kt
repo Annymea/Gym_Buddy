@@ -37,56 +37,56 @@ import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
 fun AddExerciseToWorkoutDialog(
     existingExercises: List<WorkoutExercise>,
     onDismissRequest: () -> Unit,
-    onExercisesSelected: (List<WorkoutExercise>) -> Unit,
+    onExercisesSelected: (List<WorkoutExercise>) -> Unit
 ) {
     val selectedExercises = remember { mutableStateListOf<WorkoutExercise>() }
     val addExerciseDialogShown = remember { mutableStateOf(false) }
 
     if (addExerciseDialogShown.value) {
         AddExerciseDialog(
-            onDismissRequest = { addExerciseDialogShown.value = false },
+            onDismissRequest = { addExerciseDialogShown.value = false }
         )
     }
 
     BasicAlertDialog(
         modifier = Modifier.testTag("chooseExercisesDialog"),
         onDismissRequest = { onDismissRequest() },
-        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
         Card(
             modifier =
-                Modifier.padding(top = 16.dp, bottom = 16.dp),
+            Modifier.padding(top = 16.dp, bottom = 16.dp)
         ) {
             Column(
                 modifier =
-                    Modifier.height(
-                        500.dp,
-                    ),
+                Modifier.height(
+                    500.dp
+                )
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Exercises",
                         style = MaterialTheme.typography.titleLarge,
                         modifier =
-                            Modifier
-                                .padding(16.dp)
-                                .weight(1f),
+                        Modifier
+                            .padding(16.dp)
+                            .weight(1f)
                     )
                     OutlinedButton(
                         onClick = { addExerciseDialogShown.value = true },
                         modifier =
-                            Modifier
-                                .padding(end = 8.dp)
-                                .testTag("addNewExerciseButton"),
+                        Modifier
+                            .padding(end = 8.dp)
+                            .testTag("addNewExerciseButton")
                     ) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = "")
                         Text(text = "Create")
                     }
                 }
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(existingExercises) { exercise ->
                         val isChecked = selectedExercises.contains(exercise)
@@ -98,42 +98,42 @@ fun AddExerciseToWorkoutDialog(
                                 Checkbox(
                                     checked = isChecked,
                                     onCheckedChange = null,
-                                    modifier = Modifier.testTag("addExerciseCheckbox"),
+                                    modifier = Modifier.testTag("addExerciseCheckbox")
                                 )
                             },
                             modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        if (isChecked) {
-                                            selectedExercises.remove(exercise)
-                                        } else {
-                                            selectedExercises.add(exercise)
-                                        }
-                                    }.testTag("addExerciseListItem"),
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (isChecked) {
+                                        selectedExercises.remove(exercise)
+                                    } else {
+                                        selectedExercises.add(exercise)
+                                    }
+                                }.testTag("addExerciseListItem")
                         )
                     }
                 }
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedButton(
                         onClick = { onDismissRequest() },
                         modifier =
-                            Modifier
-                                .padding(8.dp)
-                                .weight(1f),
+                        Modifier
+                            .padding(8.dp)
+                            .weight(1f)
                     ) {
                         Text("Cancel")
                     }
                     Button(
                         onClick = { onExercisesSelected(selectedExercises) },
                         modifier =
-                            Modifier
-                                .padding(8.dp)
-                                .weight(1f)
-                                .testTag("addDialogSubmitButton"),
+                        Modifier
+                            .padding(8.dp)
+                            .weight(1f)
+                            .testTag("addDialogSubmitButton")
                     ) {
                         Text("Add Selected")
                     }

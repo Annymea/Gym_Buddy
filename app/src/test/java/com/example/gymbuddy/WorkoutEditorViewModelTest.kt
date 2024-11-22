@@ -12,6 +12,7 @@ import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -47,22 +48,30 @@ class WorkoutEditorViewModelTest {
     }
 
     @Test
-    fun workoutEditorViewModel_addsExerciseToWorkout() =
+    fun workoutEditorViewModel_addsExercisesToWorkout() =
         runTest {
-            val exercise =
-                WorkoutExercise(
-                    name = "Test Exercise",
-                    setCount = 0,
-                    order = 0,
-                    sets = mutableStateListOf()
+            val exercises =
+                listOf(
+                    WorkoutExercise(
+                        name = "Test Exercise",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf()
+                    ),
+                    WorkoutExercise(
+                        name = "Test Exercise 2",
+                        setCount = 0,
+                        order = 1,
+                        sets = mutableStateListOf()
+                    )
                 )
 
-            viewModel.addExercise(exercise)
+            viewModel.addAllSelectedExercises(exercises)
 
             advanceUntilIdle()
 
             assertEquals(
-                1,
+                2,
                 viewModel.workout.value
                     ?.exercises
                     ?.size
@@ -74,19 +83,36 @@ class WorkoutEditorViewModelTest {
                     ?.get(0)
                     ?.name
             )
+
+            assertEquals(
+                "Test Exercise 2",
+                viewModel.workout.value
+                    ?.exercises
+                    ?.get(1)
+                    ?.name
+            )
         }
 
     @Test
     fun workoutEditorViewModel_updatesExerciseInWorkout() =
         runTest {
-            val exercise =
-                WorkoutExercise(
-                    name = "Old Exercise",
-                    setCount = 0,
-                    order = 0,
-                    sets = mutableStateListOf()
+            val exercises =
+                listOf(
+                    WorkoutExercise(
+                        name = "Test Exercise",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf()
+                    ),
+                    WorkoutExercise(
+                        name = "Test Exercise 2",
+                        setCount = 0,
+                        order = 1,
+                        sets = mutableStateListOf()
+                    )
                 )
-            viewModel.addExercise(exercise)
+
+            viewModel.addAllSelectedExercises(exercises)
 
             val updatedExercise =
                 WorkoutExercise(
@@ -106,33 +132,42 @@ class WorkoutEditorViewModelTest {
                     ?.get(0)
                     ?.name
             )
+
             assertEquals(
-                1,
+                2,
                 viewModel.workout.value
                     ?.exercises
-                    ?.get(0)
-                    ?.setCount
+                    ?.size
             )
         }
 
     @Test
     fun workoutEditorViewModel_removesExerciseFromWorkout() =
         runTest {
-            val exercise =
-                WorkoutExercise(
-                    name = "Test Exercise",
-                    setCount = 0,
-                    order = 0,
-                    sets = mutableStateListOf()
+            val exercises =
+                listOf(
+                    WorkoutExercise(
+                        name = "Test Exercise",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf()
+                    ),
+                    WorkoutExercise(
+                        name = "Test Exercise 2",
+                        setCount = 0,
+                        order = 1,
+                        sets = mutableStateListOf()
+                    )
                 )
-            viewModel.addExercise(exercise)
+
+            viewModel.addAllSelectedExercises(exercises)
 
             viewModel.removeExercise(0)
 
             advanceUntilIdle()
 
             assertEquals(
-                0,
+                1,
                 viewModel.workout.value
                     ?.exercises
                     ?.size
@@ -162,5 +197,47 @@ class WorkoutEditorViewModelTest {
 
             coVerify { workoutRepository.createNewWorkout(viewModel.workout.value!!) }
             assertEquals(SavingWorkoutState.Saved, viewModel.saveState.value)
+        }
+
+    @Test
+    fun workoutEditorViewModel_callsRepositoryAndGetsAllExistingExercises() =
+        runTest {
+            val exercises =
+                listOf(
+                    WorkoutExercise(
+                        name = "Test Exercise",
+                        setCount = 0,
+                        order = 0,
+                        sets = mutableStateListOf()
+                    ),
+                    WorkoutExercise(
+                        name = "Test Exercise 2",
+                        setCount = 0,
+                        order = 1,
+                        sets = mutableStateListOf()
+                    )
+                )
+
+            coEvery { workoutRepository.getAllExercises() } returns flow { emit(exercises) }
+
+            val result = viewModel.getExistingExercises()
+
+            advanceUntilIdle()
+
+            coVerify { workoutRepository.getAllExercises() }
+
+            assertEquals(
+                2,
+                result.size
+            )
+            assertEquals(
+                "Test Exercise",
+                result[0].name
+            )
+
+            assertEquals(
+                "Test Exercise 2",
+                result[1].name
+            )
         }
 }
