@@ -17,8 +17,6 @@ interface WorkoutEditorViewModelContract {
     val saveState: State<SavingWorkoutState>
     val workout: State<Workout?>
 
-    fun addExercise(exercise: WorkoutExercise)
-
     fun addAllSelectedExercises(exercises: List<WorkoutExercise>)
 
     fun updateExercise(
@@ -67,10 +65,6 @@ constructor(
             )
     }
 
-    override fun addExercise(exercise: WorkoutExercise) {
-        workout.value?.exercises?.add(exercise)
-    }
-
     override fun addAllSelectedExercises(exercises: List<WorkoutExercise>) {
         workout.value?.exercises?.addAll(exercises)
     }
@@ -112,7 +106,6 @@ constructor(
                 result.addAll(it)
             }
         }
-        Log.d("WorkoutEditorViewModel", "getExistingExercises: $result")
         return result
     }
 }

@@ -50,21 +50,21 @@ fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
     workoutEditorViewModel: WorkoutEditorViewModelContract =
         hiltViewModel<WorkoutEditorViewModel>(),
-    navigateBack: () -> Unit = {},
+    navigateBack: () -> Unit = {}
 ) {
     val addExerciseDialogShown = remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(
             text = stringResource(R.string.workout_editor_new_workout_screen_title),
-            testTag = "screenTitle_Editor",
+            testTag = "screenTitle_Editor"
         )
 
         Column(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(16.dp),
+            Modifier
+                .weight(1f)
+                .padding(16.dp)
         ) {
             OutlinedTextField(
                 label = {
@@ -73,21 +73,21 @@ fun WorkoutEditorScreen(
                 value = workoutEditorViewModel.workout.value?.name ?: "",
                 onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .testTag("workoutNameInput"),
+                Modifier
+                    .fillMaxWidth()
+                    .testTag("workoutNameInput")
             )
 
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(top = 16.dp),
+                Modifier
+                    .weight(1f)
+                    .padding(top = 16.dp)
             ) {
                 itemsIndexed(
-                    workoutEditorViewModel.workout.value?.exercises ?: emptyList(),
+                    workoutEditorViewModel.workout.value?.exercises ?: emptyList()
                 ) { index, exercise ->
                     AddExerciseCard(
                         modifier = Modifier.padding(top = 16.dp),
@@ -97,7 +97,7 @@ fun WorkoutEditorScreen(
                         },
                         onDeleteExercise = {
                             workoutEditorViewModel.removeExercise(index)
-                        },
+                        }
                     )
                 }
 
@@ -106,7 +106,7 @@ fun WorkoutEditorScreen(
                         modifier = Modifier.testTag("addExerciseButton"),
                         onAddExerciseButtonClicked = {
                             addExerciseDialogShown.value = true
-                        },
+                        }
                     )
                 }
             }
@@ -117,14 +117,14 @@ fun WorkoutEditorScreen(
             saveButtonEnabled = (
                 workoutEditorViewModel.saveState.value == SavingWorkoutState.Idle ||
                     workoutEditorViewModel.saveState.value == SavingWorkoutState.Saved
-            ),
+                ),
             onSaveButtonClicked = {
                 workoutEditorViewModel.saveWorkout()
                 navigateBack()
             },
             onCancelButtonClicked = {
                 navigateBack()
-            },
+            }
         )
 
         if (addExerciseDialogShown.value) {
@@ -134,7 +134,7 @@ fun WorkoutEditorScreen(
                 onExercisesSelected = { selectedExercises ->
                     workoutEditorViewModel.addAllSelectedExercises(selectedExercises)
                     addExerciseDialogShown.value = false
-                },
+                }
             )
         }
     }
@@ -145,7 +145,7 @@ private fun SaveAndCancelButton(
     modifier: Modifier = Modifier,
     onCancelButtonClicked: () -> Unit = {},
     onSaveButtonClicked: () -> Unit = {},
-    saveButtonEnabled: Boolean,
+    saveButtonEnabled: Boolean
 ) {
     var showSaveDialog by remember { mutableStateOf(false) }
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -161,7 +161,7 @@ private fun SaveAndCancelButton(
             },
             onDismissRequest = {
                 showSaveDialog = false
-            },
+            }
         )
     }
 
@@ -176,23 +176,23 @@ private fun SaveAndCancelButton(
             },
             onDismissRequest = {
                 showCancelDialog = false
-            },
+            }
         )
     }
 
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         OutlinedButton(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(end = 16.dp)
-                    .testTag("cancelButton"),
-            onClick = { showCancelDialog = true },
+            Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+                .testTag("cancelButton"),
+            onClick = { showCancelDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
@@ -200,11 +200,11 @@ private fun SaveAndCancelButton(
         Button(
             enabled = saveButtonEnabled,
             modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp)
-                    .testTag("saveButton"),
-            onClick = { showSaveDialog = true },
+            Modifier
+                .weight(1f)
+                .padding(start = 16.dp)
+                .testTag("saveButton"),
+            onClick = { showSaveDialog = true }
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -214,29 +214,29 @@ private fun SaveAndCancelButton(
 @Composable
 private fun AddExerciseButton(
     modifier: Modifier = Modifier,
-    onAddExerciseButtonClicked: () -> Unit = {},
+    onAddExerciseButtonClicked: () -> Unit = {}
 ) {
     TextButton(
         modifier =
-            modifier
-                .padding(top = 16.dp)
-                .height(48.dp),
-        onClick = { onAddExerciseButtonClicked() },
+        modifier
+            .padding(top = 16.dp)
+            .height(48.dp),
+        onClick = { onAddExerciseButtonClicked() }
     ) {
         Icon(
             modifier =
-                Modifier
-                    .height(48.dp)
-                    .width(48.dp),
+            Modifier
+                .height(48.dp)
+                .width(48.dp),
             imageVector = Icons.Default.AddCircle,
             contentDescription =
-                stringResource(
-                    R.string.workout_editor_add_exercise_button_description,
-                ),
+            stringResource(
+                R.string.workout_editor_add_exercise_button_description
+            )
         )
         Text(
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            text = stringResource(R.string.workout_editor_add_exercise_button_text),
+            text = stringResource(R.string.workout_editor_add_exercise_button_text)
         )
     }
 }
@@ -246,7 +246,7 @@ private fun AddExerciseCard(
     modifier: Modifier = Modifier,
     exercise: WorkoutExercise,
     onUpdateExercise: (WorkoutExercise) -> Unit = {},
-    onDeleteExercise: () -> Unit = {},
+    onDeleteExercise: () -> Unit = {}
 ) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
@@ -254,24 +254,24 @@ private fun AddExerciseCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
         modifier =
-            modifier
-                .fillMaxWidth()
-                .testTag("addExerciseCard"),
+        modifier
+            .fillMaxWidth()
+            .testTag("addExerciseCard")
     ) {
         Row(
             modifier =
-                Modifier
-                    .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
-                    .fillMaxWidth(),
+            Modifier
+                .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
+                .fillMaxWidth()
         ) {
             Text(
                 text = exercise.name,
                 modifier =
-                    Modifier
-                        .padding(end = 16.dp)
-                        .weight(1f)
-                        .testTag("exerciseNameText")
-                        .align(Alignment.CenterVertically),
+                Modifier
+                    .padding(end = 16.dp)
+                    .weight(1f)
+                    .testTag("exerciseNameText")
+                    .align(Alignment.CenterVertically)
             )
 
             OutlinedTextField(
@@ -279,31 +279,31 @@ private fun AddExerciseCard(
                 value = exercise.setCount.toString(),
                 onValueChange = { newSets ->
                     onUpdateExercise(
-                        exercise.copy(setCount = newSets.toIntOrNull() ?: 0),
+                        exercise.copy(setCount = newSets.toIntOrNull() ?: 0)
                     )
                 },
                 modifier = Modifier.width(64.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             Box {
                 IconButton(
                     modifier =
-                        Modifier
-                            .padding(top = 8.dp)
-                            .testTag("moreButton"),
-                    onClick = { isDropDownExpanded.value = true },
+                    Modifier
+                        .padding(top = 8.dp)
+                        .testTag("moreButton"),
+                    onClick = { isDropDownExpanded.value = true }
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = null,
+                        contentDescription = null
                     )
                 }
 
                 DropdownMenu(
                     expanded = isDropDownExpanded.value,
-                    onDismissRequest = { isDropDownExpanded.value = false },
+                    onDismissRequest = { isDropDownExpanded.value = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Delete") },
@@ -311,7 +311,7 @@ private fun AddExerciseCard(
                             isDropDownExpanded.value = false
                             onDeleteExercise()
                         },
-                        modifier = Modifier.testTag("deleteExerciseButton"),
+                        modifier = Modifier.testTag("deleteExerciseButton")
                     )
                 }
             }
@@ -331,6 +331,6 @@ private fun AddExerciseCardPreview() {
     val exampleExercise = WorkoutExercise(name = "Squats", setCount = 3, order = 1)
     AddExerciseCard(
         exercise = exampleExercise,
-        onUpdateExercise = { _ -> },
+        onUpdateExercise = { _ -> }
     )
 }
