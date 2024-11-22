@@ -1,6 +1,5 @@
 package com.example.gymbuddy.ui.workouts.editor
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,25 +9,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,46 +29,42 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.ui.common.ConfirmationDialog
 import com.example.gymbuddy.ui.common.ScreenTitle
-import com.example.gymbuddy.ui.common.addExerciseDialog.AddExerciseDialog
 
 @Composable
 fun WorkoutEditorScreen(
     modifier: Modifier = Modifier,
     workoutEditorViewModel: WorkoutEditorViewModelContract =
         hiltViewModel<WorkoutEditorViewModel>(),
-    navigateBack: () -> Unit = {}
+    navigateBack: () -> Unit = {},
 ) {
     val addExerciseDialogShown = remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxSize()) {
         ScreenTitle(
             text = stringResource(R.string.workout_editor_new_workout_screen_title),
-            testTag = "screenTitle_Editor"
+            testTag = "screenTitle_Editor",
         )
 
         Column(
             modifier =
-            Modifier
-                .weight(1f)
-                .padding(16.dp)
+                Modifier
+                    .weight(1f)
+                    .padding(16.dp),
         ) {
             OutlinedTextField(
                 label = {
@@ -84,21 +73,21 @@ fun WorkoutEditorScreen(
                 value = workoutEditorViewModel.workout.value?.name ?: "",
                 onValueChange = { newValue -> workoutEditorViewModel.updateWorkoutName(newValue) },
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .testTag("workoutNameInput")
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("workoutNameInput"),
             )
 
             val listState = rememberLazyListState()
             LazyColumn(
                 state = listState,
                 modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(top = 16.dp)
+                    Modifier
+                        .weight(1f)
+                        .padding(top = 16.dp),
             ) {
                 itemsIndexed(
-                    workoutEditorViewModel.workout.value?.exercises ?: emptyList()
+                    workoutEditorViewModel.workout.value?.exercises ?: emptyList(),
                 ) { index, exercise ->
                     AddExerciseCard(
                         modifier = Modifier.padding(top = 16.dp),
@@ -108,7 +97,7 @@ fun WorkoutEditorScreen(
                         },
                         onDeleteExercise = {
                             workoutEditorViewModel.removeExercise(index)
-                        }
+                        },
                     )
                 }
 
@@ -117,7 +106,7 @@ fun WorkoutEditorScreen(
                         modifier = Modifier.testTag("addExerciseButton"),
                         onAddExerciseButtonClicked = {
                             addExerciseDialogShown.value = true
-                        }
+                        },
                     )
                 }
             }
@@ -128,132 +117,25 @@ fun WorkoutEditorScreen(
             saveButtonEnabled = (
                 workoutEditorViewModel.saveState.value == SavingWorkoutState.Idle ||
                     workoutEditorViewModel.saveState.value == SavingWorkoutState.Saved
-                ),
+            ),
             onSaveButtonClicked = {
                 workoutEditorViewModel.saveWorkout()
                 navigateBack()
             },
             onCancelButtonClicked = {
                 navigateBack()
-            }
+            },
         )
 
         if (addExerciseDialogShown.value) {
-            AddExerciseDialogToWorkout(
+            AddExerciseToWorkoutDialog(
                 existingExercises = workoutEditorViewModel.getExistingExercises(),
                 onDismissRequest = { addExerciseDialogShown.value = false },
                 onExercisesSelected = { selectedExercises ->
                     workoutEditorViewModel.addAllSelectedExercises(selectedExercises)
                     addExerciseDialogShown.value = false
-                }
+                },
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddExerciseDialogToWorkout(
-    existingExercises: List<WorkoutExercise>,
-    onDismissRequest: () -> Unit,
-    onExercisesSelected: (List<WorkoutExercise>) -> Unit
-) {
-    val selectedExercises = remember { mutableStateListOf<WorkoutExercise>() }
-    val addExerciseDialogShown = remember { mutableStateOf(false) }
-
-    if (addExerciseDialogShown.value) {
-        AddExerciseDialog(
-            onDismissRequest = { addExerciseDialogShown.value = false }
-        )
-    }
-
-    BasicAlertDialog(
-        onDismissRequest = { onDismissRequest() },
-        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
-    ) {
-        Card(
-            modifier =
-            Modifier.padding(top = 16.dp, bottom = 16.dp)
-        ) {
-            Column(
-                modifier =
-                Modifier.height(
-                    500.dp
-                )
-            ) {
-                Row(
-                    verticalAlignment = CenterVertically
-                ) {
-                    Text(
-                        text = "Exercises",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier =
-                        Modifier
-                            .padding(16.dp)
-                            .weight(1f)
-                    )
-                    OutlinedButton(
-                        onClick = { addExerciseDialogShown.value = true },
-                        modifier =
-                        Modifier
-                            .padding(end = 8.dp)
-                    ) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "")
-                        Text(text = "Create")
-                    }
-                }
-                LazyColumn(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(existingExercises) { exercise ->
-                        val isChecked = selectedExercises.contains(exercise)
-                        ListItem(
-                            headlineContent = {
-                                Text(text = exercise.name)
-                            },
-                            leadingContent = {
-                                Checkbox(
-                                    checked = isChecked,
-                                    onCheckedChange = null
-                                )
-                            },
-                            modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (isChecked) {
-                                        selectedExercises.remove(exercise)
-                                    } else {
-                                        selectedExercises.add(exercise)
-                                    }
-                                }
-                        )
-                    }
-                }
-
-                Row(
-                    verticalAlignment = CenterVertically
-                ) {
-                    OutlinedButton(
-                        onClick = { onDismissRequest() },
-                        modifier =
-                        Modifier
-                            .padding(8.dp)
-                            .weight(1f)
-                    ) {
-                        Text("Cancel")
-                    }
-                    Button(
-                        onClick = { onExercisesSelected(selectedExercises) },
-                        modifier =
-                        Modifier
-                            .padding(8.dp)
-                            .weight(1f)
-                    ) {
-                        Text("Add Selected")
-                    }
-                }
-            }
         }
     }
 }
@@ -263,7 +145,7 @@ private fun SaveAndCancelButton(
     modifier: Modifier = Modifier,
     onCancelButtonClicked: () -> Unit = {},
     onSaveButtonClicked: () -> Unit = {},
-    saveButtonEnabled: Boolean
+    saveButtonEnabled: Boolean,
 ) {
     var showSaveDialog by remember { mutableStateOf(false) }
     var showCancelDialog by remember { mutableStateOf(false) }
@@ -279,7 +161,7 @@ private fun SaveAndCancelButton(
             },
             onDismissRequest = {
                 showSaveDialog = false
-            }
+            },
         )
     }
 
@@ -294,23 +176,23 @@ private fun SaveAndCancelButton(
             },
             onDismissRequest = {
                 showCancelDialog = false
-            }
+            },
         )
     }
 
     Row(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
     ) {
         OutlinedButton(
             modifier =
-            Modifier
-                .weight(1f)
-                .padding(end = 16.dp)
-                .testTag("cancelButton"),
-            onClick = { showCancelDialog = true }
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp)
+                    .testTag("cancelButton"),
+            onClick = { showCancelDialog = true },
         ) {
             Text(text = stringResource(R.string.workout_editor_cancel_button_text))
         }
@@ -318,11 +200,11 @@ private fun SaveAndCancelButton(
         Button(
             enabled = saveButtonEnabled,
             modifier =
-            Modifier
-                .weight(1f)
-                .padding(start = 16.dp)
-                .testTag("saveButton"),
-            onClick = { showSaveDialog = true }
+                Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp)
+                    .testTag("saveButton"),
+            onClick = { showSaveDialog = true },
         ) {
             Text(text = stringResource(R.string.workout_editor_save_button_text))
         }
@@ -332,29 +214,29 @@ private fun SaveAndCancelButton(
 @Composable
 private fun AddExerciseButton(
     modifier: Modifier = Modifier,
-    onAddExerciseButtonClicked: () -> Unit = {}
+    onAddExerciseButtonClicked: () -> Unit = {},
 ) {
     TextButton(
         modifier =
-        modifier
-            .padding(top = 16.dp)
-            .height(48.dp),
-        onClick = { onAddExerciseButtonClicked() }
+            modifier
+                .padding(top = 16.dp)
+                .height(48.dp),
+        onClick = { onAddExerciseButtonClicked() },
     ) {
         Icon(
             modifier =
-            Modifier
-                .height(48.dp)
-                .width(48.dp),
+                Modifier
+                    .height(48.dp)
+                    .width(48.dp),
             imageVector = Icons.Default.AddCircle,
             contentDescription =
-            stringResource(
-                R.string.workout_editor_add_exercise_button_description
-            )
+                stringResource(
+                    R.string.workout_editor_add_exercise_button_description,
+                ),
         )
         Text(
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            text = stringResource(R.string.workout_editor_add_exercise_button_text)
+            text = stringResource(R.string.workout_editor_add_exercise_button_text),
         )
     }
 }
@@ -364,7 +246,7 @@ private fun AddExerciseCard(
     modifier: Modifier = Modifier,
     exercise: WorkoutExercise,
     onUpdateExercise: (WorkoutExercise) -> Unit = {},
-    onDeleteExercise: () -> Unit = {}
+    onDeleteExercise: () -> Unit = {},
 ) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
 
@@ -372,24 +254,24 @@ private fun AddExerciseCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = CardDefaults.outlinedCardBorder(),
         modifier =
-        modifier
-            .fillMaxWidth()
-            .testTag("addExerciseCard")
+            modifier
+                .fillMaxWidth()
+                .testTag("addExerciseCard"),
     ) {
         Row(
             modifier =
-            Modifier
-                .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
-                .fillMaxWidth()
+                Modifier
+                    .padding(top = 16.dp, start = 16.dp, end = 0.dp, bottom = 16.dp)
+                    .fillMaxWidth(),
         ) {
             Text(
                 text = exercise.name,
                 modifier =
-                Modifier
-                    .padding(end = 16.dp)
-                    .weight(1f)
-                    .testTag("exerciseNameText")
-                    .align(Alignment.CenterVertically)
+                    Modifier
+                        .padding(end = 16.dp)
+                        .weight(1f)
+                        .testTag("exerciseNameText")
+                        .align(Alignment.CenterVertically),
             )
 
             OutlinedTextField(
@@ -397,31 +279,31 @@ private fun AddExerciseCard(
                 value = exercise.setCount.toString(),
                 onValueChange = { newSets ->
                     onUpdateExercise(
-                        exercise.copy(setCount = newSets.toIntOrNull() ?: 0)
+                        exercise.copy(setCount = newSets.toIntOrNull() ?: 0),
                     )
                 },
                 modifier = Modifier.width(64.dp),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
 
             Box {
                 IconButton(
                     modifier =
-                    Modifier
-                        .padding(top = 8.dp)
-                        .testTag("moreButton"),
-                    onClick = { isDropDownExpanded.value = true }
+                        Modifier
+                            .padding(top = 8.dp)
+                            .testTag("moreButton"),
+                    onClick = { isDropDownExpanded.value = true },
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
 
                 DropdownMenu(
                     expanded = isDropDownExpanded.value,
-                    onDismissRequest = { isDropDownExpanded.value = false }
+                    onDismissRequest = { isDropDownExpanded.value = false },
                 ) {
                     DropdownMenuItem(
                         text = { Text("Delete") },
@@ -429,7 +311,7 @@ private fun AddExerciseCard(
                             isDropDownExpanded.value = false
                             onDeleteExercise()
                         },
-                        modifier = Modifier.testTag("deleteExerciseButton")
+                        modifier = Modifier.testTag("deleteExerciseButton"),
                     )
                 }
             }
@@ -449,6 +331,6 @@ private fun AddExerciseCardPreview() {
     val exampleExercise = WorkoutExercise(name = "Squats", setCount = 3, order = 1)
     AddExerciseCard(
         exercise = exampleExercise,
-        onUpdateExercise = { _ -> }
+        onUpdateExercise = { _ -> },
     )
 }
