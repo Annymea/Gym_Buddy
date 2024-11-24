@@ -5,6 +5,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -113,7 +114,7 @@ dependencies {
     kaptTest(libs.hilt.android.compiler)
     debugImplementation(libs.ui.test.manifest)
 
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 }
 
 kapt {
