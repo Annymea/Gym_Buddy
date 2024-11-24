@@ -22,6 +22,7 @@ sealed class WorkoutOverviewUiState {
 interface WorkoutOverviewViewModelContract {
     val workouts: List<Workout>
     val uiState: StateFlow<WorkoutOverviewUiState>
+    fun onReorder(newWorkouts: List<Workout>)
 }
 
 @HiltViewModel
@@ -56,5 +57,10 @@ constructor(
                     }
                 }
         }
+    }
+
+    override fun onReorder(newWorkouts: List<Workout>) {
+        workouts.clear()
+        workouts.addAll(newWorkouts)
     }
 }

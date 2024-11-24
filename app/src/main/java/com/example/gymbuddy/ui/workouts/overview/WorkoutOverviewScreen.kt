@@ -1,16 +1,12 @@
 package com.example.gymbuddy.ui.workouts.overview
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
@@ -32,10 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gymbuddy.R
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.ui.common.ScreenTitle
+import com.example.gymbuddy.ui.common.draggableList.DraggableLazyColumn
 
 @Composable
 fun WorkoutOverviewScreen(
@@ -59,7 +55,9 @@ fun WorkoutOverviewScreen(
                 modifier = modifier,
                 workouts = viewModel.workouts,
                 onCreateWorkout = { onCreateWorkout() },
-                onExecuteWorkout = { id -> onExecuteWorkout(id) }
+                onExecuteWorkout = { id -> onExecuteWorkout(id) },
+                onReorder = { viewModel.onReorder(it) }
+
             )
         }
     }
@@ -98,7 +96,8 @@ fun WorkoutOverview(
     modifier: Modifier = Modifier,
     workouts: List<Workout> = emptyList(),
     onCreateWorkout: () -> Unit = {},
-    onExecuteWorkout: (id: Long) -> Unit
+    onExecuteWorkout: (id: Long) -> Unit,
+    onReorder: (List<Workout>) -> Unit = {}
 ) {
     Column(
         modifier =
@@ -134,17 +133,20 @@ fun WorkoutOverview(
                 )
             }
         }
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(workouts) { workout ->
-                WorkoutCard(
-                    workoutTitle = workout.name,
-                    onStartWorkout = { onExecuteWorkout(workout.id) }
-                )
-            }
+        DraggableLazyColumn(
+            items = workouts,
+            onMove = { newWorkouts -> onReorder(newWorkouts) },
+            modifier =
+            Modifier
+                .fillMaxSize()
+        ) { workout ->
+            WorkoutCard(
+                modifier =
+                Modifier
+                    .padding(horizontal = 16.dp),
+                workoutTitle = workout.name,
+                onStartWorkout = { onExecuteWorkout(workout.id) }
+            )
         }
     }
 }
