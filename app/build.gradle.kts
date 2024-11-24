@@ -4,11 +4,12 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "com.example.gymbuddy"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.gymbuddy"
@@ -61,7 +62,7 @@ dependencies {
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
-    implementation("androidx.test:core-ktx:1.4.0")
+    implementation(libs.core.ktx)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
