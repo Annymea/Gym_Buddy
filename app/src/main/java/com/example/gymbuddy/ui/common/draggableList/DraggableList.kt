@@ -1,0 +1,127 @@
+package com.example.gymbuddy.ui.common.draggableList
+
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+
+@Composable
+fun <T> DraggableLazyColumn(
+    items: List<T>,
+    onMove: (List<T>) -> Unit,
+    modifier: Modifier = Modifier,
+    itemContent: @Composable (item: T) -> Unit,
+
+    ) {
+    //TODO: Der Ramen des Schattens sieht noch etwas weird auch. Das muss ich noch ausbessern
+
+    val mutableItems = remember { items.toMutableStateList() }
+    var draggingIndex by remember { mutableStateOf<Int?>(null) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+
+    val density = LocalDensity.current
+
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier
+    ) {
+        itemsIndexed(mutableItems) { index, item ->
+            val isBeingDragged = index == draggingIndex
+
+            val animatedOffset by animateDpAsState(
+                if (isBeingDragged) with(density) { offsetY.toDp() } else 0.dp,
+                label = "softMoveOfItems"
+            )
+            val shadowElevation by animateDpAsState(
+                if (isBeingDragged) 8.dp else 0.dp,
+                label = "showShadow"
+            )
+            val alpha by animateFloatAsState(
+                if (isBeingDragged) 0.9f else 1f,
+                label = "makeItemLessVisible"
+            )
+
+            Box(
+                modifier = Modifier
+                    .offset { IntOffset(0, animatedOffset.roundToPx()) }
+                    .zIndex(if (isBeingDragged) 1f else 0f)
+                    .shadow(shadowElevation, shape = RoundedCornerShape(8.dp))
+                    .alpha(alpha)
+                    .pointerInput(Unit) {
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = { draggingIndex = index },
+                            onDrag = { _, dragAmount ->
+                                offsetY += dragAmount.y
+                                draggingIndex?.let { dragging ->
+                                    val targetIndex = calculateTargetIndex(
+                                        draggingIndex = dragging,
+                                        dragOffset = offsetY,
+                                        listSize = items.size,
+                                        // i would like to use actual height here
+                                        itemHeightPx = with(density) { 56.dp.toPx() }
+                                    )
+                                    if (targetIndex != dragging) {
+                                        mutableItems.swap(dragging, targetIndex)
+                                        draggingIndex = targetIndex
+                                        offsetY = 0f
+                                    }
+                                }
+                            },
+                            onDragEnd = {
+                                draggingIndex = null
+                                offsetY = 0f
+                                onMove(mutableItems)
+                            },
+                            onDragCancel = {
+                                draggingIndex = null
+                                offsetY = 0f
+                            }
+                        )
+                    }
+            ) {
+                itemContent(
+                    item
+                )
+            }
+        }
+    }
+}
+
+private fun calculateTargetIndex(
+    draggingIndex: Int,
+    dragOffset: Float,
+    listSize: Int,
+    itemHeightPx: Float,
+): Int {
+    val draggedItems = (dragOffset / itemHeightPx).toInt()
+    val targetIndex = draggingIndex + draggedItems
+    return targetIndex.coerceIn(0, listSize - 1)
+}
+
+private fun <T> MutableList<T>.swap(from: Int, to: Int) {
+    if (from != to) {
+        val temp = this[from]
+        this[from] = this[to]
+        this[to] = temp
+    }
+}
