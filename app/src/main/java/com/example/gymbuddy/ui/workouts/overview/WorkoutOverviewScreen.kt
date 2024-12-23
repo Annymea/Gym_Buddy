@@ -137,13 +137,12 @@ fun WorkoutOverview(
             items = workouts,
             onMove = { newWorkouts -> onReorder(newWorkouts) },
             modifier =
-            Modifier
+            Modifier.padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) { workout ->
             WorkoutCard(
                 modifier =
-                Modifier
-                    .padding(horizontal = 16.dp),
+                Modifier,
                 workoutTitle = workout.name,
                 onStartWorkout = { onExecuteWorkout(workout.id) }
             )
