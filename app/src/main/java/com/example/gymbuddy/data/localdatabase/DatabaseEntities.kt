@@ -11,7 +11,7 @@ data class WorkoutDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "workout_name") val workoutName: String,
     val note: String = "",
-    val category: String = ""
+    val category: String = "",
 )
 
 @Entity(tableName = "exercise_details")
@@ -19,7 +19,8 @@ data class ExerciseDetailsEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "exercise_name") val exerciseName: String,
     val note: String = "",
-    val category: String = ""
+    val category: String = "",
+    val overviewOrder: Int,
 )
 
 @Entity(
@@ -48,7 +49,7 @@ data class WorkoutEntity(
     @ColumnInfo(name = "workout_details_id") val workoutDetailsId: Long,
     @ColumnInfo(name = "exercise_details_id") val exerciseDetailsId: Long,
     val sets: Int,
-    val order: Int
+    val order: Int,
 )
 
 @Entity(
@@ -67,5 +68,5 @@ data class ExecutionEntity(
     @ColumnInfo(name = "exercise_details_id") val exerciseDetailsId: Long,
     val weight: Float,
     val reps: Int,
-    val date: Long
+    val date: Long,
 )

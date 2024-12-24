@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class WorkoutOverviewUiState {
     data object NoWorkouts : WorkoutOverviewUiState()
@@ -29,7 +29,7 @@ interface WorkoutOverviewViewModelContract {
 class WorkoutOverviewViewModel
 @Inject
 constructor(
-    private val workoutRepository: WorkoutRepository
+    private val workoutRepository: WorkoutRepository,
 ) : ViewModel(),
     WorkoutOverviewViewModelContract {
     override var workouts: SnapshotStateList<Workout> = mutableStateListOf()
@@ -62,5 +62,7 @@ constructor(
     override fun onReorder(newWorkouts: List<Workout>) {
         workouts.clear()
         workouts.addAll(newWorkouts)
+
+        //TODO: save to db
     }
 }

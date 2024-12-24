@@ -1,7 +1,6 @@
 package com.example.gymbuddy.ui.common.draggableList
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,10 +57,6 @@ fun <T> DraggableLazyColumn(
             )
 
             //ToDO: evtl hier noch das Item anders aussehen lassen. Passt aber erstmal
-            val alpha by animateFloatAsState(
-                if (isBeingDragged) 0.9f else 1f,
-                label = "makeItemLessVisible"
-            )
 
             val hapticFeedback = LocalHapticFeedback.current
 
@@ -69,7 +64,7 @@ fun <T> DraggableLazyColumn(
 
             Box(
                 modifier = Modifier
-                    //get actuall height of the item
+                    //get actual height of the item
                     .onGloballyPositioned { coordinates ->
                         itemHeightPx = coordinates.size.height.toFloat()
                     }
