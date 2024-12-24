@@ -69,12 +69,17 @@ fun <T> DraggableLazyColumn(
 
             Box(
                 modifier = Modifier
+                    //get actuall height of the item
                     .onGloballyPositioned { coordinates ->
                         itemHeightPx = coordinates.size.height.toFloat()
                     }
+                    //move the item -> only y axis
                     .offset { IntOffset(0, animatedOffset.roundToPx()) }
+                    //put the dragged item on top
                     .zIndex(if (isBeingDragged) 1f else 0f)
+                    //show shadow if dragged
                     .shadow(elevation = shadowElevation, shape = RoundedCornerShape(8.dp))
+                    //detect the drag gesture
                     .pointerInput(Unit) {
                         detectDragGesturesAfterLongPress(
                             onDragStart = {
@@ -82,7 +87,10 @@ fun <T> DraggableLazyColumn(
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             },
                             onDrag = { _, dragAmount ->
+                                //move the item by the drag amount
                                 offsetY += dragAmount.y
+
+                                //calculate the target index
                                 draggingIndex?.let { dragging ->
                                     val targetIndex = calculateTargetIndex(
                                         draggingIndex = dragging,
@@ -90,6 +98,7 @@ fun <T> DraggableLazyColumn(
                                         listSize = items.size,
                                         itemHeightPx = itemHeightPx
                                     )
+                                    //swap the items if dragged over another item
                                     if (targetIndex != dragging) {
                                         mutableItems.swap(dragging, targetIndex)
                                         draggingIndex = targetIndex
@@ -123,8 +132,11 @@ private fun calculateTargetIndex(
     listSize: Int,
     itemHeightPx: Float,
 ): Int {
+    //calculate the number of dragged items
     val draggedItems = (dragOffset / itemHeightPx).toInt()
+    //calculate the target index 
     val targetIndex = draggingIndex + draggedItems
+    //coerce the target index to the list bounds -> coerce means to limit the value to the given range
     return targetIndex.coerceIn(0, listSize - 1)
 }
 
