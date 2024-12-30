@@ -7,7 +7,7 @@
         <DropdownSelection timestamp="2024-11-24T20:52:52.392173500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=RFCWC05BE6H" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Anna\.android\avd\Running_App.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -17,6 +17,12 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="LocalDataRepositoryTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="Tests in 'localDataRepositoryTests'">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="Tests in 'com.example.gymbuddy'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
