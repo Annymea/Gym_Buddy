@@ -46,7 +46,7 @@ interface WorkoutDAO {
     @Query("SELECT * FROM workout WHERE workout_details_id = :workoutId")
     fun getWorkoutFor(workoutId: Long): Flow<List<WorkoutEntity>>
 
-    @Query("SELECT * FROM workout_details")
+    @Query("SELECT * FROM workout_details ORDER BY overviewOrder")
     fun getAllWorkoutDetails(): Flow<List<WorkoutDetailsEntity>>
 
     @Query("SELECT * FROM workout WHERE workout_details_id = :workoutId")
@@ -72,6 +72,9 @@ interface WorkoutDAO {
     @Query("SELECT * FROM exercise_details")
     fun getAllExerciseDetails(): Flow<List<ExerciseDetailsEntity>>
 
+    @Query("SELECT COALESCE( MAX(overviewOrder), 0) FROM workout_details")
+    fun getMaxWorkoutIndex(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveWorkoutExecution(executionEntities: List<ExecutionEntity>)
 
@@ -95,4 +98,7 @@ interface WorkoutDAO {
 
     @Query("DELETE FROM exercise_details WHERE id = :exerciseId")
     suspend fun deleteExerciseDetailsById(exerciseId: Long)
+
+    @Query("UPDATE workout_details SET overviewOrder = :order WHERE id = :id")
+    suspend fun updateSingleEntry(id: Long, order: Int)
 }
