@@ -7,18 +7,18 @@ import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.data.WorkoutSet
+import java.util.Calendar
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.Calendar
-import javax.inject.Inject
 
 class LocalDataRepository
 @Inject
 constructor(
-    private val workoutDAO: WorkoutDAO,
+    private val workoutDAO: WorkoutDAO
 ) : WorkoutRepository {
     override suspend fun getWorkout(workoutId: Long): Workout? {
         val workoutDetails =
@@ -106,7 +106,7 @@ constructor(
 
     override suspend fun saveWorkoutExecution(
         doneExercises: List<WorkoutExercise>,
-        date: Long,
+        date: Long
     ) {
         if (doneExercises.isEmpty()) return
 
@@ -158,7 +158,7 @@ constructor(
             currentWorkoutEntities.filter { currentEntity ->
                 newWorkoutEntities.none { newEntity ->
                     newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
-                            newEntity.order == currentEntity.order
+                        newEntity.order == currentEntity.order
                 }
             }
 
@@ -166,7 +166,7 @@ constructor(
             newWorkoutEntities.filter { newEntity ->
                 currentWorkoutEntities.any { currentEntity ->
                     newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
-                            newEntity.order == currentEntity.order
+                        newEntity.order == currentEntity.order
                 }
             }
 
@@ -174,7 +174,7 @@ constructor(
             newWorkoutEntities.filter { newEntity ->
                 currentWorkoutEntities.none { currentEntity ->
                     newEntity.exerciseDetailsId == currentEntity.exerciseDetailsId &&
-                            newEntity.order == currentEntity.order
+                        newEntity.order == currentEntity.order
                 }
             }
 
@@ -194,7 +194,7 @@ constructor(
     override suspend fun createNewWorkout(newWorkout: Workout) {
         withContext(Dispatchers.IO) {
             val indexForNewWorkout = workoutDAO.getMaxWorkoutIndex()
-            
+
             val newWorkoutId =
                 workoutDAO.insertWorkoutDetails(
                     WorkoutDetailsEntity(
@@ -230,7 +230,7 @@ constructor(
 
     override suspend fun getDaysOfCompletedWorkoutsForMonth(
         month: Int,
-        year: Int,
+        year: Int
     ): Flow<List<Int>> {
         val (startDate, endDate) = getStartAndEndOfMonth(month, year)
 
@@ -250,7 +250,7 @@ constructor(
 
     private fun getStartAndEndOfMonth(
         month: Int,
-        year: Int,
+        year: Int
     ): Pair<Long, Long> {
         val calendar =
             Calendar.getInstance().apply {
@@ -274,7 +274,7 @@ constructor(
     private fun extractDayIfInMonth(
         timestamp: Long,
         month: Int,
-        year: Int,
+        year: Int
     ): Int? {
         val dayCalendar =
             Calendar.getInstance().apply {
