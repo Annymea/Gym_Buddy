@@ -63,4 +63,8 @@ class FakeWorkoutOverviewViewModel(
             uiState.value = WorkoutOverviewUiState.NoWorkouts
         }
     }
+
+    override fun onReorder(newWorkouts: List<Workout>) {
+        TODO("Not yet implemented")
+    }
 }

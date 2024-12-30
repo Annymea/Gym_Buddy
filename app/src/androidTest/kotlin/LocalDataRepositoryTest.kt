@@ -55,48 +55,48 @@ class LocalDataRepositoryTest {
                     note = "",
                     category = "",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 1,
-                                name = "Test Exercise",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
-                            WorkoutExercise(
-                                id = 1,
-                                name = "Test Exercise",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
-                            WorkoutExercise(
-                                id = 1,
-                                name = "Test Exercise",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 1,
+                            name = "Test Exercise",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
                         ),
+                        WorkoutExercise(
+                            id = 1,
+                            name = "Test Exercise",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
+                        ),
+                        WorkoutExercise(
+                            id = 1,
+                            name = "Test Exercise",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
+                        ),
+                    ),
                 )
 
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow {
-                    emit(
-                        workoutExerciseDetails,
-                    )
-                }
+                    flow {
+                        emit(
+                            workoutExerciseDetails,
+                        )
+                    }
 
             coEvery { workoutDao.getExecutionsFor(any()) } returns
-                flow { emit(emptyList()) }
+                    flow { emit(emptyList()) }
 
             val result = workoutRepository.getWorkout(1L)
 
@@ -148,7 +148,7 @@ class LocalDataRepositoryTest {
                 )
 
             coEvery { workoutDao.getAllExerciseDetails() } returns
-                flow { emit(exerciseDetailsEntities) }
+                    flow { emit(exerciseDetailsEntities) }
 
             val result = workoutRepository.getAllExercises().first()
 
@@ -218,7 +218,7 @@ class LocalDataRepositoryTest {
                 )
 
             coEvery { workoutDao.insertExerciseDetails(any()) } throws
-                RuntimeException("Database error")
+                    RuntimeException("Database error")
 
             try {
                 workoutRepository.addExercise(validExercise)
@@ -278,7 +278,7 @@ class LocalDataRepositoryTest {
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow { emit(exerciseDetails) }
+                    flow { emit(exerciseDetails) }
             coEvery { workoutDao.getExecutionsFor(any()) } returns flow { emit(executionEntities) }
 
             val result = workoutRepository.getWorkout(1L)
@@ -306,7 +306,7 @@ class LocalDataRepositoryTest {
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow { emit(exerciseDetails) }
+                    flow { emit(exerciseDetails) }
             coEvery { workoutDao.getExecutionsFor(any()) } returns flow { emit(executionEntities) }
 
             val result = workoutRepository.getWorkout(1L)
@@ -332,11 +332,11 @@ class LocalDataRepositoryTest {
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(null) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow {
-                    emit(
-                        workoutExerciseDetails,
-                    )
-                }
+                    flow {
+                        emit(
+                            workoutExerciseDetails,
+                        )
+                    }
 
             val result = workoutRepository.getWorkout(1L)
 
@@ -362,39 +362,39 @@ class LocalDataRepositoryTest {
                     note = "",
                     category = "",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 1,
-                                name = "Test Exercise",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
-                            WorkoutExercise(
-                                id = 1,
-                                name = "Test Exercise",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 1,
+                            name = "Test Exercise",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
                         ),
+                        WorkoutExercise(
+                            id = 1,
+                            name = "Test Exercise",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
+                        ),
+                    ),
                 )
 
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(1) } returns
-                flow {
-                    emit(
-                        workoutExerciseDetails,
-                    )
-                }
+                    flow {
+                        emit(
+                            workoutExerciseDetails,
+                        )
+                    }
             coEvery { workoutDao.getExerciseDetailsFor(2) } returns flow { emit(null) }
             coEvery { workoutDao.getExecutionsFor(any()) } returns
-                flow { emit(emptyList()) }
+                    flow { emit(emptyList()) }
 
             val result = workoutRepository.getWorkout(2L)
 
@@ -416,7 +416,7 @@ class LocalDataRepositoryTest {
                 )
 
             coEvery { workoutDao.getAllWorkoutDetails() } returns
-                flow { emit(workoutDetailsEntityList) }
+                    flow { emit(workoutDetailsEntityList) }
 
             val result = workoutRepository.getAllWorkoutDetails().first()
 
@@ -450,10 +450,10 @@ class LocalDataRepositoryTest {
                         note = "",
                         category = "",
                         sets =
-                            mutableStateListOf(
-                                WorkoutSet(weight = 50.0F, reps = 10, order = 0),
-                                WorkoutSet(weight = 55.0F, reps = 8, order = 1),
-                            ),
+                        mutableStateListOf(
+                            WorkoutSet(weight = 50.0F, reps = 10, order = 0),
+                            WorkoutSet(weight = 55.0F, reps = 8, order = 1),
+                        ),
                     ),
                     WorkoutExercise(
                         id = 2L,
@@ -463,9 +463,9 @@ class LocalDataRepositoryTest {
                         note = "",
                         category = "",
                         sets =
-                            mutableStateListOf(
-                                WorkoutSet(weight = 60.0F, reps = 6, order = 0),
-                            ),
+                        mutableStateListOf(
+                            WorkoutSet(weight = 60.0F, reps = 6, order = 0),
+                        ),
                     ),
                 )
 
@@ -521,21 +521,21 @@ class LocalDataRepositoryTest {
                     category = "",
                     note = "",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 3L,
-                                name = "New Exercise",
-                                order = 3,
-                                setCount = 4,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 3L,
+                            name = "New Exercise",
+                            order = 3,
+                            setCount = 4,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
                         ),
+                    ),
                 )
 
             coEvery { workoutDao.getExercisesFor(workoutId) } returns
-                flow { emit(currentWorkoutEntities) }
+                    flow { emit(currentWorkoutEntities) }
             coEvery { workoutDao.deleteWorkoutEntities(currentWorkoutEntities) } returns Unit
             coEvery { workoutDao.insertWorkoutEntities(any()) } returns Unit
 
@@ -556,26 +556,26 @@ class LocalDataRepositoryTest {
                     category = "",
                     note = "",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 1L,
-                                name = "Exercise 1",
-                                order = 1,
-                                setCount = 3,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
-                            WorkoutExercise(
-                                id = 2L,
-                                name = "Exercise 2",
-                                order = 2,
-                                setCount = 4,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 1L,
+                            name = "Exercise 1",
+                            order = 1,
+                            setCount = 3,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
                         ),
+                        WorkoutExercise(
+                            id = 2L,
+                            name = "Exercise 2",
+                            order = 2,
+                            setCount = 4,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
+                        ),
+                    ),
                 )
             val newWorkoutEntities =
                 newWorkout.exercises.map { exercise ->
@@ -588,7 +588,7 @@ class LocalDataRepositoryTest {
                 }
 
             coEvery { workoutDao.getExercisesFor(workoutId) } returns
-                flow { emit(currentWorkoutEntities) }
+                    flow { emit(currentWorkoutEntities) }
             coEvery { workoutDao.insertWorkoutEntities(newWorkoutEntities) } returns Unit
 
             workoutRepository.updateWorkout(newWorkout)
@@ -616,17 +616,17 @@ class LocalDataRepositoryTest {
                     category = "",
                     note = "",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 1L,
-                                name = "Exercise 1",
-                                order = 1,
-                                setCount = 4,
-                                note = "",
-                                category = "",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 1L,
+                            name = "Exercise 1",
+                            order = 1,
+                            setCount = 4,
+                            note = "",
+                            category = "",
+                            sets = mutableStateListOf(),
                         ),
+                    ),
                 )
             val updatedWorkoutEntities =
                 newWorkout.exercises.map { exercise ->
@@ -639,7 +639,7 @@ class LocalDataRepositoryTest {
                 }
 
             coEvery { workoutDao.getExercisesFor(workoutId) } returns
-                flow { emit(currentWorkoutEntities) }
+                    flow { emit(currentWorkoutEntities) }
             coEvery { workoutDao.updateWorkoutEntities(updatedWorkoutEntities) } returns Unit
 
             workoutRepository.updateWorkout(newWorkout)
@@ -658,31 +658,32 @@ class LocalDataRepositoryTest {
                     category = "Strength",
                     note = "Workout Note",
                     exercises =
-                        mutableStateListOf(
-                            WorkoutExercise(
-                                id = 0L,
-                                name = "Exercise 1",
-                                order = 1,
-                                setCount = 3,
-                                note = "Exercise Note 1",
-                                category = "Strength",
-                                sets = mutableStateListOf(),
-                            ),
-                            WorkoutExercise(
-                                id = 0L,
-                                name = "Exercise 2",
-                                order = 2,
-                                setCount = 4,
-                                note = "Exercise Note 2",
-                                category = "Cardio",
-                                sets = mutableStateListOf(),
-                            ),
+                    mutableStateListOf(
+                        WorkoutExercise(
+                            id = 0L,
+                            name = "Exercise 1",
+                            order = 1,
+                            setCount = 3,
+                            note = "Exercise Note 1",
+                            category = "Strength",
+                            sets = mutableStateListOf(),
                         ),
+                        WorkoutExercise(
+                            id = 0L,
+                            name = "Exercise 2",
+                            order = 2,
+                            setCount = 4,
+                            note = "Exercise Note 2",
+                            category = "Cardio",
+                            sets = mutableStateListOf(),
+                        ),
+                    ),
                 )
 
             coEvery { workoutDao.insertWorkoutDetails(any()) } returns workoutId
             coEvery { workoutDao.insertExerciseDetails(any()) } returnsMany listOf(1L, 2L)
             coEvery { workoutDao.insertWorkoutEntity(any()) } returns Unit
+            coEvery { workoutDao.getMaxWorkoutIndex() } returns 0
 
             workoutRepository.createNewWorkout(newWorkout)
 
@@ -692,6 +693,7 @@ class LocalDataRepositoryTest {
                         workoutName = newWorkout.name,
                         category = newWorkout.category,
                         note = newWorkout.note,
+                        overviewOrder = 1,
                     ),
                 )
             }
@@ -751,6 +753,7 @@ class LocalDataRepositoryTest {
                 )
 
             coEvery { workoutDao.insertWorkoutDetails(any()) } returns workoutId
+            coEvery { workoutDao.getMaxWorkoutIndex() } returns 0
 
             workoutRepository.createNewWorkout(newWorkout)
 
@@ -760,6 +763,7 @@ class LocalDataRepositoryTest {
                         workoutName = newWorkout.name,
                         category = newWorkout.category,
                         note = newWorkout.note,
+                        overviewOrder = 1,
                     ),
                 )
             }
@@ -915,7 +919,7 @@ class LocalDataRepositoryTest {
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow { emit(exerciseDetails) }
+                    flow { emit(exerciseDetails) }
             coEvery { workoutDao.getExecutionsFor(1) } returns flow { emit(executionEntities) }
             coEvery { workoutDao.getExecutionsFor(2) } returns flow { emit(emptyList()) }
 
@@ -944,7 +948,7 @@ class LocalDataRepositoryTest {
             coEvery { workoutDao.getWorkoutDetailsFor(any()) } returns flow { emit(workoutDetails) }
             coEvery { workoutDao.getWorkoutFor(any()) } returns flow { emit(workoutEntities) }
             coEvery { workoutDao.getExerciseDetailsFor(any()) } returns
-                flow { emit(exerciseDetails) }
+                    flow { emit(exerciseDetails) }
             coEvery { workoutDao.getExecutionsFor(1) } returns flow { emit(executionEntities) }
 
             val result = workoutRepository.getWorkout(1)

@@ -19,6 +19,7 @@ fun getWorkoutDetails(
         id = id,
         category = "",
         note = "",
+        overviewOrder = 0,
     )
 
 fun getWorkout(
