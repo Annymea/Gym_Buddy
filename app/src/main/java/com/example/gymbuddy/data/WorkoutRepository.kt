@@ -44,4 +44,6 @@ interface WorkoutRepository {
         month: Int,
         year: Int
     ): Flow<List<Int>>
+
+    suspend fun updateWorkoutOrder(workoutIds: List<Long>)
 }

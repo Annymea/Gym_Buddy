@@ -31,9 +31,9 @@ fun <T> DraggableLazyColumn(
     items: List<T>,
     onMove: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
-    itemContent: @Composable (item: T) -> Unit,
+    itemContent: @Composable (item: T) -> Unit
 
-    ) {
+) {
     val mutableItems = remember { items.toMutableStateList() }
     var draggingIndex by remember { mutableStateOf<Int?>(null) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -56,7 +56,7 @@ fun <T> DraggableLazyColumn(
                 label = "showShadow"
             )
 
-            //ToDO: evtl hier noch das Item anders aussehen lassen. Passt aber erstmal
+            // ToDO: evtl hier noch das Item anders aussehen lassen. Passt aber erstmal
 
             val hapticFeedback = LocalHapticFeedback.current
 
@@ -64,17 +64,17 @@ fun <T> DraggableLazyColumn(
 
             Box(
                 modifier = Modifier
-                    //get actual height of the item
+                    // get actual height of the item
                     .onGloballyPositioned { coordinates ->
                         itemHeightPx = coordinates.size.height.toFloat()
                     }
-                    //move the item -> only y axis
+                    // move the item -> only y axis
                     .offset { IntOffset(0, animatedOffset.roundToPx()) }
-                    //put the dragged item on top
+                    // put the dragged item on top
                     .zIndex(if (isBeingDragged) 1f else 0f)
-                    //show shadow if dragged
+                    // show shadow if dragged
                     .shadow(elevation = shadowElevation, shape = RoundedCornerShape(8.dp))
-                    //detect the drag gesture
+                    // detect the drag gesture
                     .pointerInput(Unit) {
                         detectDragGesturesAfterLongPress(
                             onDragStart = {
@@ -82,10 +82,10 @@ fun <T> DraggableLazyColumn(
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             },
                             onDrag = { _, dragAmount ->
-                                //move the item by the drag amount
+                                // move the item by the drag amount
                                 offsetY += dragAmount.y
 
-                                //calculate the target index
+                                // calculate the target index
                                 draggingIndex?.let { dragging ->
                                     val targetIndex = calculateTargetIndex(
                                         draggingIndex = dragging,
@@ -93,7 +93,7 @@ fun <T> DraggableLazyColumn(
                                         listSize = items.size,
                                         itemHeightPx = itemHeightPx
                                     )
-                                    //swap the items if dragged over another item
+                                    // swap the items if dragged over another item
                                     if (targetIndex != dragging) {
                                         mutableItems.swap(dragging, targetIndex)
                                         draggingIndex = targetIndex
@@ -125,13 +125,13 @@ private fun calculateTargetIndex(
     draggingIndex: Int,
     dragOffset: Float,
     listSize: Int,
-    itemHeightPx: Float,
+    itemHeightPx: Float
 ): Int {
-    //calculate the number of dragged items
+    // calculate the number of dragged items
     val draggedItems = (dragOffset / itemHeightPx).toInt()
-    //calculate the target index 
+    // calculate the target index
     val targetIndex = draggingIndex + draggedItems
-    //coerce the target index to the list bounds -> coerce means to limit the value to the given range
+    // coerce the target index to the list bounds -> coerce means to limit the value to the given range
     return targetIndex.coerceIn(0, listSize - 1)
 }
 
