@@ -218,6 +218,58 @@ class WorkoutDAOTest {
         }
 
     @Test
+    fun getAllWorkoutDetailsFromDatabaseinCorrectOrder() =
+        runBlocking {
+            val workoutDetails =
+                listOf(
+                    getWorkoutDetails(id = 2, name = "Test Workout 2"),
+                    getWorkoutDetails(id = 1, name = "Test Workout 1"),
+                    getWorkoutDetails(id = 3, name = "Test Workout 3"),
+                )
+
+            workoutDetails[0].overviewOrder = 0
+            workoutDetails[1].overviewOrder = 1
+            workoutDetails[2].overviewOrder = 2
+
+            for (workoutDetail in workoutDetails) {
+                workoutDao.insertWorkoutDetails(workoutDetail)
+            }
+
+            val savedWorkoutDetails: List<WorkoutDetailsEntity> =
+                workoutDao.getAllWorkoutDetails().first()
+
+            assert(savedWorkoutDetails.size == 3)
+            assert(savedWorkoutDetails.containsAll(workoutDetails))
+
+            assert(savedWorkoutDetails[0].workoutName == "Test Workout 2")
+            assert(savedWorkoutDetails[1].workoutName == "Test Workout 1")
+            assert(savedWorkoutDetails[2].workoutName == "Test Workout 3")
+        }
+
+    @Test
+    fun getMaxIndexForWorkouts() =
+        runBlocking {
+            val workoutDetails =
+                listOf(
+                    getWorkoutDetails(id = 2, name = "Test Workout 2"),
+                    getWorkoutDetails(id = 1, name = "Test Workout 1"),
+                    getWorkoutDetails(id = 3, name = "Test Workout 3"),
+                )
+
+            workoutDetails[0].overviewOrder = 0
+            workoutDetails[1].overviewOrder = 1
+            workoutDetails[2].overviewOrder = 2
+
+            for (workoutDetail in workoutDetails) {
+                workoutDao.insertWorkoutDetails(workoutDetail)
+            }
+
+            val maxIndex = workoutDao.getMaxWorkoutIndex()
+
+            assert(maxIndex == 2)
+        }
+
+    @Test
     fun getAllExerciseForWorkoutFromDatabase() =
         runBlocking {
             val workoutDetails = getWorkoutDetails()
@@ -387,5 +439,37 @@ class WorkoutDAOTest {
 
             assert(savedExerciseDetails.size == 1)
             assert(savedExerciseDetails[0] == exercise)
+        }
+
+    @Test
+    fun updateWorkoutOverviewOrderIndex() =
+        runBlocking {
+            val workoutDetails =
+                listOf(
+                    getWorkoutDetails(id = 2L, name = "Test Workout 2"),
+                    getWorkoutDetails(id = 1L, name = "Test Workout 1"),
+                    getWorkoutDetails(id = 3L, name = "Test Workout 3"),
+                )
+
+            workoutDetails[0].overviewOrder = 0
+            workoutDetails[1].overviewOrder = 1
+            workoutDetails[2].overviewOrder = 2
+
+            for (workoutDetail in workoutDetails) {
+                workoutDao.insertWorkoutDetails(workoutDetail)
+            }
+
+            workoutDao.updateOrderValueForWorkout(1L, 0)
+            workoutDao.updateOrderValueForWorkout(2L, 1)
+            workoutDao.updateOrderValueForWorkout(3L, 2)
+
+            val savedWorkoutDetails: List<WorkoutDetailsEntity> =
+                workoutDao.getAllWorkoutDetails().first()
+
+            assert(savedWorkoutDetails.size == 3)
+
+            assert(savedWorkoutDetails[0].overviewOrder == 0)
+            assert(savedWorkoutDetails[1].overviewOrder == 1)
+            assert(savedWorkoutDetails[2].overviewOrder == 2)
         }
 }
