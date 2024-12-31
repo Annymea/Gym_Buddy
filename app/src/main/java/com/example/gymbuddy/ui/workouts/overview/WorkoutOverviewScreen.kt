@@ -137,10 +137,12 @@ fun WorkoutOverview(
             items = workouts,
             onMove = { newWorkouts -> onReorder(newWorkouts) },
             modifier =
-            Modifier.padding(horizontal = 16.dp)
+            Modifier
+                .padding(horizontal = 16.dp)
                 .fillMaxSize()
         ) { workout ->
             WorkoutCard(
+                testTag = "workoutCard",
                 modifier =
                 Modifier,
                 workoutTitle = workout.name,
@@ -192,6 +194,7 @@ fun CreateFirstWorkoutButton(
 
 @Composable
 fun WorkoutCard(
+    testTag: String = "",
     workoutTitle: String,
     modifier: Modifier = Modifier,
     onStartWorkout: () -> Unit = {}
@@ -202,6 +205,7 @@ fun WorkoutCard(
         modifier =
         modifier
             .fillMaxWidth()
+            .testTag(testTag)
     ) {
         Row(
             modifier =
@@ -239,7 +243,7 @@ fun WorkoutCard(
 @Preview(showBackground = true)
 @Composable
 fun WorkoutCardPreview() {
-    WorkoutCard("Test Workout")
+    WorkoutCard(workoutTitle = "Test Workout", testTag = "rofl")
 }
 
 @Preview(showBackground = true)
