@@ -12,7 +12,7 @@ data class WorkoutDetailsEntity(
     @ColumnInfo(name = "workout_name") val workoutName: String,
     val note: String = "",
     val category: String = "",
-    val overviewOrder: Int
+    var overviewOrder: Int
 )
 
 @Entity(tableName = "exercise_details")
