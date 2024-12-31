@@ -244,7 +244,7 @@ constructor(
 
     override suspend fun updateWorkoutOrder(workoutIds: List<Long>) {
         workoutIds.forEachIndexed { index, id ->
-            workoutDAO.updateSingleEntry(id, index)
+            workoutDAO.updateOrderValueForWorkout(id, index)
         }
     }
 
