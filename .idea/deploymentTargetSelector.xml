@@ -13,15 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="testUpdateWorkoutOrder_UpdatesOrderCorrectly()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="UpdateWorkoutOrder">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="getAllWorkoutDetailsFromDatabaseinCorrectOrder()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="getMaxIndexForWorkouts()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

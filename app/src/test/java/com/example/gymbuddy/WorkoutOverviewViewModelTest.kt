@@ -6,6 +6,7 @@ import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewUiState
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -82,8 +83,14 @@ class WorkoutOverviewViewModelTest {
     @Test
     fun workoutOverviewViewModel_updatesNewData() =
         runTest {
-            val workouts = listOf(Workout(name = "Workout1"), Workout(name = "Workout2"))
-            val updatedWorkouts = listOf(Workout(name = "Workout3"), Workout(name = "Workout4"))
+            val workouts = listOf(
+                Workout(name = "Workout1"),
+                Workout(name = "Workout2")
+            )
+            val updatedWorkouts = listOf(
+                Workout(name = "Workout3"),
+                Workout(name = "Workout4")
+            )
 
             coEvery { workoutRepository.getAllWorkoutDetails() } returns
                 flow {
@@ -105,4 +112,105 @@ class WorkoutOverviewViewModelTest {
             assertEquals("Workouts have correct name", "Workout3", viewModel.workouts[0].name)
             assertEquals("Workouts have correct name", "Workout4", viewModel.workouts[1].name)
         }
+
+    @Test
+    fun onReorder_updatesWorkoutListCorrectly() = runTest {
+        val initialWorkouts = listOf(
+            Workout(id = 1, name = "Workout1"),
+            Workout(id = 2, name = "Workout2"),
+            Workout(id = 3, name = "Workout3")
+        )
+        val reorderedWorkouts = listOf(
+            Workout(id = 2, name = "Workout2"),
+            Workout(id = 3, name = "Workout3"),
+            Workout(id = 1, name = "Workout1")
+        )
+
+        coEvery { workoutRepository.getAllWorkoutDetails() } returns flow { emit(initialWorkouts) }
+        coEvery { workoutRepository.updateWorkoutOrder(any()) } returns Unit
+
+        viewModel = WorkoutOverviewViewModel(workoutRepository)
+
+        advanceUntilIdle()
+
+        viewModel.onReorder(reorderedWorkouts)
+
+        assertEquals(
+            "Workouts have correct length after reorder",
+            3,
+            viewModel.workouts.size
+        )
+        assertEquals(
+            "First workout is correct after reorder",
+            "Workout2",
+            viewModel.workouts[0].name
+        )
+        assertEquals(
+            "Second workout is correct after reorder",
+            "Workout3",
+            viewModel.workouts[1].name
+        )
+        assertEquals(
+            "Third workout is correct after reorder",
+            "Workout1",
+            viewModel.workouts[2].name
+        )
+    }
+
+    @Test
+    fun onReorder_callsRepositoryWithCorrectIds() = runTest {
+        val initialWorkouts = listOf(
+            Workout(id = 1, name = "Workout1"),
+            Workout(id = 2, name = "Workout2"),
+            Workout(id = 3, name = "Workout3")
+        )
+        val reorderedWorkouts = listOf(
+            Workout(id = 2, name = "Workout2"),
+            Workout(id = 3, name = "Workout3"),
+            Workout(id = 1, name = "Workout1")
+        )
+        val expectedIds = listOf(2L, 3L, 1L)
+
+        coEvery { workoutRepository.getAllWorkoutDetails() } returns flow { emit(initialWorkouts) }
+        coEvery { workoutRepository.updateWorkoutOrder(any()) } returns Unit
+
+        viewModel = WorkoutOverviewViewModel(workoutRepository)
+
+        advanceUntilIdle()
+
+        viewModel.onReorder(reorderedWorkouts)
+
+        advanceUntilIdle()
+
+        coVerify {
+            workoutRepository.updateWorkoutOrder(expectedIds)
+        }
+    }
+
+    @Test
+    fun onReorder_handlesEmptyList() = runTest {
+        val initialWorkouts = listOf(
+            Workout(id = 1, name = "Workout1"),
+            Workout(id = 2, name = "Workout2"),
+            Workout(id = 3, name = "Workout3")
+        )
+        val reorderedWorkouts = emptyList<Workout>()
+
+        coEvery { workoutRepository.getAllWorkoutDetails() } returns flow { emit(initialWorkouts) }
+        coEvery { workoutRepository.updateWorkoutOrder(any()) } returns Unit
+
+        viewModel = WorkoutOverviewViewModel(workoutRepository)
+
+        advanceUntilIdle()
+
+        viewModel.onReorder(reorderedWorkouts)
+
+        advanceUntilIdle()
+
+        assertEquals("Workouts are empty after reorder with empty list", 0, viewModel.workouts.size)
+
+        coVerify {
+            workoutRepository.updateWorkoutOrder(emptyList())
+        }
+    }
 }
