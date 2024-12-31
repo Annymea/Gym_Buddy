@@ -154,5 +154,35 @@ class CreateNewWorkoutTests {
             coVerify(exactly = 0) { workoutDao.insertExerciseDetails(any()) }
             coVerify(exactly = 0) { workoutDao.insertWorkoutEntity(any()) }
         }
+
+    @Test
+    fun testCreateNewWorkout_SetIndexCorrectly() =
+        runTest {
+            val workoutId = 1L
+            val newWorkout =
+                Workout(
+                    id = workoutId,
+                    name = "Workout Without Exercises",
+                    category = "Flexibility",
+                    note = "This workout has no exercises",
+                    exercises = mutableStateListOf(),
+                )
+
+            coEvery { workoutDao.insertWorkoutDetails(any()) } returns workoutId
+            coEvery { workoutDao.getMaxWorkoutIndex() } returns 2
+
+            workoutRepository.createNewWorkout(newWorkout)
+
+            coVerify {
+                workoutDao.insertWorkoutDetails(
+                    WorkoutDetailsEntity(
+                        workoutName = newWorkout.name,
+                        category = newWorkout.category,
+                        note = newWorkout.note,
+                        overviewOrder = 3,
+                    ),
+                )
+            }
+        }
 }
 
