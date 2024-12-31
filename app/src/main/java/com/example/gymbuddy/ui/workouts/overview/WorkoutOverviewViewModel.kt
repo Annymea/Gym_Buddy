@@ -22,6 +22,7 @@ sealed class WorkoutOverviewUiState {
 interface WorkoutOverviewViewModelContract {
     val workouts: List<Workout>
     val uiState: StateFlow<WorkoutOverviewUiState>
+    fun onDeleteWorkout(workoutId: Long)
     fun onReorder(newWorkouts: List<Workout>)
 }
 
@@ -68,5 +69,9 @@ constructor(
         viewModelScope.launch {
             workoutRepository.updateWorkoutOrder(workoutIds)
         }
+    }
+
+    override fun onDeleteWorkout(workoutId : Long){
+        //TODO: Implement deletion in Database
     }
 }

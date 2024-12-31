@@ -9,17 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -55,6 +48,7 @@ fun WorkoutOverviewScreen(
                 modifier = modifier,
                 workouts = viewModel.workouts,
                 onCreateWorkout = { onCreateWorkout() },
+                onDeleteWorkout = { id ->  viewModel.onDeleteWorkout(id)},
                 onExecuteWorkout = { id -> onExecuteWorkout(id) },
                 onReorder = { viewModel.onReorder(it) }
 
@@ -97,6 +91,7 @@ fun WorkoutOverview(
     workouts: List<Workout> = emptyList(),
     onCreateWorkout: () -> Unit = {},
     onExecuteWorkout: (id: Long) -> Unit,
+    onDeleteWorkout: (id: Long) -> Unit = {},
     onReorder: (List<Workout>) -> Unit = {}
 ) {
     Column(
@@ -143,10 +138,12 @@ fun WorkoutOverview(
         ) { workout ->
             WorkoutCard(
                 testTag = "workoutCard",
+                workoutId = workout.id,
                 modifier =
                 Modifier,
                 workoutTitle = workout.name,
-                onStartWorkout = { onExecuteWorkout(workout.id) }
+                onStartWorkout = { onExecuteWorkout(workout.id) },
+                onDeleteWorkout = { onDeleteWorkout(workout.id) }
             )
         }
     }
@@ -196,8 +193,10 @@ fun CreateFirstWorkoutButton(
 fun WorkoutCard(
     testTag: String = "",
     workoutTitle: String,
+    workoutId: Long,
     modifier: Modifier = Modifier,
-    onStartWorkout: () -> Unit = {}
+    onStartWorkout: () -> Unit = {},
+    onDeleteWorkout: () -> Unit = {}
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -236,6 +235,43 @@ fun WorkoutCard(
                     )
                 )
             }
+            WorkoutOptionsButton(
+                idForTag = workoutId,
+                onDeleteWorkout = {onDeleteWorkout()}
+            )
+
+        }
+    }
+}
+
+
+@Composable
+fun WorkoutOptionsButton(
+    idForTag: Long,
+    onDeleteWorkout: () -> Unit
+) {
+    val isDropDownExpanded = remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(
+            onClick = { isDropDownExpanded.value = true },
+            modifier = Modifier.testTag("workoutOptionsButton$idForTag")
+        ) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = null)
+        }
+
+        DropdownMenu(
+            expanded = isDropDownExpanded.value,
+            onDismissRequest = { isDropDownExpanded.value = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text("Delete") },
+                onClick = {
+                    isDropDownExpanded.value = false
+                    onDeleteWorkout()
+                },
+                modifier = Modifier.testTag("deleteWorkoutMenuItem")
+            )
         }
     }
 }
@@ -243,7 +279,7 @@ fun WorkoutCard(
 @Preview(showBackground = true)
 @Composable
 fun WorkoutCardPreview() {
-    WorkoutCard(workoutTitle = "Test Workout", testTag = "rofl")
+    WorkoutCard(workoutTitle = "Test Workout", testTag = "rofl", workoutId = 123456789)
 }
 
 @Preview(showBackground = true)
