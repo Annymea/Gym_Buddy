@@ -1,6 +1,8 @@
 package com.example.gymbuddy.screens
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextContains
@@ -10,6 +12,7 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewScreen
@@ -25,7 +28,7 @@ class WorkoutOverviewScreenTest {
 
     @Test
     fun workoutOverview_showsAddWorkoutButtonIfNoWorkouts() {
-        val workouts = emptyList<Workout>()
+        val workouts = mutableStateListOf<Workout>()
 
         composeTestRule.setContent {
             WorkoutOverviewScreen(
@@ -40,7 +43,7 @@ class WorkoutOverviewScreenTest {
     @Test
     fun workoutOverview_showsWorkoutNameIfWorkouts() {
         val workouts =
-            listOf(
+            mutableStateListOf(
                 Workout(name = "Workout 1"),
                 Workout(name = "Workout 2")
             )
@@ -60,7 +63,7 @@ class WorkoutOverviewScreenTest {
     @Test
     fun workoutOverview_showsWorkoutsInCorrectOrder() {
         val workouts =
-            listOf(
+            mutableStateListOf(
                 Workout(name = "Workout 2"),
                 Workout(name = "Workout 1")
             )
@@ -118,10 +121,32 @@ class WorkoutOverviewScreenTest {
                     .assertTextContains("Workout 1")
             }
     }
+
+    @Test
+    fun workoutOverview_deleteWorkoutRemovesItemFromList() {
+        val workouts = mutableStateListOf(
+            Workout(name = "Workout 1", id = 1),
+            Workout(name = "Workout 2", id = 2),
+            Workout(name = "Workout 3", id = 3)
+        )
+        composeTestRule.setContent {
+            WorkoutOverviewScreen(
+                viewModel = FakeWorkoutOverviewViewModel(workouts),
+                onExecuteWorkout = { }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("workoutOptionsButton1").performClick()
+        composeTestRule.onNodeWithTag("deleteWorkoutMenuItem").performClick()
+
+        assert(workouts.size == 2)
+        assert(workouts[0].name == "Workout 2")
+        assert(workouts[1].name == "Workout 3")
+    }
 }
 
 class FakeWorkoutOverviewViewModel(
-    override var workouts: List<Workout>
+    override var workouts: SnapshotStateList<Workout>
 ) : WorkoutOverviewViewModelContract {
     override val uiState: MutableStateFlow<WorkoutOverviewUiState> =
         MutableStateFlow(WorkoutOverviewUiState.NoWorkouts)
@@ -135,13 +160,13 @@ class FakeWorkoutOverviewViewModel(
     }
 
     override fun onReorder(newWorkouts: List<Workout>) {
-        workouts = newWorkouts.toList()
+        workouts = newWorkouts.toMutableStateList()
     }
 
     override fun onDeleteWorkout(workoutId: Long) {
         val workoutToRemove = workouts.find { it.id == workoutId }
         if (workoutToRemove != null) {
-            workouts = workouts.filter { it.id != workoutId }
+            workouts.remove(workoutToRemove)
         }
     }
 }

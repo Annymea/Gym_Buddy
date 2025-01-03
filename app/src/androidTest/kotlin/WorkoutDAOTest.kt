@@ -427,6 +427,23 @@ class WorkoutDAOTest {
         }
 
     @Test
+    fun deleteWorkoutDetailsById_RemovesCorrectEntry() =
+        runBlocking {
+            val workout1 = getWorkoutDetails(id = 1L, name = "Test Workout 1")
+            val workout2 = getWorkoutDetails(id = 2L, name = "Test Workout 2")
+
+            workoutDao.insertWorkoutDetails(workout1)
+            workoutDao.insertWorkoutDetails(workout2)
+
+            workoutDao.deleteWorkoutDetailsById(1L)
+
+            val savedWorkoutDetails = workoutDao.getAllWorkoutDetails().first()
+
+            assert(savedWorkoutDetails.size == 1)
+            assert(savedWorkoutDetails[0] == workout2)
+        }
+
+    @Test
     fun deleteExerciseDetailsById_DoesNotFailWhenIdDoesNotExist() =
         runBlocking {
             val exercise = getExerciseDetails(id = 1L).copy(exerciseName = "Push-Up")
