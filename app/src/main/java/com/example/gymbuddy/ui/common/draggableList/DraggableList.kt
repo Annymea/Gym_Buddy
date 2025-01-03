@@ -14,7 +14,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -29,13 +29,12 @@ import androidx.compose.ui.zIndex
 
 @Composable
 fun <T> DraggableLazyColumn(
-    items: List<T>,
+    items: SnapshotStateList<T>,
     onMove: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
     itemContent: @Composable (item: T) -> Unit
 
 ) {
-    val mutableItems = remember { items.toMutableStateList() }
     var draggingIndex by remember { mutableStateOf<Int?>(null) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
@@ -45,7 +44,7 @@ fun <T> DraggableLazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.testTag("draggableLazyColumn")
     ) {
-        itemsIndexed(mutableItems) { index, item ->
+        itemsIndexed(items) { index, item ->
             val isBeingDragged = index == draggingIndex
 
             val animatedOffset by animateDpAsState(
@@ -96,7 +95,7 @@ fun <T> DraggableLazyColumn(
                                     )
                                     // swap the items if dragged over another item
                                     if (targetIndex != dragging) {
-                                        mutableItems.swap(dragging, targetIndex)
+                                        items.swap(dragging, targetIndex)
                                         draggingIndex = targetIndex
                                         offsetY = 0f
                                     }
@@ -105,7 +104,7 @@ fun <T> DraggableLazyColumn(
                             onDragEnd = {
                                 draggingIndex = null
                                 offsetY = 0f
-                                onMove(mutableItems)
+                                onMove(items)
                             },
                             onDragCancel = {
                                 draggingIndex = null
