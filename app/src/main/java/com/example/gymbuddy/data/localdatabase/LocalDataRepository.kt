@@ -248,6 +248,10 @@ constructor(
         }
     }
 
+    override suspend fun deleteWorkout(workoutId: Long) {
+        workoutDAO.deleteWorkoutDetailsById(workoutId)
+    }
+
     private fun getStartAndEndOfMonth(
         month: Int,
         year: Int

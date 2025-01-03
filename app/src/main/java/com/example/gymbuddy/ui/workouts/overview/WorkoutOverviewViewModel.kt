@@ -1,5 +1,6 @@
 package com.example.gymbuddy.ui.workouts.overview
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -71,7 +72,14 @@ constructor(
         }
     }
 
-    override fun onDeleteWorkout(workoutId : Long){
-        //TODO: Implement deletion in Database
+    override fun onDeleteWorkout(workoutId: Long) {
+        Log.d("WorkoutOverviewViewModel", "onDeleteWorkout: $workoutId")
+        viewModelScope.launch {
+            try {
+                workoutRepository.deleteWorkout(workoutId)
+            } catch (e: Exception) {
+                Log.d("ExerciseOverviewViewModel", "Error deleting exercise: $e")
+            }
+        }
     }
 }

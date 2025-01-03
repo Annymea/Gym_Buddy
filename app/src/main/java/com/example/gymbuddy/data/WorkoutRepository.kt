@@ -46,4 +46,6 @@ interface WorkoutRepository {
     ): Flow<List<Int>>
 
     suspend fun updateWorkoutOrder(workoutIds: List<Long>)
+
+    suspend fun deleteWorkout(workoutId: Long)
 }

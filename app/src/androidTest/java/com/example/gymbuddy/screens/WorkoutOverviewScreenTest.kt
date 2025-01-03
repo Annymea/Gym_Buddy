@@ -137,4 +137,11 @@ class FakeWorkoutOverviewViewModel(
     override fun onReorder(newWorkouts: List<Workout>) {
         workouts = newWorkouts.toList()
     }
+
+    override fun onDeleteWorkout(workoutId: Long) {
+        val workoutToRemove = workouts.find { it.id == workoutId }
+        if (workoutToRemove != null) {
+            workouts = workouts.filter { it.id != workoutId }
+        }
+    }
 }
