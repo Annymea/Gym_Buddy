@@ -1,5 +1,6 @@
 package com.example.gymbuddy
 
+import android.util.Log
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutRepository
 import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewUiState
@@ -7,7 +8,9 @@ import com.example.gymbuddy.ui.workouts.overview.WorkoutOverviewViewModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockkStatic
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +34,9 @@ class WorkoutOverviewViewModelTest {
 
     @Before
     fun setup() {
+        mockkStatic(Log::class)
+        every { Log.d(any(), any()) } returns 0
+
         MockKAnnotations.init(this, relaxUnitFun = true)
         Dispatchers.setMain(testDispatcher)
     }
@@ -212,5 +218,63 @@ class WorkoutOverviewViewModelTest {
         coVerify {
             workoutRepository.updateWorkoutOrder(emptyList())
         }
+    }
+
+    @Test
+    fun onDeleteWorkout_callsRepositoryToDelete() = runTest {
+        val workoutIdToDelete = 1L
+        coEvery { workoutRepository.deleteWorkout(workoutIdToDelete) } returns Unit
+        val initialWorkouts = listOf(
+            Workout(id = 1, name = "Workout1"),
+            Workout(id = 2, name = "Workout2")
+        )
+        coEvery { workoutRepository.getAllWorkoutDetails() } returns flow { emit(initialWorkouts) }
+
+        viewModel = WorkoutOverviewViewModel(workoutRepository)
+
+        advanceUntilIdle()
+
+        viewModel.onDeleteWorkout(workoutIdToDelete)
+
+        advanceUntilIdle()
+
+        coVerify { workoutRepository.deleteWorkout(workoutIdToDelete) }
+    }
+
+    @Test
+    fun onDeleteWorkout_updatesWorkoutsList() = runTest {
+        val workoutIdToDelete = 1L
+        val initialWorkouts = listOf(
+            Workout(id = 1, name = "Workout1"),
+            Workout(id = 2, name = "Workout2")
+        )
+        val remainingWorkouts = listOf(
+            Workout(id = 2, name = "Workout2")
+        )
+
+        coEvery { workoutRepository.getAllWorkoutDetails() } returns flow {
+            emit(initialWorkouts)
+            emit(remainingWorkouts)
+        }
+        coEvery { workoutRepository.deleteWorkout(workoutIdToDelete) } returns Unit
+
+        viewModel = WorkoutOverviewViewModel(workoutRepository)
+
+        advanceUntilIdle()
+
+        viewModel.onDeleteWorkout(workoutIdToDelete)
+
+        advanceUntilIdle()
+
+        assertEquals(
+            "Workouts list is updated after deletion",
+            remainingWorkouts.size,
+            viewModel.workouts.size
+        )
+        assertEquals(
+            "Remaining workout is correct",
+            "Workout2",
+            viewModel.workouts[0].name
+        )
     }
 }
