@@ -204,22 +204,12 @@ constructor(
                         overviewOrder = indexForNewWorkout + 1
                     )
                 )
-            // workaround until i implemented the correct workflow for exercises
-            // later no new exercises should be created here
-            newWorkout.exercises.forEach { exercise ->
-                val newExerciseId =
-                    workoutDAO.insertExerciseDetails(
-                        ExerciseDetailsEntity(
-                            exerciseName = exercise.name,
-                            note = exercise.note,
-                            category = exercise.category
-                        )
-                    )
 
+            newWorkout.exercises.forEach { exercise ->
                 workoutDAO.insertWorkoutEntity(
                     WorkoutEntity(
                         workoutDetailsId = newWorkoutId,
-                        exerciseDetailsId = newExerciseId,
+                        exerciseDetailsId = exercise.id,
                         sets = exercise.setCount,
                         order = exercise.order
                     )
