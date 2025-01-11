@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import com.example.gymbuddy.data.Workout
 import com.example.gymbuddy.data.WorkoutExercise
 import com.example.gymbuddy.data.WorkoutRepository
-import com.example.gymbuddy.data.localdatabase.ExerciseDetailsEntity
 import com.example.gymbuddy.data.localdatabase.LocalDataRepository
 import com.example.gymbuddy.data.localdatabase.WorkoutDAO
 import com.example.gymbuddy.data.localdatabase.WorkoutDetailsEntity
@@ -52,7 +51,7 @@ class CreateNewWorkoutTests {
                             sets = mutableStateListOf(),
                         ),
                         WorkoutExercise(
-                            id = 0L,
+                            id = 1L,
                             name = "Exercise 2",
                             order = 2,
                             setCount = 4,
@@ -64,7 +63,6 @@ class CreateNewWorkoutTests {
                 )
 
             coEvery { workoutDao.insertWorkoutDetails(any()) } returns workoutId
-            coEvery { workoutDao.insertExerciseDetails(any()) } returnsMany listOf(1L, 2L)
             coEvery { workoutDao.insertWorkoutEntity(any()) } returns Unit
             coEvery { workoutDao.getMaxWorkoutIndex() } returns 0
 
@@ -82,29 +80,10 @@ class CreateNewWorkoutTests {
             }
 
             coVerify {
-                workoutDao.insertExerciseDetails(
-                    ExerciseDetailsEntity(
-                        exerciseName = "Exercise 1",
-                        note = "Exercise Note 1",
-                        category = "Strength",
-                    ),
-                )
-            }
-            coVerify {
-                workoutDao.insertExerciseDetails(
-                    ExerciseDetailsEntity(
-                        exerciseName = "Exercise 2",
-                        note = "Exercise Note 2",
-                        category = "Cardio",
-                    ),
-                )
-            }
-
-            coVerify {
                 workoutDao.insertWorkoutEntity(
                     WorkoutEntity(
                         workoutDetailsId = workoutId,
-                        exerciseDetailsId = 1L,
+                        exerciseDetailsId = 0L,
                         sets = 3,
                         order = 1,
                     ),
@@ -114,7 +93,7 @@ class CreateNewWorkoutTests {
                 workoutDao.insertWorkoutEntity(
                     WorkoutEntity(
                         workoutDetailsId = workoutId,
-                        exerciseDetailsId = 2L,
+                        exerciseDetailsId = 1L,
                         sets = 4,
                         order = 2,
                     ),
