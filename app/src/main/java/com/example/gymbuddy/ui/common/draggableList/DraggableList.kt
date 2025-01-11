@@ -9,8 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,6 +37,13 @@ fun <T> DraggableLazyColumn(
     itemContent: @Composable (item: T) -> Unit
 
 ) {
+    val tempItems = remember { mutableStateListOf<T>() }
+
+    LaunchedEffect(items) {
+        tempItems.clear()
+        tempItems.addAll(items)
+    }
+
     var draggingIndex by remember { mutableStateOf<Int?>(null) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
@@ -44,7 +53,7 @@ fun <T> DraggableLazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier.testTag("draggableLazyColumn")
     ) {
-        itemsIndexed(items) { index, item ->
+        itemsIndexed(tempItems) { index, item ->
             val isBeingDragged = index == draggingIndex
 
             val animatedOffset by animateDpAsState(
@@ -90,12 +99,12 @@ fun <T> DraggableLazyColumn(
                                     val targetIndex = calculateTargetIndex(
                                         draggingIndex = dragging,
                                         dragOffset = offsetY,
-                                        listSize = items.size,
+                                        listSize = tempItems.size,
                                         itemHeightPx = itemHeightPx
                                     )
                                     // swap the items if dragged over another item
                                     if (targetIndex != dragging) {
-                                        items.swap(dragging, targetIndex)
+                                        tempItems.swap(dragging, targetIndex)
                                         draggingIndex = targetIndex
                                         offsetY = 0f
                                     }
@@ -104,7 +113,7 @@ fun <T> DraggableLazyColumn(
                             onDragEnd = {
                                 draggingIndex = null
                                 offsetY = 0f
-                                onMove(items)
+                                onMove(tempItems)
                             },
                             onDragCancel = {
                                 draggingIndex = null
